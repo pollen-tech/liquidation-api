@@ -10,7 +10,7 @@ const configGetters = [PostgresConfigGetter, KeycloakConfigGetter];
 @Module({
     imports: [
         ConfigModule.forRoot({
-            envFilePath: ['build/docker/.env'],
+            envFilePath: ['build/env/.env'],
             isGlobal: true,
             validationSchema: Joi.object({
                 API_PORT: Joi.number().default(3001),
