@@ -1,0 +1,13 @@
+version: "3"
+services:
+  order-pg:
+    image: postgres:15.5-alpine3.19
+    container_name: pp_auth0
+    environment:
+      - POSTGRES_USER=passdevuser
+      - POSTGRES_PASSWORD=password334
+      - POSTGRES_DB=user_db
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    ports:
+      - 5450:5432

@@ -1,0 +1,14 @@
+services:
+  postgres:
+    image: postgres:15.5-alpine3.19
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $POSTGRES_USER -d $POSTGRES_DB']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    env_file:
+      - .env
+    ports:
+      - ${POSTGRES_PORT:-5432}:5432
