@@ -1,4 +1,4 @@
-service: user-onboard-api
+service: liquidation-api
 
 frameworkVersion: '3'
 
@@ -19,8 +19,8 @@ provider:
 
 functions:
   api:
-    name: user-onboard-api
-    description: Users Onboarding Aws Lambda API
+    name:  liquidation-api
+    description: Liquidation Aws Lambda API
     handler: dist/aws/lambda.handler
     events:
       - http:
