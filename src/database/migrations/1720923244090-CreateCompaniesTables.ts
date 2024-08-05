@@ -6,6 +6,8 @@ export class CreateCompaniesTables1720923244086 implements MigrationInterface {
     name = 'CreateCompaniesTables1720923244086';
 
     public async up(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`);
+
         await queryRunner.query(
             `
                 CREATE TABLE country
