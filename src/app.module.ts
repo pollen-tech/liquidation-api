@@ -7,9 +7,11 @@ import { HealthcheckModule } from './app/healthcheck/healthcheck.module';
 import { getKeycloakModule } from './keycloak/keycloak.module';
 import { OnboardModule } from './app/onboard/onboard.module';
 import { NotifyModule } from './app/notify/notify.module';
+import { BrandModule } from './app/brand/brand.module';
+
 
 // export const getAppModules = () => [HealthcheckModule, CountryModule];
-export const getAppModules = () => [HealthcheckModule, OnboardModule, NotifyModule];
+export const getAppModules = () => [HealthcheckModule, OnboardModule, NotifyModule, BrandModule];
 
 export const getInfraModules = () => [DatabaseModule.forRoot(), getKeycloakModule()];
 
@@ -31,4 +33,4 @@ export const getInfraModules = () => [DatabaseModule.forRoot(), getKeycloakModul
         },
     ],
 })
-export class AppModule {}
+export class AppModule { }
