@@ -1,10 +1,14 @@
 import { Controller, Get, Post, Body, Param, Patch, Delete } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { Public } from 'nest-keycloak-connect';
 import { BrandService } from '../domain/brand.service';
 import { NewBrandDto } from '../dto/brand.dto';
 import { BrandEntity } from '../repositories/brand.entity';
 
-
+@ApiTags('Brands')
 @Controller('brands')
+@Public()
+
 export class BrandController {
 	constructor(private readonly brandService: BrandService) { }
 

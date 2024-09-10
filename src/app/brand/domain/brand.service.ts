@@ -1,12 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { BrandRepository } from '../repositories/brand.repository';
 import { BrandEntity } from '../repositories/brand.entity';
-import { NewBrandDto } from '../dto/brand.dto';
+import { NewBrandDto, BrandMapper } from '../dto/brand.dto';
 
 
 @Injectable()
 export class BrandService {
 	constructor(
+		@InjectRepository(BrandEntity)
 		private readonly brandRepository: BrandRepository,
 	) { }
 
@@ -28,14 +30,14 @@ export class BrandService {
 	}
 
 	async update(id: string, updateBrandDto: NewBrandDto): Promise<BrandEntity> {
-		const brand = await this.brandRepository.preload({
-			id,
-			...updateBrandDto,
-		});
+		const brand = await this.brandRepository.findOne({ where: { id } });
 		if (!brand) {
-			throw new NotFoundException(`Brand with ID ${id} not found`);
+			throw new Error(`Brand with ID ${id} not found`);
 		}
-		return this.brandRepository.save(brand);
+
+		// Merge existing entity with updated data
+		const updatedBrand = this.brandRepository.merge(brand, updateBrandDto);
+		return this.brandRepository.save(updatedBrand);  // Save the updated entity
 	}
 
 	async softDelete(id: string): Promise<void> {

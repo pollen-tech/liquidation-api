@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
 import { Status } from '../../../common/enums/common.enum';
 
-@Entity()
+@Entity('brands')
 export class BrandEntity {
 	@PrimaryGeneratedColumn()
 	id: string;
@@ -21,10 +21,14 @@ export class BrandEntity {
 	@Column()
 	sub_category_name: string;
 
-	@Column({ nullable: true })
+	@Column()
 	image: string;
 
-	@Column()
+	@Column({
+		type: 'enum',
+		enum: Status,
+		default: Status.NA,
+	})
 	status: Status;
 
 	@CreateDateColumn({ type: 'timestamptz' })
