@@ -399,6 +399,6 @@ dist
 .webpack
 .serverless/**/*.zip
 
-build/bocker/db
-build/bocker/db**
+build/docker/db
+build/docker/db**
 build/env
