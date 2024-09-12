@@ -7,18 +7,24 @@ export class CreateBrandTable1725965919557 implements MigrationInterface {
 
         await queryRunner.query(
             `
-                CREATE TABLE brands
+                CREATE TABLE brand
                 (
                     id         uuid                  DEFAULT uuid_generate_v4() primary key,
-                    seq_no     integer               default 0,
-                    brand_name       varchar(100) NOT NULL,
-                    brand_image      varchar(100), 
+                    seq_no     integer               default 1,
+                    name       varchar(100) NOT NULL,
+                    image      varchar(100), 
                     created_at timestamp without time zone NOT NULL DEFAULT now(),
                     updated_at timestamp without time zone NOT NULL DEFAULT now(),
                     deleted_at timestamp without time zone,
                     updated_on bigint,
                     status     varchar(25)  not null DEFAULT 'NA'
                 );
+
+                CREATE SEQUENCE seq_no_sequence
+                    START WITH 1 
+                    INCREMENT BY 1;
+
+                ALTER TABLE brand ALTER COLUMN seq_no SET DEFAULT nextval('seq_no_sequence');
             `,
         );
 
@@ -37,7 +43,7 @@ export class CreateBrandTable1725965919557 implements MigrationInterface {
                     deleted_at timestamp without time zone,
                     updated_on bigint,
                     status     varchar(25)  not null DEFAULT 'NA',
-                    CONSTRAINT fk_brand_category_brand_id FOREIGN KEY (brand_id) REFERENCES brands(id)
+                    CONSTRAINT fk_brand_category_brand_id FOREIGN KEY (brand_id) REFERENCES brand(id)
                 );
                 CREATE INDEX IF NOT EXISTS idx_brand_category_brand_id ON brand_category(brand_id)
             `,
@@ -45,7 +51,7 @@ export class CreateBrandTable1725965919557 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`DROP TABLE brands;`);
+        await queryRunner.query(`DROP TABLE brand;`);
 
         await queryRunner.query(`DROP TABLE brand_category;`);
     }

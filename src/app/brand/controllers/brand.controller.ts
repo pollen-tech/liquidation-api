@@ -5,8 +5,8 @@ import { BrandService } from '../domain/brand.service';
 import { NewBrandDto } from '../dto/brand.dto';
 import { BrandEntity } from '../repositories/brand.entity';
 
-@ApiTags('Brands')
-@Controller('brands')
+@ApiTags('Brand')
+@Controller('brand')
 @Public()
 
 export class BrandController {
