@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'nest-keycloak-connect';
 import { BrandService } from '../domain/brand.service';
@@ -27,7 +27,7 @@ export class BrandController {
 		return this.brandService.findOne(id);
 	}
 
-	@Patch(':id')
+	@Put(':id')
 	update(@Param('id') id: string, @Body() updateBrandDto: NewBrandDto): Promise<BrandEntity> {
 		return this.brandService.update(id, updateBrandDto);
 	}
