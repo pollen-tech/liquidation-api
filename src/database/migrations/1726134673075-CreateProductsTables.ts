@@ -9,14 +9,20 @@ export class CreateProductsTables1726134673075 implements MigrationInterface {
 			`
                 CREATE TABLE product
                 (
-                    id             uuid         DEFAULT uuid_generate_v4() primary key,
-                    sku_no         integer      default 1,
-                    pollen_sku_no  varchar(25)  NOT NULL,
-										brand_id       uuid         NOT NULL,
-                    image          varchar(100), 
-										lms_company_id integer      default 1,
-                    CONSTRAINT fk_product_brand_id FOREIGN KEY (brand_id) REFERENCES brand(id)
+                    id         uuid                  DEFAULT uuid_generate_v4() primary key,
+                    seq_no     integer               default 1,
+                    pollen_sku varchar      not null DEFAULT 'NA',
+                    sku        varchar      not null DEFAULT 'NA',
+                    brand_id   uuid         NOT NULL,
+                    name       varchar(200) NOT NULL,
+                    image      varchar(100),
+                    created_at timestamp without time zone NOT NULL DEFAULT now(),
+                    updated_at timestamp without time zone NOT NULL DEFAULT now(),
+                    updated_on bigint,
+                    status     varchar(25)  not null DEFAULT 'NA',
+                    CONSTRAINT fk_product_brand_id FOREIGN KEY (brand_id) REFERENCES brand (id)
                 );
+                CREATE INDEX IF NOT EXISTS idx_product_updated_on ON product(updated_on);
             `,
 		);
 
@@ -24,36 +30,47 @@ export class CreateProductsTables1726134673075 implements MigrationInterface {
 			`
                 CREATE TABLE product_category
                 (
-										id                uuid               DEFAULT uuid_generate_v4() primary key,
-                    product_id        uuid               NOT NULL,
-										category_id       smallint           default 0,
-                    category_name     varchar(100)       default 'NA',
-										sub_category_id   smallint           default 0,
-                    sub_category_name varchar(100)       default 'NA',
-                    CONSTRAINT fk_product_category_product_id FOREIGN KEY (product_id) REFERENCES product(id)
+                    id                uuid                 DEFAULT uuid_generate_v4() primary key,
+                    product_id        uuid        NOT NULL,
+                    category_id       smallint             default 0,
+                    category_name     varchar(100)         default 'NA',
+                    sub_category_id   smallint             default 0,
+                    sub_category_name varchar(100)         default 'NA',
+                    created_at        timestamp without time zone NOT NULL DEFAULT now(),
+                    updated_at        timestamp without time zone NOT NULL DEFAULT now(),
+                    updated_on        bigint,
+                    status            varchar(25) not null DEFAULT 'NA',
+                    CONSTRAINT fk_brand_category_brand_id FOREIGN KEY (brand_id) REFERENCES brand (id)
                 );
-                CREATE INDEX IF NOT EXISTS idx_product_category_product_id ON product_category(product_id)
+                CREATE INDEX IF NOT EXISTS idx_brand_category_brand_id ON brand_category(brand_id)
+                CREATE INDEX IF NOT EXISTS idx_product_category_updated_on ON product_category(updated_on);
             `,
 		);
 
 		await queryRunner.query(
 			`
-                CREATE TABLE product_psi
+                CREATE TABLE user_product
                 (
-										id                uuid               DEFAULT uuid_generate_v4() primary key,
-                    product_id        uuid               NOT NULL,
-										score             smallint           default 0,
-                    CONSTRAINT fk_product_psi_product_id FOREIGN KEY (product_id) REFERENCES product(id)
+                    id         uuid                 DEFAULT uuid_generate_v4() primary key,
+                    user_id    uuid        NOT NULL,
+                    product_id uuid        NOT NULL,
+                    created_at timestamp without time zone NOT NULL DEFAULT now(),
+                    updated_at timestamp without time zone NOT NULL DEFAULT now(),
+                    updated_on bigint,
+                    status     varchar(25) not null DEFAULT 'NA',
+                    CONSTRAINT fk_user_product_product_id FOREIGN KEY (product_id) REFERENCES product (id)
                 );
-                CREATE INDEX IF NOT EXISTS idx_product_psi_product_id ON product_psi(product_id)
+                CREATE INDEX IF NOT EXISTS idx_user_product_user_id ON user_product(user_id)
+                CREATE INDEX IF NOT EXISTS idx_user_product_updated_on ON user_product(updated_on);
             `,
 		);
+
 	}
 
 	public async down(queryRunner: QueryRunner): Promise<void> {
-		await queryRunner.query(`DROP TABLE product;`);
+		await queryRunner.query(`DROP TABLE user_product;`);
 		await queryRunner.query(`DROP TABLE product_category;`);
-		await queryRunner.query(`DROP TABLE product_psi;`);
+		await queryRunner.query(`DROP TABLE product;`);
 	}
 
 }
