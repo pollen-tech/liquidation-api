@@ -63,7 +63,7 @@ export class ProductService {
 			where: { product_id: savedProduct.id },
 		});
 		let groupedCategory = this.groupByCategory(savedCategories);
-		savedProduct['brand_categories'] = groupedCategory;
+		savedProduct['product_categories'] = groupedCategory;
 
 		if (!savedProduct) {
 			throw new NotFoundException(`Product with ID ${id} not found`);
@@ -85,13 +85,13 @@ export class ProductService {
 
 	async updateProduct(id: string, updateProductDto: NewProductDto): Promise<ProductEntity> {
 		console.log('update: ', updateProductDto);
-		const brand = await this.productRepository.findOne({ where: { id } });
-		if (!brand) {
+		const product = await this.productRepository.findOne({ where: { id } });
+		if (!product) {
 			throw new Error(`Product with ID ${id} not found`);
 		}
 
 		// Merge existing entity with updated data
-		const updatedProduct = this.productRepository.merge(brand, updateProductDto);
+		const updatedProduct = this.productRepository.merge(product, updateProductDto);
 		//updatedProduct.updated_on = Math.floor(Date.now() / 1000);
 		const savedProduct = await this.productRepository.save(updatedProduct);
 		const categories = updateProductDto.product_category.flatMap(category =>
@@ -121,12 +121,12 @@ export class ProductService {
 	}
 
 	async softDeleteProduct(id: string): Promise<void> {
-		const brand = await this.productRepository.findOne({ where: { id, status: Not(Status.DELETED) } });
-		if (!brand) {
+		const product = await this.productRepository.findOne({ where: { id, status: Not(Status.DELETED) } });
+		if (!product) {
 			throw new NotFoundException(`Product with ID ${id} not found`);
 		}
-		brand.status = Status.DELETED;
-		await this.productRepository.save(brand);
+		product.status = Status.DELETED;
+		await this.productRepository.save(product);
 	}
 
 	groupByCategory(categories: ProductCategoryEntity[]): ProductResDto[] {
