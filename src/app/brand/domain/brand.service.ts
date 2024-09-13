@@ -38,7 +38,8 @@ export class BrandService {
 				return categoryEntity;
 			})
 		);
-		console.log('categories: ', categories);
+		let groupedCategory = this.groupByCategory(categories);
+		console.log('categories: ', groupedCategory);
 
 		await this.brandCategoryRepository.save(categories);
 		console.log('savedBrand: ', savedBrand);
@@ -46,7 +47,7 @@ export class BrandService {
 
 		let res: any;
 		res = savedBrand;
-		res.brand_categories = categories;
+		res.brand_categories = groupedCategory;
 		console.log(res);
 
 		return res;
