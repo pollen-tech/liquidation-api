@@ -6,6 +6,7 @@ import { BrandCategoryRepository } from '../repositories/brand.category.reposito
 import { BrandCategoryEntity } from '../repositories/brand.category.entity';
 import { NewBrandDto, BrandMapper } from '../dto/brand.dto';
 import { Status } from '../../../common/enums/common.enum';
+import { Not } from 'typeorm';
 
 
 @Injectable()
@@ -54,14 +55,14 @@ export class BrandService {
 	}
 
 	async findAllBrands(): Promise<BrandEntity[]> {
-		const savedBrand = await this.brandRepository.find({ where: { deleted_at: null } });
+		const savedBrand = await this.brandRepository.find({ where: { status: Not(Status.DELETED) } });
 		return savedBrand;
 	}
 
 	async findBrandwithBrandId(id: string): Promise<BrandEntity> {
-		const savedBrand = await this.brandRepository.findOne({ where: { id, deleted_at: null } });
+		const savedBrand = await this.brandRepository.findOne({ where: { id, status: Not(Status.DELETED) } });
 		const savedCategories = await this.brandCategoryRepository.find({
-			where: { brand_id: savedBrand.id, deleted_at: null },
+			where: { brand_id: savedBrand.id, status: Not(Status.DELETED) },
 		});
 		let groupedCategory = this.groupByCategory(savedCategories);
 
@@ -73,9 +74,9 @@ export class BrandService {
 	}
 
 	async findBrandCategorywithBrandId(id: string): Promise<BrandCategoryEntity[]> {
-		const savedBrand = await this.brandRepository.findOne({ where: { id, deleted_at: null } });
+		const savedBrand = await this.brandRepository.findOne({ where: { id, status: Not(Status.DELETED) } });
 		const savedCategories = await this.brandCategoryRepository.find({
-			where: { brand_id: savedBrand.id, deleted_at: null },
+			where: { brand_id: savedBrand.id, status: Not(Status.DELETED) },
 		});
 		let groupedCategory = this.groupByCategory(savedCategories);
 
@@ -124,7 +125,7 @@ export class BrandService {
 	}
 
 	async softDelete(id: string): Promise<void> {
-		const brand = await this.brandRepository.findOne({ where: { id, deleted_at: null } });
+		const brand = await this.brandRepository.findOne({ where: { id, status: Not(Status.DELETED) } });
 		if (!brand) {
 			throw new NotFoundException(`Brand with ID ${id} not found`);
 		}
