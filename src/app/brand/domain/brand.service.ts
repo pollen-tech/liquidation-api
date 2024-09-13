@@ -22,8 +22,6 @@ export class BrandService {
 		console.log('createBrand: ', reqDto);
 		const brandEntity = await BrandMapper.toBrandEntity(reqDto);
 		const savedBrand = await this.brandRepository.save(brandEntity);
-		//console.log('brandEntity: ', brandEntity);
-		//console.log('savedBrand: ', savedBrand);
 
 		const categories = reqDto.brand_category.flatMap(category =>
 			category.sub_category.map(subCategory => {
@@ -40,11 +38,10 @@ export class BrandService {
 			})
 		);
 		let groupedCategory = this.groupByCategory(categories);
-		console.log('categories: ', groupedCategory);
 
 		await this.brandCategoryRepository.save(categories);
 		console.log('savedBrand: ', savedBrand);
-		console.log('categories: ', categories);
+		console.log('categories: ', groupedCategory);
 
 		let res: any;
 		res = savedBrand;
@@ -65,7 +62,6 @@ export class BrandService {
 			where: { brand_id: savedBrand.id, status: Not(Status.DELETED) },
 		});
 		let groupedCategory = this.groupByCategory(savedCategories);
-
 		savedBrand['brand_categories'] = groupedCategory;
 		if (!savedBrand) {
 			throw new NotFoundException(`Brand with ID ${id} not found`);
@@ -110,21 +106,19 @@ export class BrandService {
 				return categoryEntity;
 			})
 		);
-		// Remove existing categories for the brand
+		let groupedCategory = this.groupByCategory(categories);
 		await this.brandCategoryRepository.delete({ brand_id: savedBrand.id });
-
-		// Save the updated categories
 		await this.brandCategoryRepository.save(categories);
 
 		let res: any;
 		res = savedBrand;
-		res.brand_categories = categories;
+		res.brand_categories = groupedCategory;
 		console.log(res);
 
 		return res;
 	}
 
-	async softDelete(id: string): Promise<void> {
+	async softDeleteBrand(id: string): Promise<void> {
 		const brand = await this.brandRepository.findOne({ where: { id, status: Not(Status.DELETED) } });
 		if (!brand) {
 			throw new NotFoundException(`Brand with ID ${id} not found`);

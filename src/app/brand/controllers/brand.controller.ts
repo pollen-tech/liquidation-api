@@ -39,7 +39,7 @@ export class BrandController {
 	}
 
 	@Delete(':id')
-	softDelete(@Param('id') id: string): Promise<void> {
-		return this.brandService.softDelete(id);
+	softDeleteBrand(@Param('id') id: string): Promise<void> {
+		return this.brandService.softDeleteBrand(id);
 	}
 }
