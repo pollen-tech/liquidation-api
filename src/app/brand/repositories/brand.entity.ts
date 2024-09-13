@@ -42,7 +42,4 @@ export class BrandEntity {
 	beforeCreateOrUpdate() {
 		this.updated_on = Date.now();
 	}
-
-	//@OneToMany(() => BrandCategoryEntity, (category) => category.brand, { cascade: false, lazy: true })
-	//brandCategories: Promise<BrandCategoryEntity[]>;
 }

@@ -42,7 +42,4 @@ export class BrandCategoryEntity {
 
 	@Column({ type: 'enum', enum: Status, default: Status.NA })
 	status: Status;
-
-	//@ManyToOne(() => BrandEntity, (brand) => brand.brandCategories, { onDelete: 'CASCADE', lazy: true })
-	//brand: Promise<BrandEntity>;
 }

@@ -22,10 +22,8 @@ export class BrandService {
 		const brandEntity = await BrandMapper.toBrandEntity(reqDto);
 		const savedBrand = await this.brandRepository.save(brandEntity);
 		//console.log('brandEntity: ', brandEntity);
-		console.log('savedBrand: ', savedBrand);
+		//console.log('savedBrand: ', savedBrand);
 
-
-		// After saving, set the brand_id in BrandCategoryEntity
 		const categories = reqDto.brand_category.flatMap(category =>
 			category.sub_category.map(subCategory => {
 				const categoryEntity = new BrandCategoryEntity();
@@ -46,7 +44,6 @@ export class BrandService {
 		console.log('savedBrand: ', savedBrand);
 		console.log('categories: ', categories);
 
-		//return savedBrand;
 		let res: any;
 		res = savedBrand;
 		res.brand_categories = categories;
@@ -55,32 +52,39 @@ export class BrandService {
 		return res;
 	}
 
-	async findAll(): Promise<BrandEntity[]> {
+	async findAllBrands(): Promise<BrandEntity[]> {
 		const savedBrand = await this.brandRepository.find({ where: { deleted_at: null } });
-
-		for (const brand of savedBrand) {
-			const savedCategories = await this.brandCategoryRepository.find({
-				where: { brand_id: brand.id, deleted_at: null },
-			});
-
-			brand['brand_categories'] = savedCategories;
-		}
 		return savedBrand;
 	}
 
-	async findOne(id: string): Promise<BrandEntity> {
+	async findBrandwithBrandId(id: string): Promise<BrandEntity> {
 		const savedBrand = await this.brandRepository.findOne({ where: { id, deleted_at: null } });
 		const savedCategories = await this.brandCategoryRepository.find({
 			where: { brand_id: savedBrand.id, deleted_at: null },
 		});
-		savedBrand['brand_categories'] = savedCategories;
+		let groupedCategory = this.groupByCategory(savedCategories);
+
+		savedBrand['brand_categories'] = groupedCategory;
 		if (!savedBrand) {
 			throw new NotFoundException(`Brand with ID ${id} not found`);
 		}
 		return savedBrand;
 	}
 
-	async update(id: string, updateBrandDto: NewBrandDto): Promise<BrandEntity> {
+	async findBrandCategorywithBrandId(id: string): Promise<BrandCategoryEntity[]> {
+		const savedBrand = await this.brandRepository.findOne({ where: { id, deleted_at: null } });
+		const savedCategories = await this.brandCategoryRepository.find({
+			where: { brand_id: savedBrand.id, deleted_at: null },
+		});
+		let groupedCategory = this.groupByCategory(savedCategories);
+
+		if (!savedBrand) {
+			throw new NotFoundException(`Brand with ID ${id} not found`);
+		}
+		return groupedCategory;
+	}
+
+	async updateBrand(id: string, updateBrandDto: NewBrandDto): Promise<BrandEntity> {
 		console.log('update: ', updateBrandDto);
 		const brand = await this.brandRepository.findOne({ where: { id } });
 		if (!brand) {
@@ -126,5 +130,23 @@ export class BrandService {
 		brand.deleted_at = new Date();
 		brand.status = Status.DELETED;
 		await this.brandRepository.save(brand);
+	}
+
+	groupByCategory(categories: BrandCategoryEntity[]): BrandCategoryEntity[] {
+		const groupedCategories = categories.reduce((acc, category) => {
+			if (!acc[category.category_id]) {
+				acc[category.category_id] = {
+					category_id: category.category_id.toString(),
+					category_name: category.category_name,
+					sub_category: []
+				};
+			}
+			acc[category.category_id].sub_category.push({
+				sub_category_id: category.sub_category_id.toString(),
+				sub_category_name: category.sub_category_name
+			});
+			return acc;
+		}, {});
+		return Object.values(groupedCategories);
 	}
 }

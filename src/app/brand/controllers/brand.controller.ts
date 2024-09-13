@@ -4,6 +4,7 @@ import { Public } from 'nest-keycloak-connect';
 import { BrandService } from '../domain/brand.service';
 import { NewBrandDto } from '../dto/brand.dto';
 import { BrandEntity } from '../repositories/brand.entity';
+import { BrandCategoryEntity } from '../repositories/brand.category.entity';
 
 @ApiTags('Brand')
 @Controller('brand')
@@ -13,23 +14,28 @@ export class BrandController {
 	constructor(private readonly brandService: BrandService) { }
 
 	@Post()
-	create(@Body() reqDto: NewBrandDto) {
+	createBrand(@Body() reqDto: NewBrandDto) {
 		return this.brandService.createBrand(reqDto);
 	}
 
 	@Get()
-	findAll(): Promise<BrandEntity[]> {
-		return this.brandService.findAll();
+	findAllBrands(): Promise<BrandEntity[]> {
+		return this.brandService.findAllBrands();
 	}
 
 	@Get(':id')
-	findOne(@Param('id') id: string): Promise<BrandEntity> {
-		return this.brandService.findOne(id);
+	findBrandwithBrandId(@Param('id') id: string): Promise<BrandEntity> {
+		return this.brandService.findBrandwithBrandId(id);
+	}
+
+	@Get(':id/brand_category')
+	findBrandCategorywithBrandId(@Param('id') id: string): Promise<BrandCategoryEntity[]> {
+		return this.brandService.findBrandCategorywithBrandId(id);
 	}
 
 	@Put(':id')
-	update(@Param('id') id: string, @Body() updateBrandDto: NewBrandDto): Promise<BrandEntity> {
-		return this.brandService.update(id, updateBrandDto);
+	updateBrand(@Param('id') id: string, @Body() updateBrandDto: NewBrandDto): Promise<BrandEntity> {
+		return this.brandService.updateBrand(id, updateBrandDto);
 	}
 
 	@Delete(':id')
