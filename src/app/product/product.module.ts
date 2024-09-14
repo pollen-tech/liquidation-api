@@ -16,12 +16,9 @@ import { UserProductRepository } from './repositories/user.product.repository';
 let repositories: any[] = [ProductRepository, ProductCategoryRepository, UserProductRepository];
 
 @Module({
-	imports: [
-		TypeOrmModule.forFeature([ProductEntity, ProductCategoryEntity, UserProductEntity]),
-		DatabaseModule.forCustomRepository(repositories),
-	],
-	providers: [ProductService],
-	controllers: [ProductController],
-	exports: [TypeOrmModule, ProductService],
+    imports: [TypeOrmModule.forFeature([ProductEntity, ProductCategoryEntity, UserProductEntity]), DatabaseModule.forCustomRepository(repositories)],
+    providers: [ProductService],
+    controllers: [ProductController],
+    exports: [TypeOrmModule, ProductService],
 })
-export class ProductModule { }
+export class ProductModule {}

@@ -33,4 +33,4 @@ export const getInfraModules = () => [DatabaseModule.forRoot(), getKeycloakModul
         },
     ],
 })
-export class AppModule { }
+export class AppModule {}

@@ -2,44 +2,50 @@ import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'nest-keycloak-connect';
 import { BrandService } from '../domain/brand.service';
-import { NewBrandDto } from '../dto/brand.dto';
+import { BrandDtoRes, NewBrandDto } from '../dto/brand.dto';
 import { BrandEntity } from '../repositories/brand.entity';
 import { BrandCategoryEntity } from '../repositories/brand.category.entity';
 
 @ApiTags('Brand')
 @Controller('brand')
 @Public()
-
 export class BrandController {
-	constructor(private readonly brandService: BrandService) { }
+    constructor(private readonly brandService: BrandService) {}
 
-	@Post()
-	createBrand(@Body() reqDto: NewBrandDto) {
-		return this.brandService.createBrand(reqDto);
-	}
+    @Post()
+    async createBrand(@Body() reqDto: NewBrandDto) {
+        return this.createApiRes(await this.brandService.createBrand(reqDto));
+    }
 
-	@Get()
-	findAllBrands(): Promise<BrandEntity[]> {
-		return this.brandService.findAllBrands();
-	}
+    @Get()
+    async findAllActiveBrands() {
+        return this.createApiRes(await this.brandService.findAllBrands());
+    }
 
-	@Get(':id')
-	findBrandwithBrandId(@Param('id') id: string): Promise<BrandEntity> {
-		return this.brandService.findBrandwithBrandId(id);
-	}
+    @Get(':id')
+    async findBrandById(@Param('id') id: string) {
+        return this.createApiRes(await this.brandService.findByBrandId(id));
+    }
 
-	@Get(':id/brand_category')
-	findBrandCategorywithBrandId(@Param('id') id: string): Promise<BrandCategoryEntity[]> {
-		return this.brandService.findBrandCategorywithBrandId(id);
-	}
+    @Get(':id/brand_category')
+    async findBrandCategoryByBrandId(@Param('id') id: string) {
+        return this.createApiRes(await this.brandService.findBrandCategorywithBrandId(id));
+    }
 
-	@Put(':id')
-	updateBrand(@Param('id') id: string, @Body() updateBrandDto: NewBrandDto): Promise<BrandEntity> {
-		return this.brandService.updateBrand(id, updateBrandDto);
-	}
+    @Put(':id')
+    updateBrand(@Param('id') id: string, @Body() updateBrandDto: NewBrandDto) {
+        return this.createApiRes(this.brandService.updateBrand(id, updateBrandDto));
+    }
 
-	@Delete(':id')
-	softDeleteBrand(@Param('id') id: string): Promise<void> {
-		return this.brandService.softDeleteBrand(id);
-	}
+    @Delete(':id')
+    softDeleteBrand(@Param('id') id: string): Promise<void> {
+        return this.brandService.softDeleteBrand(id);
+    }
+
+    createApiRes(data: BrandDtoRes | BrandDtoRes[] | any) {
+        return {
+            status_code: 'OK',
+            data: data,
+        };
+    }
 }

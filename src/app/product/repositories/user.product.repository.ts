@@ -3,5 +3,4 @@ import BaseRepository from 'src/database/infrastructure/repository/base.reposito
 import { UserProductEntity } from './user.product.entity';
 
 @CustomRepository(UserProductEntity)
-export class UserProductRepository extends BaseRepository<UserProductEntity> {
-}
+export class UserProductRepository extends BaseRepository<UserProductEntity> {}

@@ -1,12 +1,12 @@
-import {DynamicModule, Logger} from '@nestjs/common';
-import {TypeOrmModule} from '@nestjs/typeorm';
-import {DatabaseHealthcheckService} from '../../src/database/database-healthcheck.service';
-import {CustomConfigModule} from '../../src/config/config.module';
-import {TerminusModule} from '@nestjs/terminus';
-import {BrandEntity} from "../../src/app/brand/repositories/brand.entity";
-import {BrandCategoryEntity} from "../../src/app/brand/repositories/brand.category.entity";
-import {ProductCategoryEntity} from "../../src/app/product/repositories/product.category.entity";
-import {ProductEntity} from "../../src/app/product/repositories/product.entity";
+import { DynamicModule, Logger } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { DatabaseHealthcheckService } from '../../src/database/database-healthcheck.service';
+import { CustomConfigModule } from '../../src/config/config.module';
+import { TerminusModule } from '@nestjs/terminus';
+import { BrandEntity } from '../../src/app/brand/repositories/brand.entity';
+import { BrandCategoryEntity } from '../../src/app/brand/repositories/brand.category.entity';
+import { ProductCategoryEntity } from '../../src/app/product/repositories/product.category.entity';
+import { ProductEntity } from '../../src/app/product/repositories/product.entity';
 
 const DB_HOST: string = 'localhost';
 const DB_PORT: number = 5460;
@@ -20,7 +20,6 @@ const entitiesList = [BrandEntity, BrandCategoryEntity, ProductCategoryEntity, P
  * Handle Database connection.
  */
 export class TestDatabaseModule {
-
     static migrationConfig() {
         return {
             host: DB_HOST,

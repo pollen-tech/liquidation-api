@@ -1,7 +1,6 @@
-
 import { Equal, FindManyOptions, ILike, LessThan, LessThanOrEqual, MoreThan, MoreThanOrEqual, Repository, SelectQueryBuilder } from 'typeorm';
-import {RequestContext} from "../../../request-context/request-context";
-import {Paginated, PaginationParam} from "../../../common/pagination.entity";
+import { RequestContext } from '../../../request-context/request-context';
+import { Paginated, PaginationParam } from '../../../common/pagination.entity';
 
 export type FilterOperation = 'gte' | 'lte' | 'gt' | 'lt' | 'eq' | 'con';
 

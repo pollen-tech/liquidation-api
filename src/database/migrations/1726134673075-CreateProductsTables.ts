@@ -1,10 +1,9 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class CreateProductsTables1726134673075 implements MigrationInterface {
-    name = 'CreateProductsTables1726134673075'
+    name = 'CreateProductsTables1726134673075';
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-
         await queryRunner.query(
             `
                 CREATE TABLE product
@@ -70,7 +69,6 @@ export class CreateProductsTables1726134673075 implements MigrationInterface {
                 CREATE INDEX IF NOT EXISTS idx_user_product_updated_on ON user_product(updated_on);
             `,
         );
-
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
@@ -78,5 +76,4 @@ export class CreateProductsTables1726134673075 implements MigrationInterface {
         await queryRunner.query(`DROP TABLE product_category;`);
         await queryRunner.query(`DROP TABLE product;`);
     }
-
 }
