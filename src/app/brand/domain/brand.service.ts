@@ -4,7 +4,7 @@ import { BrandRepository } from '../repositories/brand.repository';
 import { BrandEntity } from '../repositories/brand.entity';
 import { BrandCategoryRepository } from '../repositories/brand.category.repository';
 import { BrandCategoryEntity } from '../repositories/brand.category.entity';
-import { NewBrandDto, BrandMapper } from '../dto/brand.dto';
+import {NewBrandDto, BrandMapper, CategoryDto} from '../dto/brand.dto';
 import { Status } from '../../../common/enums/common.enum';
 import { Not } from 'typeorm';
 
@@ -12,43 +12,26 @@ import { Not } from 'typeorm';
 @Injectable()
 export class BrandService {
 	constructor(
-		@InjectRepository(BrandEntity)
 		private readonly brandRepository: BrandRepository,
-		@InjectRepository(BrandCategoryEntity)
 		private readonly brandCategoryRepository: BrandCategoryRepository,
 	) { }
 
 	async createBrand(reqDto: NewBrandDto) {
-		console.log('createBrand: ', reqDto);
 		const brandEntity = await BrandMapper.toBrandEntity(reqDto);
 		const savedBrand = await this.brandRepository.save(brandEntity);
-
-		const categories = reqDto.brand_category.flatMap(category =>
-			category.sub_category.map(subCategory => {
+		const categories = reqDto.brand_categories.flatMap(category =>
+			category.sub_categories.map(subCategory => {
 				const categoryEntity = new BrandCategoryEntity();
-
 				categoryEntity.brand_id = savedBrand.id;
 				categoryEntity.category_id = category.category_id;
 				categoryEntity.category_name = category.category_name;
 				categoryEntity.sub_category_id = subCategory.sub_category_id;
 				categoryEntity.sub_category_name = subCategory.sub_category_name;
-				console.log('createBrand_categoryEntity: ', categoryEntity);
-
 				return categoryEntity;
 			})
 		);
-		let groupedCategory = this.groupByCategory(categories);
-
-		await this.brandCategoryRepository.save(categories);
-		console.log('savedBrand: ', savedBrand);
-		console.log('categories: ', groupedCategory);
-
-		let res: any;
-		res = savedBrand;
-		res.brand_categories = groupedCategory;
-		console.log(res);
-
-		return res;
+		const saved_categories = await this.brandCategoryRepository.save(categories);
+		return BrandMapper.toBrandResDto(savedBrand,saved_categories);
 	}
 
 	async findAllBrands(): Promise<BrandEntity[]> {
@@ -93,8 +76,8 @@ export class BrandService {
 		const updatedBrand = this.brandRepository.merge(brand, updateBrandDto);
 		updatedBrand.updated_on = Math.floor(Date.now() / 1000);
 		const savedBrand = await this.brandRepository.save(updatedBrand);
-		const categories = updateBrandDto.brand_category.flatMap(category =>
-			category.sub_category.map(subCategory => {
+		const categories = updateBrandDto.brand_categories.flatMap(category =>
+			category.sub_categories.map(subCategory => {
 				const categoryEntity = new BrandCategoryEntity();
 				categoryEntity.brand_id = savedBrand.id;
 				categoryEntity.category_id = category.category_id;

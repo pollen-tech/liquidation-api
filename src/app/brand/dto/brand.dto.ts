@@ -1,53 +1,83 @@
-import { IsOptional, IsEnum, IsNotEmpty, IsString, IsArray, ValidateNested } from 'class-validator';
-import { Optional } from '@nestjs/common';
-import { Status } from '../../../common/enums/common.enum';
-import { BrandEntity } from '../repositories/brand.entity';
-import { Type } from 'class-transformer';
+import {IsOptional, IsEnum, IsNotEmpty, IsString, IsArray, ValidateNested} from 'class-validator';
+import {Optional} from '@nestjs/common';
+import {Status} from '../../../common/enums/common.enum';
+import {BrandEntity} from '../repositories/brand.entity';
+import {Type} from 'class-transformer';
+import {BrandCategoryEntity} from "../repositories/brand.category.entity";
 
 export class NewBrandDto {
-	@IsString()
-	name: string;
+    @IsString()
+    name: string;
 
-	@IsOptional()
-	@IsString()
-	image?: string;
+    @IsOptional()
+    @IsString()
+    image?: string;
 
-	@IsEnum(Status)
-	status: Status;
-
-	@IsArray()
-	@ValidateNested({ each: true })
-	@Type(() => CategoryDto)
-	brand_category: CategoryDto[];
+    @IsArray()
+    @ValidateNested({each: true})
+    @Type(() => CategoryDto)
+    brand_categories: CategoryDto[];
 }
 
-class CategoryDto {
-	@IsString()
-	category_id: string;
+export class CategoryDto {
+    @IsString()
+    category_id: string;
 
-	@IsString()
-	category_name: string;
+    @IsString()
+    category_name: string;
 
-	@IsArray()
-	@ValidateNested({ each: true })
-	@Type(() => SubCategoryDto)
-	sub_category: SubCategoryDto[];
+    @IsArray()
+    @ValidateNested({each: true})
+    @Type(() => SubCategoryDto)
+    sub_categories: SubCategoryDto[];
 }
 
 class SubCategoryDto {
-	@IsString()
-	sub_category_id: string;
+    @IsString()
+    sub_category_id: string;
 
-	@IsString()
-	sub_category_name: string;
+    @IsString()
+    sub_category_name: string;
+}
+
+class BrandDtoRes {
+    id: string
+    name: string;
+    image?: string;
+    status: Status;
+    brand_categories: CategoryDto[];
 }
 
 export class BrandMapper {
-	static async toBrandEntity(req: NewBrandDto): Promise<BrandEntity> {
-		const brandEntity = new BrandEntity();
-		brandEntity.name = req.name;
-		brandEntity.image = req.image;
-		brandEntity.status = req.status;
-		return brandEntity;
-	}
+    static async toBrandEntity(req: NewBrandDto): Promise<BrandEntity> {
+        const brandEntity = new BrandEntity();
+        brandEntity.name = req.name;
+        brandEntity.image = req.image;
+        return brandEntity;
+    }
+
+    static toBrandResDto(saved_brand: BrandEntity, brand_categories: BrandCategoryEntity[]) {
+        const dto_res = new BrandDtoRes();
+        dto_res.name = saved_brand.name;
+        dto_res.image = saved_brand.image;
+        dto_res.status = saved_brand.status;
+        dto_res.id = saved_brand.id;
+
+        const groupedCategories = brand_categories.reduce((acc, category) => {
+            if (!acc[category.category_id]) {
+                acc[category.category_id] = {
+                    category_id: category.category_id.toString(),
+                    category_name: category.category_name,
+                    sub_category: []
+                };
+            }
+            acc[category.category_id].sub_category.push({
+                sub_category_id: category.sub_category_id.toString(),
+                sub_category_name: category.sub_category_name
+            });
+            return acc;
+        }, {});
+        dto_res.brand_categories = Object.values(groupedCategories);
+        return dto_res;
+    }
 }

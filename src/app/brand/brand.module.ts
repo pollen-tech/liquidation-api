@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DatabaseModule } from 'src/database/database.module';
 import { BrandController } from './controllers/brand.controller';
 import { BrandService } from './domain/brand.service';
 import { BrandEntity } from './repositories/brand.entity';
 import { BrandRepository } from './repositories/brand.repository';
 
-import { BrandCategoryEntity } from './repositories/brand.category.entity';
-import { BrandCategoryRepository } from './repositories/brand.category.repository';
+
+import {DatabaseModule} from "../../database/database.module";
+import {BrandCategoryRepository} from "./repositories/brand.category.repository";
+import {BrandCategoryEntity} from "./repositories/brand.category.entity";
 
 let repositories: any[] = [BrandRepository, BrandCategoryRepository];
 
