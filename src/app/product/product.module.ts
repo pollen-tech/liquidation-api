@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DatabaseModule } from 'src/database/database.module';
 import { ProductController } from './controllers/product.controller';
 import { ProductService } from './domain/product.service';
 
@@ -12,6 +11,7 @@ import { ProductCategoryRepository } from './repositories/product.category.repos
 
 import { UserProductEntity } from './repositories/user.product.entity';
 import { UserProductRepository } from './repositories/user.product.repository';
+import {DatabaseModule} from "../../database/database.module";
 
 let repositories: any[] = [ProductRepository, ProductCategoryRepository, UserProductRepository];
 

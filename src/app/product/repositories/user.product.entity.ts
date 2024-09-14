@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
-import { Status } from 'src/common/enums/common.enum';
+import {Status} from "../../../common/enums/common.enum";
+
 
 @Entity('user_product')
 export class UserProductEntity {
@@ -21,7 +22,7 @@ export class UserProductEntity {
     @Column({ type: 'bigint', nullable: true })
     updated_on: number;
 
-    @Column({ type: 'enum', enum: Status, default: Status.NA })
+    @Column({ type: 'enum', enum: Status, default: Status.ACTIVE })
     status: Status;
 
     @BeforeInsert()
