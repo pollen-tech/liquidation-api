@@ -11,7 +11,7 @@ import { ProductCategoryRepository } from './repositories/product.category.repos
 
 import { UserProductEntity } from './repositories/user.product.entity';
 import { UserProductRepository } from './repositories/user.product.repository';
-import {DatabaseModule} from "../../database/database.module";
+import { DatabaseModule } from '../../database/database.module';
 
 let repositories: any[] = [ProductRepository, ProductCategoryRepository, UserProductRepository];
 

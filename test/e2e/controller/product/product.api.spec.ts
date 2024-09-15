@@ -1,14 +1,14 @@
-import {Test} from '@nestjs/testing';
-import {INestApplication} from '@nestjs/common';
-import {TestDatabaseModule} from '../../../config/test.database.module';
-import {CustomConfigModule} from '../../../../src/config/config.module';
+import { Test } from '@nestjs/testing';
+import { INestApplication } from '@nestjs/common';
+import { TestDatabaseModule } from '../../../config/test.database.module';
+import { CustomConfigModule } from '../../../../src/config/config.module';
 import apiRequestTest from 'supertest';
-import {ProductModule} from "../../../../src/app/product/product.module";
-import {BrandRepository} from "../../../../src/app/brand/repositories/brand.repository";
-import {DataRepository} from "../../../config/db/data.repository";
-import {BrandEntity} from "../../../../src/app/brand/repositories/brand.entity";
-import {BrandModule} from "../../../../src/app/brand/brand.module";
-import {create_product_req_data} from "../../../data/json/create_product";
+import { ProductModule } from '../../../../src/app/product/product.module';
+import { BrandRepository } from '../../../../src/app/brand/repositories/brand.repository';
+import { DataRepository } from '../../../config/db/data.repository';
+import { BrandEntity } from '../../../../src/app/brand/repositories/brand.entity';
+import { BrandModule } from '../../../../src/app/brand/brand.module';
+import { create_product_req_data } from '../../../data/json/create_product';
 
 describe('Controller: Product API Test', () => {
     let app: INestApplication;
@@ -18,9 +18,7 @@ describe('Controller: Product API Test', () => {
 
     beforeAll(async () => {
         const testingModule = await Test.createTestingModule({
-            imports: [CustomConfigModule, TestDatabaseModule.forRoot(),
-                BrandModule,
-                ProductModule],
+            imports: [CustomConfigModule, TestDatabaseModule.forRoot(), BrandModule, ProductModule],
             controllers: [],
             providers: [],
         }).compile();
@@ -37,7 +35,6 @@ describe('Controller: Product API Test', () => {
     });
 
     it('POST,Create Product - /product', async () => {
-
         /* Get the brand id */
         const saved_brand_id = brand_entity.id;
 
@@ -46,9 +43,7 @@ describe('Controller: Product API Test', () => {
         req_dto.brand_id = saved_brand_id;
 
         /* send the request */
-        let response = await apiRequestTest(httpServer)
-            .post('/api/product').send(req_dto).
-            set('Accept', 'application/json').expect(201);
+        let response = await apiRequestTest(httpServer).post('/api/product').send(req_dto).set('Accept', 'application/json').expect(201);
 
         console.log('Response : ', JSON.stringify(response.body));
     });

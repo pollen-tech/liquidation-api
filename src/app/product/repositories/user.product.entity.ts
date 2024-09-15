@@ -1,6 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
-import {Status} from "../../../common/enums/common.enum";
-
+import { Status } from '../../../common/enums/common.enum';
 
 @Entity('user_product')
 export class UserProductEntity {

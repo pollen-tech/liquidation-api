@@ -1,8 +1,7 @@
-import {BrandRepository} from "../../../src/app/brand/repositories/brand.repository";
-import {BrandEntity} from "../../../src/app/brand/repositories/brand.entity";
+import { BrandRepository } from '../../../src/app/brand/repositories/brand.repository';
+import { BrandEntity } from '../../../src/app/brand/repositories/brand.entity';
 
 export class DataRepository {
-
     static async createBrand(repo: BrandRepository) {
         const entity = new BrandEntity();
         entity.name = 'Dior';

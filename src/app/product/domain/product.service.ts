@@ -1,12 +1,12 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
-import {InjectRepository} from '@nestjs/typeorm';
-import {ProductRepository} from '../repositories/product.repository';
-import {ProductEntity} from '../repositories/product.entity';
-import {ProductCategoryRepository} from '../repositories/product.category.repository';
-import {ProductCategoryEntity} from '../repositories/product.category.entity';
-import {NewProductDto, ProductApiResDto, ProductMapper} from '../dto/product.dto';
-import {Status} from '../../../common/enums/common.enum';
-import {Not} from 'typeorm';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ProductRepository } from '../repositories/product.repository';
+import { ProductEntity } from '../repositories/product.entity';
+import { ProductCategoryRepository } from '../repositories/product.category.repository';
+import { ProductCategoryEntity } from '../repositories/product.category.entity';
+import { NewProductDto, ProductApiResDto, ProductMapper } from '../dto/product.dto';
+import { Status } from '../../../common/enums/common.enum';
+import { Not } from 'typeorm';
 
 @Injectable()
 export class ProductService {
@@ -15,8 +15,7 @@ export class ProductService {
         private readonly productRepository: ProductRepository,
         @InjectRepository(ProductCategoryEntity)
         private readonly productCategoryRepository: ProductCategoryRepository,
-    ) {
-    }
+    ) {}
 
     async createProduct(reqDto: NewProductDto) {
         console.log('createProduct: ', reqDto);
@@ -45,14 +44,14 @@ export class ProductService {
     }
 
     async findAllProducts(): Promise<ProductEntity[]> {
-        const savedProduct = await this.productRepository.find({where: {status: Not(Status.DELETED)}});
+        const savedProduct = await this.productRepository.find({ where: { status: Not(Status.DELETED) } });
         return savedProduct;
     }
 
     async findProductwithProductId(id: string): Promise<ProductEntity> {
-        const savedProduct = await this.productRepository.findOne({where: {id, status: Not(Status.DELETED)}});
+        const savedProduct = await this.productRepository.findOne({ where: { id, status: Not(Status.DELETED) } });
         const savedCategories = await this.productCategoryRepository.find({
-            where: {product_id: savedProduct.id},
+            where: { product_id: savedProduct.id },
         });
         let groupedCategory = this.groupByCategory(savedCategories);
         savedProduct['product_categories'] = groupedCategory;
@@ -64,9 +63,9 @@ export class ProductService {
     }
 
     async findProductCategorywithProductId(id: string): Promise<ProductApiResDto[]> {
-        const savedProduct = await this.productRepository.findOne({where: {id, status: Not(Status.DELETED)}});
+        const savedProduct = await this.productRepository.findOne({ where: { id, status: Not(Status.DELETED) } });
         const savedCategories = await this.productCategoryRepository.find({
-            where: {product_id: savedProduct.id},
+            where: { product_id: savedProduct.id },
         });
         let groupedCategory = this.groupByCategory(savedCategories);
         if (!savedProduct) {
@@ -77,7 +76,7 @@ export class ProductService {
 
     async updateProduct(id: string, updateProductDto: NewProductDto): Promise<ProductEntity> {
         console.log('update: ', updateProductDto);
-        const product = await this.productRepository.findOne({where: {id}});
+        const product = await this.productRepository.findOne({ where: { id } });
         if (!product) {
             throw new Error(`Product with ID ${id} not found`);
         }
@@ -101,7 +100,7 @@ export class ProductService {
             }),
         );
         let groupedCategory = this.groupByCategory(categories);
-        await this.productCategoryRepository.delete({product_id: savedProduct.id});
+        await this.productCategoryRepository.delete({ product_id: savedProduct.id });
         await this.productCategoryRepository.save(categories);
 
         let res: any;
@@ -113,7 +112,7 @@ export class ProductService {
     }
 
     async softDeleteProduct(id: string): Promise<void> {
-        const product = await this.productRepository.findOne({where: {id, status: Not(Status.DELETED)}});
+        const product = await this.productRepository.findOne({ where: { id, status: Not(Status.DELETED) } });
         if (!product) {
             throw new NotFoundException(`Product with ID ${id} not found`);
         }

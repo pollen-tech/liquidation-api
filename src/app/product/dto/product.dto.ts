@@ -1,8 +1,8 @@
-import {IsOptional, IsEnum, IsString, IsArray, ValidateNested} from 'class-validator';
-import {Status} from '../../../common/enums/common.enum';
-import {ProductEntity} from '../repositories/product.entity';
-import {Type} from 'class-transformer';
-import {ProductCategoryEntity} from "../repositories/product.category.entity";
+import { IsOptional, IsEnum, IsString, IsArray, ValidateNested } from 'class-validator';
+import { Status } from '../../../common/enums/common.enum';
+import { ProductEntity } from '../repositories/product.entity';
+import { Type } from 'class-transformer';
+import { ProductCategoryEntity } from '../repositories/product.category.entity';
 
 export class ProductApiResDto {
     status_code: string;
@@ -28,7 +28,7 @@ export class NewProductDto {
     image?: string;
 
     @IsArray()
-    @ValidateNested({each: true})
+    @ValidateNested({ each: true })
     @Type(() => CategoryDto)
     product_categories: CategoryDto[];
 }
@@ -41,7 +41,7 @@ class CategoryDto {
     category_name: string;
 
     @IsArray()
-    @ValidateNested({each: true})
+    @ValidateNested({ each: true })
     @Type(() => SubCategoryDto)
     sub_categories?: SubCategoryDto[];
 }
@@ -70,7 +70,6 @@ export class ProductResDto {
 }
 
 export class ProductMapper {
-
     static async toProductEntity(req: NewProductDto): Promise<ProductEntity> {
         const productEntity = new ProductEntity();
         productEntity.name = req.name;

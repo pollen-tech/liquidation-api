@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'nest-keycloak-connect';
-import {NewProductDto, ProductApiResDto} from '../dto/product.dto';
+import { NewProductDto, ProductApiResDto } from '../dto/product.dto';
 import { ProductService } from '../domain/product.service';
 import { ProductEntity } from '../repositories/product.entity';
 import { ProductCategoryEntity } from '../repositories/product.category.entity';
@@ -48,10 +48,10 @@ export class ProductController {
     }
 
     createApiRes(data: NewProductDto) {
-        const res :ProductApiResDto = {
+        const res: ProductApiResDto = {
             status_code: 'OK',
             message: 'Data found.',
-            data:data
+            data: data,
         };
         return res;
     }
