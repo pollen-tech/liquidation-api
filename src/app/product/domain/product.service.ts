@@ -25,21 +25,18 @@ export class ProductService {
         const categories = reqDto.product_categories.flatMap((category) =>
             category.sub_categories.map((subCategory) => {
                 const categoryEntity = new ProductCategoryEntity();
-
                 categoryEntity.product_id = savedProduct.id;
                 categoryEntity.category_id = category.category_id;
                 categoryEntity.category_name = category.category_name;
                 categoryEntity.sub_category_id = subCategory.sub_category_id;
                 categoryEntity.sub_category_name = subCategory.sub_category_name;
                 categoryEntity.sub_category_description = subCategory.sub_category_description;
-                console.log('createProduct_categoryEntity: ', categoryEntity);
-
                 return categoryEntity;
             }),
         );
 
         const saved_categories = await this.productCategoryRepository.save(categories);
-        let categories_dto = ProductMapper.groupByCategoryDto(categories);
+        let categories_dto = ProductMapper.groupByCategoryDto(saved_categories);
         return ProductMapper.toProductResDto(savedProduct, categories_dto);
     }
 

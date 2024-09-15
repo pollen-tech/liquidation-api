@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'nest-keycloak-connect';
-import { NewProductDto, ProductApiResDto } from '../dto/product.dto';
+import { NewProductDto, ProductApiResDto, ProductResDto } from '../dto/product.dto';
 import { ProductService } from '../domain/product.service';
 import { ProductEntity } from '../repositories/product.entity';
 import { ProductCategoryEntity } from '../repositories/product.category.entity';
@@ -13,8 +13,8 @@ export class ProductController {
     constructor(private readonly productService: ProductService) {}
 
     @Post()
-    createProduct(@Body() reqDto: NewProductDto) {
-        return this.productService.createProduct(reqDto);
+    async createProduct(@Body() reqDto: NewProductDto) {
+        return this.createApiRes(await this.productService.createProduct(reqDto), 'CREATED');
     }
 
     @Get()
@@ -47,9 +47,9 @@ export class ProductController {
         return this.productService.softDeleteProduct(id);
     }
 
-    createApiRes(data: NewProductDto) {
+    createApiRes(data: ProductResDto, status_code: string) {
         const res: ProductApiResDto = {
-            status_code: 'OK',
+            status_code: status_code,
             message: 'Data found.',
             data: data,
         };
