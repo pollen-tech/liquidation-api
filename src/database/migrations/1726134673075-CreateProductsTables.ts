@@ -13,6 +13,7 @@ export class CreateProductsTables1726134673075 implements MigrationInterface {
                     pollen_sku varchar      not null DEFAULT 'NA',
                     sku        varchar      not null DEFAULT 'NA',
                     brand_id   uuid         NOT NULL,
+                    lms_company_id   uuid         NOT NULL,
                     name       varchar(200) NOT NULL,
                     image      varchar(100),
                     created_at timestamp without time zone NOT NULL DEFAULT now(),
