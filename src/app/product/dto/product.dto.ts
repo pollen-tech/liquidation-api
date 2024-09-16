@@ -15,9 +15,6 @@ export class NewProductDto {
 	name: string;
 
 	@IsString()
-	pollen_sku: string;
-
-	@IsString()
 	sku: string;
 
 	@IsString()
@@ -82,7 +79,7 @@ export class ProductMapper {
 		productEntity.image = req.image;
 		productEntity.brand_id = req.brand_id;
 		productEntity.lms_company_id = req.lms_company_id;
-		productEntity.pollen_sku = req.pollen_sku;
+		productEntity.pollen_sku = 'TMP00001';
 		productEntity.sku = req.sku;
 		return productEntity;
 	}

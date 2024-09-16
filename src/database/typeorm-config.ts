@@ -17,9 +17,9 @@ export const getTypeOrmConfig = (config?: PostgresConfigGetter) => {
         logger: 'advanced-console',
         subscribers: [],
         poolSize: 10,
-        // ssl: {
-        //     rejectUnauthorized: false,
-        // },
+        ssl: {
+            rejectUnauthorized: false,
+        },
     };
     return c;
 };
