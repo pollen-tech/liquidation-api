@@ -10,49 +10,45 @@ import { ProductCategoryEntity } from '../repositories/product.category.entity';
 @Controller('product')
 @Public()
 export class ProductController {
-    constructor(private readonly productService: ProductService) {}
+	constructor(private readonly productService: ProductService) { }
 
-    @Post()
-    async createProduct(@Body() reqDto: NewProductDto) {
-        return this.createApiRes(await this.productService.createProduct(reqDto), 'CREATED');
-    }
+	@Post()
+	async createProduct(@Body() reqDto: NewProductDto) {
+		return this.createApiRes(await this.productService.createProduct(reqDto), 'CREATED');
+	}
 
-    @Get()
-    findAllProducts(): Promise<ProductEntity[]> {
-        return this.productService.findAllProducts();
-    }
+	@Get()
+	async findAllProducts() {
+		return this.createApiRes(await this.productService.findAllProducts(), 'OK');
+	}
 
-    @Get(':id')
-    findProductwithProductId(@Param('id') id: string): Promise<ProductEntity> {
-        return this.productService.findProductwithProductId(id);
-    }
+	@Get(':id')
+	async findProductwithProductId(@Param('id') id: string) {
+		return this.createApiRes(await this.productService.findProductwithProductId(id), 'OK');
+	}
 
-    @Get(':id/product_category')
-    async findProductCategorywithBrandId(@Param('id') id: string): Promise<ProductApiResDto> {
-        const data = await this.productService.findProductCategorywithProductId(id);
-        return {
-            status_code: 'OK',
-            message: 'Data found.',
-            data: data,
-        };
-    }
+	@Get(':id/product_category')
+	async findProductCategorywithBrandId(@Param('id') id: string) {
+		return this.createApiRes(await this.productService.findProductCategorywithProductId(id), 'OK');
+	}
 
-    @Put(':id')
-    updateProduct(@Param('id') id: string, @Body() reqDto: NewProductDto): Promise<ProductEntity> {
-        return this.productService.updateProduct(id, reqDto);
-    }
+	@Put(':id')
+	async updateProduct(@Param('id') id: string, @Body() reqDto: NewProductDto) {
+		return this.createApiRes(await this.productService.updateProduct(id, reqDto), 'UPDATED');
+	}
 
-    @Delete(':id')
-    softDeleteProduct(@Param('id') id: string): Promise<void> {
-        return this.productService.softDeleteProduct(id);
-    }
+	@Delete(':id')
+	softDeleteProduct(@Param('id') id: string) {
+		//return this.productService.softDeleteProduct(id);
+		return this.createApiRes(this.productService.softDeleteProduct(id), 'DELETED');
+	}
 
-    createApiRes(data: ProductResDto, status_code: string) {
-        const res: ProductApiResDto = {
-            status_code: status_code,
-            message: 'Data found.',
-            data: data,
-        };
-        return res;
-    }
+	async createApiRes(data: ProductResDto | ProductResDto[] | ProductApiResDto | ProductApiResDto[] | any, status_code: string) {
+		const res: ProductApiResDto = {
+			status_code: status_code,
+			message: 'Data found.',
+			data: data,
+		};
+		return res;
+	}
 }

@@ -42,7 +42,7 @@ export class ProductService {
 		const saved_categories = await this.productCategoryRepository.save(categories);
 
 		const userProductEntity = new UserProductEntity();
-		userProductEntity.user_id = reqDto.user_id;  // Make sure reqDto contains user_id
+		userProductEntity.user_id = reqDto.user_id;
 		userProductEntity.product_id = savedProduct.id;
 		await this.userProductRepository.save(userProductEntity);
 
@@ -50,7 +50,7 @@ export class ProductService {
 		return ProductMapper.toProductResDto(savedProduct, categories_dto);
 	}
 
-	async findAllProducts(): Promise<ProductEntity[]> {
+	async findAllProducts() {
 		const savedProduct = await this.productRepository.find({ where: { status: Not(Status.DELETED) } });
 		return savedProduct;
 	}
@@ -69,7 +69,7 @@ export class ProductService {
 		return savedProduct;
 	}
 
-	async findProductCategorywithProductId(id: string): Promise<ProductApiResDto[]> {
+	async findProductCategorywithProductId(id: string) {
 		const savedProduct = await this.productRepository.findOne({ where: { id, status: Not(Status.DELETED) } });
 		const savedCategories = await this.productCategoryRepository.find({
 			where: { product_id: savedProduct.id },
