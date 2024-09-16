@@ -24,6 +24,8 @@ export class ProductService {
 	async createProduct(reqDto: NewProductDto) {
 		console.log('createProduct: ', reqDto);
 		const productEntity = await ProductMapper.toProductEntity(reqDto);
+		const next_seq_no = await this.productRepository.getNextSeqNo();
+		productEntity.seq_no = next_seq_no;
 		const savedProduct = await this.productRepository.save(productEntity);
 
 		const categories = reqDto.product_categories.flatMap((category) =>
