@@ -24,7 +24,7 @@ export class CreateProductsTables1726134673075 implements MigrationInterface {
                 );
                 CREATE INDEX IF NOT EXISTS idx_product_updated_on ON product(updated_on);
                 CREATE SEQUENCE seq_no_sequence_product
-                    START WITH 1 
+                    START WITH 1000 
                     INCREMENT BY 1;
 
                 ALTER TABLE product ALTER COLUMN seq_no SET DEFAULT nextval('seq_no_sequence_product');

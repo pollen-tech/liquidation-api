@@ -13,12 +13,9 @@ import { Not } from 'typeorm';
 @Injectable()
 export class ProductService {
 	constructor(
-		@InjectRepository(ProductEntity)
 		private readonly productRepository: ProductRepository,
-		@InjectRepository(ProductCategoryEntity)
 		private readonly productCategoryRepository: ProductCategoryRepository,
-		@InjectRepository(UserProductEntity)
-		private readonly userProductRepository: ProductRepository
+		private readonly userProductRepository: UserProductRepository
 	) { }
 
 	async createProduct(reqDto: NewProductDto) {

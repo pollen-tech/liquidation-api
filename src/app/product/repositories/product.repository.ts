@@ -4,10 +4,9 @@ import BaseRepository from '../../../database/infrastructure/repository/base.rep
 
 @CustomRepository(ProductEntity)
 export class ProductRepository extends BaseRepository<ProductEntity> {
-    async getNextSeqNo() {
+    async getNextSeqNo(): Promise<number> {
         const qb = this.createQueryBuilder(this.metadata.givenTableName);
-        const data = await qb.select('coalesce(max(seq_no)+1,1000)', 'next_account_id').getRawOne();
-        return parseInt(data.next_account_id);
+        const data = await qb.select('coalesce(max(seq_no)+1,1000)', 'next_seq_no').getRawOne();
+        return parseInt(data.next_seq_no);
     }
-
 }
