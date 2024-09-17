@@ -44,9 +44,10 @@ class CategoryDto {
 	category_name: string;
 
 	@IsArray()
+	@IsOptional()
 	@ValidateNested({ each: true })
 	@Type(() => SubCategoryDto)
-	sub_categories?: SubCategoryDto[];
+	sub_categories?: SubCategoryDto[] = [];
 }
 
 class SubCategoryDto {
@@ -107,7 +108,7 @@ export class ProductMapper {
 			}
 			acc[category.category_id].sub_categories.push({
 				category_id: category.category_id.toString(),
-				sub_category_id: category.sub_category_id.toString(),
+				sub_category_id: category.sub_category_id || null,
 				sub_category_name: category.sub_category_name,
 				sub_category_description: category.sub_category_description,
 			});

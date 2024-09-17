@@ -19,14 +19,28 @@ export class ProductService {
 	) { }
 
 	async createProduct(reqDto: NewProductDto) {
-		console.log('createProduct: ', reqDto);
+		//console.log('createProduct: ', reqDto);
 		const productEntity = await ProductMapper.toProductEntity(reqDto);
 		const next_seq_no = await this.productRepository.getNextSeqNo();
 		productEntity.seq_no = next_seq_no;
 		const savedProduct = await this.productRepository.save(productEntity);
 
-		const categories = reqDto.product_categories.flatMap((category) =>
-			category.sub_categories.map((subCategory) => {
+		const categories = reqDto.product_categories.flatMap((category) => {
+			console.log('category: ', category);
+			//console.log('sub_categories: ', category.sub_categories);
+
+			if (!category.sub_categories || category.sub_categories.length === 0) {
+				const categoryEntity = new ProductCategoryEntity();
+				categoryEntity.product_id = savedProduct.id;
+				categoryEntity.category_id = category.category_id;
+				categoryEntity.category_name = category.category_name;
+				categoryEntity.sub_category_id = null;
+				categoryEntity.sub_category_name = '';
+				categoryEntity.sub_category_description = '';
+				return [categoryEntity];
+			}
+
+			return (category.sub_categories || []).map((subCategory) => {
 				const categoryEntity = new ProductCategoryEntity();
 				categoryEntity.product_id = savedProduct.id;
 				categoryEntity.category_id = category.category_id;
@@ -35,8 +49,9 @@ export class ProductService {
 				categoryEntity.sub_category_name = subCategory.sub_category_name;
 				categoryEntity.sub_category_description = subCategory.sub_category_description;
 				return categoryEntity;
-			}),
-		);
+			});
+		});
+		console.log('categories: ', categories);
 
 		const saved_categories = await this.productCategoryRepository.save(categories);
 
@@ -46,6 +61,8 @@ export class ProductService {
 		await this.userProductRepository.save(userProductEntity);
 
 		let categories_dto = ProductMapper.groupByCategoryDto(saved_categories);
+		//console.log('saved_categories: ', saved_categories);
+		//console.log('categories_dto: ', categories_dto);
 		return ProductMapper.toProductResDto(savedProduct, categories_dto);
 	}
 
@@ -91,8 +108,19 @@ export class ProductService {
 		const updatedProduct = this.productRepository.merge(product, updateProductDto);
 		//updatedProduct.updated_on = Math.floor(Date.now() / 1000);
 		const savedProduct = await this.productRepository.save(updatedProduct);
-		const categories = updateProductDto.product_categories.flatMap((category) =>
-			category.sub_categories.map((subCategory) => {
+
+		const categories = updateProductDto.product_categories.flatMap((category) => {
+			if (!category.sub_categories || category.sub_categories.length === 0) {
+				const categoryEntity = new ProductCategoryEntity();
+				categoryEntity.product_id = savedProduct.id;
+				categoryEntity.category_id = category.category_id;
+				categoryEntity.category_name = category.category_name;
+				categoryEntity.sub_category_id = null;
+				categoryEntity.sub_category_name = '';
+				categoryEntity.sub_category_description = '';
+				return [categoryEntity];
+			}
+			return (category.sub_categories).map((subCategory) => {
 				const categoryEntity = new ProductCategoryEntity();
 				categoryEntity.product_id = savedProduct.id;
 				categoryEntity.category_id = category.category_id;
@@ -103,8 +131,8 @@ export class ProductService {
 
 				console.log('updateProduct_categoryEntity: ', categoryEntity);
 				return categoryEntity;
-			}),
-		);
+			});
+		});
 		let groupedCategory = this.groupByCategory(categories);
 		await this.productCategoryRepository.delete({ product_id: savedProduct.id });
 		await this.productCategoryRepository.save(categories);
@@ -128,18 +156,18 @@ export class ProductService {
 
 	groupByCategory(categories: ProductCategoryEntity[]): ProductApiResDto[] {
 		const groupedCategories = categories.reduce((acc, category) => {
-			if (!acc[category.category_id]) {
+			if (!acc[category?.category_id]) {
 				acc[category.category_id] = {
 					category_id: category.category_id.toString(),
 					category_name: category.category_name,
 					sub_categories: [],
 				};
 			}
-			acc[category.category_id].sub_category.push({
+			acc[category.category_id].sub_categories.push({
 				category_id: category.category_id.toString(),
-				sub_category_id: category.sub_category_id.toString(),
+				sub_category_id: category.sub_category_id,
 				sub_category_name: category.sub_category_name,
-				sub_category_description: category.sub_category_description,
+				sub_category_description: category.sub_category_description ? category.sub_category_description : '',
 			});
 			return acc;
 		}, {});
