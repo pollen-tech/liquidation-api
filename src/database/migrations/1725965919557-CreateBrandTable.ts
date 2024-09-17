@@ -19,11 +19,11 @@ export class CreateBrandTable1725965919557 implements MigrationInterface {
                     status     varchar(25)  not null DEFAULT 'NA'
                 );
 
-                CREATE SEQUENCE seq_no_sequence
+                CREATE SEQUENCE brand_seq_no
                     START WITH 1 
                     INCREMENT BY 1;
 
-                ALTER TABLE brand ALTER COLUMN seq_no SET DEFAULT nextval('seq_no_sequence');
+                ALTER TABLE brand ALTER COLUMN seq_no SET DEFAULT nextval('brand_seq_no');
             `,
         );
 

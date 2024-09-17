@@ -23,11 +23,11 @@ export class CreateProductsTables1726134673075 implements MigrationInterface {
                     CONSTRAINT fk_product_brand_id FOREIGN KEY (brand_id) REFERENCES brand (id)
                 );
                 CREATE INDEX IF NOT EXISTS idx_product_updated_on ON product(updated_on);
-                CREATE SEQUENCE seq_no_sequence_product
+                CREATE SEQUENCE product_seq_no
                     START WITH 1000 
                     INCREMENT BY 1;
 
-                ALTER TABLE product ALTER COLUMN seq_no SET DEFAULT nextval('seq_no_sequence_product');
+                ALTER TABLE product ALTER COLUMN seq_no SET DEFAULT nextval('product_seq_no');
             `,
         );
 
