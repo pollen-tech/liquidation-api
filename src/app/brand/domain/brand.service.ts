@@ -69,12 +69,6 @@ export class BrandService {
 		const savedCategories = await this.brandCategoryRepository.find({
 			where: { brand_id: savedBrand.id, status: Not(Status.DELETED) },
 		});
-		// let groupedCategory = this.groupByCategory(savedCategories);
-		// savedBrand['brand_categories'] = groupedCategory;
-		// if (!savedBrand) {
-		//     throw new NotFoundException(`Brand with ID ${id} not found`);
-		// }
-		// return savedBrand;
 		return BrandMapper.toBrandResDto(savedBrand, savedCategories);
 	}
 
@@ -136,10 +130,10 @@ export class BrandService {
 				acc[category.category_id] = {
 					category_id: category.category_id.toString(),
 					category_name: category.category_name,
-					sub_category: [],
+					sub_categories: [],
 				};
 			}
-			acc[category.category_id].sub_category.push({
+			acc[category.category_id].sub_categories.push({
 				sub_category_id: category.sub_category_id.toString(),
 				sub_category_name: category.sub_category_name,
 			});
