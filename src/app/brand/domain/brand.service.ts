@@ -35,6 +35,11 @@ export class BrandService {
 	}
 
 	async findAllBrands() {
+		const saved_brands = await this.brandRepository.findAllByActiveStatus();
+		return BrandMapper.toOnlyBrandResDtosWithoutCategory(saved_brands);
+	}
+
+	async findAllBrandsWithCategories() {
 		const savedBrands = await this.brandRepository.findAllByActiveStatus();
 		const savedCategories = await this.brandCategoryRepository.find({
 			where: { status: Not(Status.DELETED) },
