@@ -397,8 +397,20 @@ Temporary Items
 .env
 dist
 .webpack
-.serverless/**/*.zip
 
 build/docker/db
 build/docker/db**
 build/env
+
+
+.serverless
+.serverless/**/*.zip
+
+build/bocker/db
+build/bocker/db/**
+build/env/**
+
+build/docker/tmp_db
+
+deploy_prod.sh
+deploy_sandbox.sh
