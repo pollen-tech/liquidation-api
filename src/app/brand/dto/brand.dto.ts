@@ -1,9 +1,9 @@
-import { IsOptional, IsEnum, IsNotEmpty, IsString, IsArray, ValidateNested } from 'class-validator';
-import { Optional } from '@nestjs/common';
-import { Status } from '../../../common/enums/common.enum';
-import { BrandEntity } from '../repositories/brand.entity';
-import { Type } from 'class-transformer';
-import { BrandCategoryEntity } from '../repositories/brand.category.entity';
+import {IsOptional, IsEnum, IsNotEmpty, IsString, IsArray, ValidateNested} from 'class-validator';
+import {Optional} from '@nestjs/common';
+import {Status} from '../../../common/enums/common.enum';
+import {BrandEntity} from '../repositories/brand.entity';
+import {Type} from 'class-transformer';
+import {BrandCategoryEntity} from '../repositories/brand.category.entity';
 
 export class NewBrandDto {
     @IsString()
@@ -14,9 +14,20 @@ export class NewBrandDto {
     image?: string;
 
     @IsArray()
-    @ValidateNested({ each: true })
+    @ValidateNested({each: true})
     @Type(() => CategoryDto)
     brand_categories: CategoryDto[];
+}
+
+export class BrandIdAndNameOnlyDto {
+    id: string;
+    name: string;
+
+    constructor(id: string, name: string) {
+        this.id = id;
+        this.name = name;
+    }
+
 }
 
 export class CategoryDto {
@@ -27,7 +38,7 @@ export class CategoryDto {
     category_name: string;
 
     @IsArray()
-    @ValidateNested({ each: true })
+    @ValidateNested({each: true})
     @Type(() => SubCategoryDto)
     sub_categories: SubCategoryDto[];
 }

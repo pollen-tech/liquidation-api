@@ -1,19 +1,20 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { BrandRepository } from '../repositories/brand.repository';
-import { BrandEntity } from '../repositories/brand.entity';
-import { BrandCategoryRepository } from '../repositories/brand.category.repository';
-import { BrandCategoryEntity } from '../repositories/brand.category.entity';
-import { NewBrandDto, BrandMapper, CategoryDto, BrandDtoRes } from '../dto/brand.dto';
-import { Status } from '../../../common/enums/common.enum';
-import { Not } from 'typeorm';
+import {Injectable, NotFoundException} from '@nestjs/common';
+import {InjectRepository} from '@nestjs/typeorm';
+import {BrandRepository} from '../repositories/brand.repository';
+import {BrandEntity} from '../repositories/brand.entity';
+import {BrandCategoryRepository} from '../repositories/brand.category.repository';
+import {BrandCategoryEntity} from '../repositories/brand.category.entity';
+import {NewBrandDto, BrandMapper, CategoryDto, BrandDtoRes, BrandIdAndNameOnlyDto} from '../dto/brand.dto';
+import {Status} from '../../../common/enums/common.enum';
+import {Not} from 'typeorm';
 
 @Injectable()
 export class BrandService {
     constructor(
         private readonly brandRepository: BrandRepository,
         private readonly brandCategoryRepository: BrandCategoryRepository,
-    ) {}
+    ) {
+    }
 
     async createBrand(reqDto: NewBrandDto) {
         const brandEntity = await BrandMapper.toBrandEntity(reqDto);
@@ -38,10 +39,17 @@ export class BrandService {
         return BrandMapper.toOnlyBrandResDtosWithoutCategory(saved_brands);
     }
 
+    async findAllBrandsWithIdAndNameOnly(): Promise<BrandIdAndNameOnlyDto[]> {
+        const saved_brands = await this.brandRepository.findAllByActiveStatus();
+        return saved_brands.map((savedBrand) => {
+            return new BrandIdAndNameOnlyDto(savedBrand.id, savedBrand.name);
+        });
+    }
+
     async findByBrandId(id: string) {
-        const savedBrand = await this.brandRepository.findOne({ where: { id, status: Not(Status.DELETED) } });
+        const savedBrand = await this.brandRepository.findOne({where: {id, status: Not(Status.DELETED)}});
         const savedCategories = await this.brandCategoryRepository.find({
-            where: { brand_id: savedBrand.id, status: Not(Status.DELETED) },
+            where: {brand_id: savedBrand.id, status: Not(Status.DELETED)},
         });
         // let groupedCategory = this.groupByCategory(savedCategories);
         // savedBrand['brand_categories'] = groupedCategory;
@@ -53,9 +61,9 @@ export class BrandService {
     }
 
     async findBrandCategorywithBrandId(id: string): Promise<BrandCategoryEntity[]> {
-        const savedBrand = await this.brandRepository.findOne({ where: { id, status: Not(Status.DELETED) } });
+        const savedBrand = await this.brandRepository.findOne({where: {id, status: Not(Status.DELETED)}});
         const savedCategories = await this.brandCategoryRepository.find({
-            where: { brand_id: savedBrand.id, status: Not(Status.DELETED) },
+            where: {brand_id: savedBrand.id, status: Not(Status.DELETED)},
         });
         let groupedCategory = this.groupByCategory(savedCategories);
 
@@ -67,7 +75,7 @@ export class BrandService {
 
     async updateBrand(id: string, updateBrandDto: NewBrandDto) {
         console.log('update: ', updateBrandDto);
-        const brand = await this.brandRepository.findOne({ where: { id } });
+        const brand = await this.brandRepository.findOne({where: {id}});
         if (!brand) {
             throw new Error(`Brand with ID ${id} not found`);
         }
@@ -90,13 +98,13 @@ export class BrandService {
             }),
         );
         let groupedCategory = this.groupByCategory(categories);
-        await this.brandCategoryRepository.delete({ brand_id: savedBrand.id });
+        await this.brandCategoryRepository.delete({brand_id: savedBrand.id});
         const savedCategories = await this.brandCategoryRepository.save(categories);
         return BrandMapper.toBrandResDto(savedBrand, savedCategories);
     }
 
     async softDeleteBrand(id: string): Promise<void> {
-        const brand = await this.brandRepository.findOne({ where: { id, status: Not(Status.DELETED) } });
+        const brand = await this.brandRepository.findOne({where: {id, status: Not(Status.DELETED)}});
         if (!brand) {
             throw new NotFoundException(`Brand with ID ${id} not found`);
         }

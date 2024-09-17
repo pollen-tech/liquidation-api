@@ -22,6 +22,12 @@ export class BrandController {
         return this.createApiRes(await this.brandService.findAllBrands());
     }
 
+    @Get("/id_and_name_only")
+    async findAllActiveWithIdAndNameOnly
+    () {
+        return this.createApiRes(await this.brandService.findAllBrandsWithIdAndNameOnly());
+    }
+
     @Get(':id')
     async findBrandById(@Param('id') id: string) {
         return this.createApiRes(await this.brandService.findByBrandId(id));
