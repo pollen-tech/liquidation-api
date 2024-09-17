@@ -132,7 +132,7 @@ export class ProductService {
 				acc[category.category_id] = {
 					category_id: category.category_id.toString(),
 					category_name: category.category_name,
-					sub_category: [],
+					sub_categories: [],
 				};
 			}
 			acc[category.category_id].sub_category.push({
