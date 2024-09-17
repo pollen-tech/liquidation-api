@@ -19,16 +19,12 @@ export class ProductService {
 	) { }
 
 	async createProduct(reqDto: NewProductDto) {
-		//console.log('createProduct: ', reqDto);
 		const productEntity = await ProductMapper.toProductEntity(reqDto);
 		const next_seq_no = await this.productRepository.getNextSeqNo();
 		productEntity.seq_no = next_seq_no;
 		const savedProduct = await this.productRepository.save(productEntity);
 
 		const categories = reqDto.product_categories.flatMap((category) => {
-			console.log('category: ', category);
-			//console.log('sub_categories: ', category.sub_categories);
-
 			if (!category.sub_categories || category.sub_categories.length === 0) {
 				const categoryEntity = new ProductCategoryEntity();
 				categoryEntity.product_id = savedProduct.id;
@@ -51,18 +47,13 @@ export class ProductService {
 				return categoryEntity;
 			});
 		});
-		console.log('categories: ', categories);
-
 		const saved_categories = await this.productCategoryRepository.save(categories);
-
 		const userProductEntity = new UserProductEntity();
 		userProductEntity.user_id = reqDto.user_id;
 		userProductEntity.product_id = savedProduct.id;
 		await this.userProductRepository.save(userProductEntity);
 
 		let categories_dto = ProductMapper.groupByCategoryDto(saved_categories);
-		//console.log('saved_categories: ', saved_categories);
-		//console.log('categories_dto: ', categories_dto);
 		return ProductMapper.toProductResDto(savedProduct, categories_dto);
 	}
 
@@ -103,10 +94,7 @@ export class ProductService {
 		if (!product) {
 			throw new Error(`Product with ID ${id} not found`);
 		}
-
-		// Merge existing entity with updated data
 		const updatedProduct = this.productRepository.merge(product, updateProductDto);
-		//updatedProduct.updated_on = Math.floor(Date.now() / 1000);
 		const savedProduct = await this.productRepository.save(updatedProduct);
 
 		const categories = updateProductDto.product_categories.flatMap((category) => {
