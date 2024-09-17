@@ -91,7 +91,7 @@
       "Properties": {
         "Code": {
           "S3Bucket": "sandbox.lambda.code.deploy",
-          "S3Key": "serverless/liquidation-api/dev/1726471062758-2024-09-16T07:17:42.758Z/liquidation-api.zip"
+          "S3Key": "serverless/liquidation-api/dev/1726554299674-2024-09-17T06:24:59.674Z/liquidation-api.zip"
         },
         "Handler": "dist/aws/lambda.handler",
         "Runtime": "nodejs20.x",
@@ -110,14 +110,14 @@
         "ApiLogGroup"
       ]
     },
-    "ApiLambdaVersionmo9Vqld10lVJRyxe59LhOjM9PBD2VskPQvsnOyms": {
+    "ApiLambdaVersion7UFcjReaZzon9rDImTWkTTTx6NVFIYXKmLSXkuG8NM": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "ApiLambdaFunction"
         },
-        "CodeSha256": "C0IWzAt563u/jHM6uc+/tH4s5WFp4+GLInnK2N1/nAg=",
+        "CodeSha256": "g6Fzqe2MLIOy4OqxwEPNJJdKLCKHVknkhJIpKU6hQTs=",
         "Description": "Liquidation Aws Lambda API"
       }
     },
@@ -241,7 +241,7 @@
         "ApiLambdaPermissionApiGateway"
       ]
     },
-    "ApiGatewayDeployment1726471048717": {
+    "ApiGatewayDeployment1726554287268": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -302,7 +302,7 @@
     "ApiLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "ApiLambdaVersionmo9Vqld10lVJRyxe59LhOjM9PBD2VskPQvsnOyms"
+        "Ref": "ApiLambdaVersion7UFcjReaZzon9rDImTWkTTTx6NVFIYXKmLSXkuG8NM"
       },
       "Export": {
         "Name": "sls-liquidation-api-dev-ApiLambdaFunctionQualifiedArn"
