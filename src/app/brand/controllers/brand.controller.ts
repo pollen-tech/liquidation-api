@@ -19,11 +19,6 @@ export class BrandController {
 
 	@Get()
 	async findAllActiveBrands() {
-		return this.createApiRes(await this.brandService.findAllBrands());
-	}
-
-	@Get("/with_category")
-	async findAllActiveBrandsWithCategory() {
 		return this.createApiRes(await this.brandService.findAllBrandsWithCategories());
 	}
 
