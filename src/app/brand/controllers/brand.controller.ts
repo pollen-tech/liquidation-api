@@ -23,7 +23,7 @@ export class BrandController {
 	}
 
 	@Get('search/by-name')
-	async findBrandByName(@Query('name') name: string) {
+	async findAllBrandsByName(@Query('name') name: string) {
 		return this.createApiRes(await this.brandService.findAllBrandsByName(name));
 	}
 

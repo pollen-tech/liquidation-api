@@ -80,7 +80,6 @@ export class BrandMapper {
 		dto_res.image = saved_brand.image;
 		dto_res.status = saved_brand.status;
 		dto_res.seq_no = saved_brand.seq_no;
-
 		dto_res.id = saved_brand.id;
 
 		const groupedCategories = brand_categories.reduce((acc, category) => {
