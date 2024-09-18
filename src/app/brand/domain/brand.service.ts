@@ -6,7 +6,7 @@ import { BrandCategoryRepository } from '../repositories/brand.category.reposito
 import { BrandCategoryEntity } from '../repositories/brand.category.entity';
 import { NewBrandDto, BrandMapper, CategoryDto, BrandDtoRes, BrandIdAndNameOnlyDto } from '../dto/brand.dto';
 import { Status } from '../../../common/enums/common.enum';
-import { Not } from 'typeorm';
+import { ILike, Not } from 'typeorm';
 
 @Injectable()
 export class BrandService {
@@ -44,22 +44,7 @@ export class BrandService {
 		const savedCategories = await this.brandCategoryRepository.find({
 			where: { status: Not(Status.DELETED) },
 		});
-		// Pre-group categories by brand_id
-		const categoriesByBrand = savedCategories.reduce((acc, category) => {
-			if (!acc[category.brand_id]) {
-				acc[category.brand_id] = [];
-			}
-			acc[category.brand_id].push(category);
-			return acc;
-		}, {} as { [brand_id: number]: BrandCategoryEntity[] });
-
-		// Map brands and attach their respective categories
-		const brandsWithCategories = savedBrands.map((brand) => {
-			const brandCategories = categoriesByBrand[brand.id] || [];
-			return BrandMapper.toBrandResDto(brand, brandCategories);
-		});
-
-		return brandsWithCategories;
+		return this.getBrandsWithCategories(savedBrands, savedCategories);
 	}
 
 	async findAllBrandsWithIdAndNameOnly(): Promise<BrandIdAndNameOnlyDto[]> {
@@ -75,6 +60,14 @@ export class BrandService {
 			where: { brand_id: savedBrand.id, status: Not(Status.DELETED) },
 		});
 		return BrandMapper.toBrandResDto(savedBrand, savedCategories);
+	}
+
+	async findAllBrandsByName(name: string) {
+		const savedBrands = await this.brandRepository.find({ where: { name: ILike(`%${name}%`), status: Not(Status.DELETED) } });
+		const savedCategories = await this.brandCategoryRepository.find({
+			where: { status: Not(Status.DELETED) },
+		});
+		return this.getBrandsWithCategories(savedBrands, savedCategories);
 	}
 
 	async findBrandCategorywithBrandId(id: string): Promise<BrandCategoryEntity[]> {
@@ -145,5 +138,20 @@ export class BrandService {
 			return acc;
 		}, {});
 		return Object.values(groupedCategories);
+	}
+	getBrandsWithCategories(savedBrands: BrandEntity[], savedCategories: BrandCategoryEntity[]) {
+		const categoriesByBrand = savedCategories.reduce((acc, category) => {
+			if (!acc[category.brand_id]) {
+				acc[category.brand_id] = [];
+			}
+			acc[category.brand_id].push(category);
+			return acc;
+		}, {} as { [brand_id: number]: BrandCategoryEntity[] });
+
+		const brandsWithCategories = savedBrands.map((brand) => {
+			const brandCategories = categoriesByBrand[brand.id] || [];
+			return BrandMapper.toBrandResDto(brand, brandCategories);
+		});
+		return brandsWithCategories;
 	}
 }

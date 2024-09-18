@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'nest-keycloak-connect';
 import { BrandService } from '../domain/brand.service';
@@ -20,6 +20,11 @@ export class BrandController {
 	@Get()
 	async findAllActiveBrands() {
 		return this.createApiRes(await this.brandService.findAllBrandsWithCategories());
+	}
+
+	@Get('search/by-name')
+	async findBrandByName(@Query('name') name: string) {
+		return this.createApiRes(await this.brandService.findAllBrandsByName(name));
 	}
 
 	@Get("/id_and_name_only")
