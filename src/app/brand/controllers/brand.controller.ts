@@ -12,6 +12,11 @@ import { BrandCategoryEntity } from '../repositories/brand.category.entity';
 export class BrandController {
 	constructor(private readonly brandService: BrandService) { }
 
+	@Get('validate-name')
+	async validateBrandName(@Query('name') name: string) {
+		return this.createApiRes(await this.brandService.isBrandNameTaken(name));
+	}
+
 	@Post()
 	async createBrand(@Body() reqDto: NewBrandDto) {
 		return this.createApiRes(await this.brandService.createBrand(reqDto));

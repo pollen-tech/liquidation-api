@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BrandRepository } from '../repositories/brand.repository';
 import { BrandEntity } from '../repositories/brand.entity';
@@ -16,7 +16,34 @@ export class BrandService {
 	) {
 	}
 
+	async isBrandNameTaken(name: string) {
+		if (!name) {
+			throw new BadRequestException('Brand name query param is required');
+		}
+		const existingBrand = await this.brandRepository.findOne({
+			where: { name },
+		});
+		const isTaken = !!existingBrand;
+		if (isTaken) {
+			return {
+				status_code: 400,
+				message: 'Brand name is already taken',
+				data: null,
+			};
+		}
+
+		return {
+			status_code: 200,
+			message: 'Brand name is available',
+			data: null,
+		};
+	}
+
 	async createBrand(reqDto: NewBrandDto) {
+		const isNameTaken = await this.isBrandNameTaken(reqDto.name);
+		if (isNameTaken.status_code === 400) {
+			throw new Error('Brand name already exists');
+		}
 		const brandEntity = await BrandMapper.toBrandEntity(reqDto);
 		const savedBrand = await this.brandRepository.save(brandEntity);
 		const categories = reqDto.brand_categories.flatMap((category) =>

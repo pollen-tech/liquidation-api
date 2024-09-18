@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductRepository } from '../repositories/product.repository';
 import { ProductEntity } from '../repositories/product.entity';
@@ -18,7 +18,34 @@ export class ProductService {
 		private readonly userProductRepository: UserProductRepository
 	) { }
 
+	async isProductNameTaken(name: string) {
+		if (!name) {
+			throw new BadRequestException('Product name query param is required');
+		}
+		const existingProduct = await this.productRepository.findOne({
+			where: { name },
+		});
+		const isTaken = !!existingProduct;
+		if (isTaken) {
+			return {
+				status_code: 400,
+				message: 'Product name is already taken',
+				data: null,
+			};
+		}
+
+		return {
+			status_code: 200,
+			message: 'Product name is available',
+			data: null,
+		};
+	}
+
 	async createProduct(reqDto: NewProductDto) {
+		const isNameTaken = await this.isProductNameTaken(reqDto.name);
+		if (isNameTaken.status_code === 400) {
+			throw new Error('Product name already exists');
+		}
 		const productEntity = await ProductMapper.toProductEntity(reqDto);
 		const next_seq_no = await this.productRepository.getNextSeqNo();
 		productEntity.seq_no = next_seq_no;
