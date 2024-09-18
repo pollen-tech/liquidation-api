@@ -19,7 +19,7 @@ export class ProductController {
 
 	@Get()
 	async findAllProducts() {
-		return this.createApiRes(await this.productService.findAllProducts(), 'OK');
+		return this.createApiRes(await this.productService.findAllProductsWithCategories(), 'OK');
 	}
 
 	@Get('search/by-name')

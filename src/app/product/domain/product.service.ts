@@ -62,6 +62,14 @@ export class ProductService {
 		return savedProduct;
 	}
 
+	async findAllProductsWithCategories() {
+		const savedProducts = await this.productRepository.findAllByActiveStatus();
+		const savedCategories = await this.productCategoryRepository.find({
+			where: { status: Not(Status.DELETED) },
+		});
+		return this.getProductsWithCategories(savedProducts, savedCategories);
+	}
+
 	async findProductwithProductId(id: string): Promise<ProductEntity> {
 		const savedProduct = await this.productRepository.findOne({ where: { id, status: Not(Status.DELETED) } });
 		const savedCategories = await this.productCategoryRepository.find({
