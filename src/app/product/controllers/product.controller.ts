@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'nest-keycloak-connect';
 import { NewProductDto, ProductApiResDto, ProductResDto } from '../dto/product.dto';
@@ -20,6 +20,11 @@ export class ProductController {
 	@Get()
 	async findAllProducts() {
 		return this.createApiRes(await this.productService.findAllProducts(), 'OK');
+	}
+
+	@Get('search/by-name')
+	async findAllProductsByName(@Query('name') name: string) {
+		return this.createApiRes(await this.productService.findAllProductsByName(name), 'OK');
 	}
 
 	@Get(':id')

@@ -12,16 +12,16 @@ export class ProductCategoryEntity {
     @Column({ type: 'varchar' })
     category_id: string;
 
-    @Column({ type: 'varchar', length: 100, default: 'NA' })
+    @Column({ type: 'varchar', length: 100, default: '' })
     category_name: string;
 
     @Column({ type: 'varchar' })
     sub_category_id: string;
 
-    @Column({ type: 'varchar', length: 100, default: 'NA' })
+    @Column({ type: 'varchar', length: 100, default: '' })
     sub_category_name: string;
 
-    @Column({ type: 'varchar', length: 200, default: 'NA' })
+    @Column({ type: 'varchar', length: 200, default: '' })
     sub_category_description: string;
 
     @CreateDateColumn({ type: 'timestamptz' })

@@ -85,16 +85,32 @@ export class ProductMapper {
 		return productEntity;
 	}
 
-	static toProductResDto(saved_entity: ProductEntity, categories_dto?: CategoryDto[]): ProductResDto {
-		const dto = new ProductResDto();
-		dto.name = saved_entity.name;
-		dto.id = saved_entity.id;
-		dto.pollen_sku = saved_entity.pollen_sku;
-		dto.sku = saved_entity.sku;
-		dto.image = saved_entity.image;
-		dto.status = saved_entity.status;
-		dto.product_categories = categories_dto;
-		return dto;
+	static toProductResDto(saved_product: ProductEntity, product_categories?: ProductCategoryEntity[]): ProductResDto {
+		const dto_res = new ProductResDto();
+		dto_res.name = saved_product.name;
+		dto_res.id = saved_product.id;
+		dto_res.pollen_sku = saved_product.pollen_sku;
+		dto_res.sku = saved_product.sku;
+		dto_res.image = saved_product.image;
+		dto_res.status = saved_product.status;
+
+		//const groupedCategories = product_categories.reduce((acc, category) => {
+		//	if (!acc[category.category_id]) {
+		//		acc[category.category_id] = {
+		//			category_id: category.category_id.toString(),
+		//			category_name: category.category_name,
+		//			sub_categories: [],
+		//		};
+		//	}
+		//	acc[category.category_id].sub_categories.push({
+		//		sub_category_id: category.sub_category_id.toString(),
+		//		sub_category_name: category.sub_category_name,
+		//	});
+		//	return acc;
+		//}, {});
+		const groupedCategories = this.groupByCategoryDto(product_categories)
+		dto_res.product_categories = Object.values(groupedCategories);
+		return dto_res;
 	}
 
 	static groupByCategoryDto(categories: ProductCategoryEntity[]): CategoryDto[] {

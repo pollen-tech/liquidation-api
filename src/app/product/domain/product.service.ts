@@ -8,7 +8,7 @@ import { UserProductRepository } from '../repositories/user.product.repository';
 import { UserProductEntity } from '../repositories/user.product.entity';
 import { NewProductDto, ProductApiResDto, ProductMapper } from '../dto/product.dto';
 import { Status } from '../../../common/enums/common.enum';
-import { Not } from 'typeorm';
+import { ILike, Not } from 'typeorm';
 
 @Injectable()
 export class ProductService {
@@ -53,8 +53,8 @@ export class ProductService {
 		userProductEntity.product_id = savedProduct.id;
 		await this.userProductRepository.save(userProductEntity);
 
-		let categories_dto = ProductMapper.groupByCategoryDto(saved_categories);
-		return ProductMapper.toProductResDto(savedProduct, categories_dto);
+		//let categories_dto = ProductMapper.groupByCategoryDto(saved_categories);
+		return ProductMapper.toProductResDto(savedProduct, saved_categories);
 	}
 
 	async findAllProducts() {
@@ -74,6 +74,14 @@ export class ProductService {
 			throw new NotFoundException(`Product with ID ${id} not found`);
 		}
 		return savedProduct;
+	}
+
+	async findAllProductsByName(name: string) {
+		const savedProducts = await this.productRepository.find({ where: { name: ILike(`%${name}%`), status: Not(Status.DELETED) } });
+		const savedCategories = await this.productCategoryRepository.find({
+			where: { status: Not(Status.DELETED) },
+		});
+		return this.getProductsWithCategories(savedProducts, savedCategories);
 	}
 
 	async findProductCategorywithProductId(id: string) {
@@ -160,5 +168,20 @@ export class ProductService {
 			return acc;
 		}, {});
 		return Object.values(groupedCategories);
+	}
+	getProductsWithCategories(savedProducts: ProductEntity[], savedCategories: ProductCategoryEntity[]) {
+		const categoriesByProduct = savedCategories.reduce((acc, category) => {
+			if (!acc[category.product_id]) {
+				acc[category.product_id] = [];
+			}
+			acc[category.product_id].push(category);
+			return acc;
+		}, {} as { [product_id: number]: ProductCategoryEntity[] });
+
+		const productsWithCategories = savedProducts.map((product) => {
+			const productCategories = categoriesByProduct[product.id] || [];
+			return ProductMapper.toProductResDto(product, productCategories);
+		});
+		return productsWithCategories;
 	}
 }
