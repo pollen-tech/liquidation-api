@@ -1,16 +1,35 @@
 import { DynamicModule, Logger } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from '../../src/app/auth-user/repositories/user.entity';
 import { DatabaseHealthcheckService } from '../../src/database/database-healthcheck.service';
 import { CustomConfigModule } from '../../src/config/config.module';
 import { TerminusModule } from '@nestjs/terminus';
+import { BrandEntity } from '../../src/app/brand/repositories/brand.entity';
+import { BrandCategoryEntity } from '../../src/app/brand/repositories/brand.category.entity';
+import { ProductCategoryEntity } from '../../src/app/product/repositories/product.category.entity';
+import { ProductEntity } from '../../src/app/product/repositories/product.entity';
 
-const entitiesList = [UserEntity];
+const DB_HOST: string = 'localhost';
+const DB_PORT: number = 5460;
+const DB_NAME = 'liquid_db';
+const DB_USERNAME = 'devuser';
+const DB_PASSWORD = 'password334';
+
+const entitiesList = [BrandEntity, BrandCategoryEntity, ProductCategoryEntity, ProductEntity];
 
 /**
  * Handle Database connection.
  */
 export class TestDatabaseModule {
+    static migrationConfig() {
+        return {
+            host: DB_HOST,
+            port: DB_PORT,
+            user: DB_USERNAME,
+            password: DB_PASSWORD,
+            db: DB_NAME,
+        };
+    }
+
     static forRoot(): DynamicModule {
         const providers = [DatabaseHealthcheckService];
         return {
@@ -23,15 +42,8 @@ export class TestDatabaseModule {
     }
 
     static forConnection(): DynamicModule {
-        const DB_HOST: string = 'localhost';
-        const DB_PORT: number = 5450;
-        const DB_NAME = 'user_db';
-        const DB_USERNAME = 'passdevuser';
-        const DB_PASSWORD = 'password334';
-
         Logger.log('entities : ' + entitiesList.map((item) => item.name));
         Logger.log('When error is EntityMetadataNotFound: No metadata, it means entity name needs to add in entitiesList, TestDBProviderModule');
-
         return TypeOrmModule.forRoot({
             type: 'postgres',
             host: DB_HOST,

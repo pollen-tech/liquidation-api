@@ -2,7 +2,7 @@ version: "3"
 services:
   order-pg:
     image: postgres:15.5-alpine3.19
-    container_name: pp_auth0
+    container_name: liquidate_db
     environment:
       - POSTGRES_USER=devuser
       - POSTGRES_PASSWORD=password334

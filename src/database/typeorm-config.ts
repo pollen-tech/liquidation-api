@@ -18,7 +18,7 @@ export const getTypeOrmConfig = (config?: PostgresConfigGetter) => {
         subscribers: [],
         poolSize: 10,
         ssl: {
-            rejectUnauthorized: false,
+           rejectUnauthorized: false,
         },
     };
     return c;
