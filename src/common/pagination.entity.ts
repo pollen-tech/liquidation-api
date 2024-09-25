@@ -45,8 +45,9 @@ export class FilterParam {
 export class PaginationParam extends FilterParam {
     @IsInt()
     @IsPositive()
+    @IsOptional()
     @Transform(({ value }) => (value && parseInt(value, 10)) || 1)
-    page = 1;
+    page?: number = 1;
 
     @IsInt()
     @IsPositive()

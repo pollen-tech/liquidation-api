@@ -5,6 +5,7 @@ import { NewProductDto, ProductApiResDto, ProductResDto } from '../dto/product.d
 import { ProductService } from '../domain/product.service';
 import { ProductEntity } from '../repositories/product.entity';
 import { ProductCategoryEntity } from '../repositories/product.category.entity';
+import { PaginationParam } from 'src/common/pagination.entity';
 
 @ApiTags('Product')
 @Controller('product')
@@ -23,8 +24,9 @@ export class ProductController {
 	}
 
 	@Get()
-	async findAllProducts() {
-		return this.createApiRes(await this.productService.findAllProductsWithCategories(), 'OK');
+	async findAllProducts(@Query() paginationParam: PaginationParam) {
+		const paginatedProducts = await this.productService.findAllProductsWithCategories(paginationParam);
+		return this.createApiRes(paginatedProducts, 'OK');
 	}
 
 	@Get('search/by-name')

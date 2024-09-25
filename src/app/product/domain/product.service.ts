@@ -9,6 +9,7 @@ import { UserProductEntity } from '../repositories/user.product.entity';
 import { NewProductDto, ProductApiResDto, ProductMapper } from '../dto/product.dto';
 import { Status } from '../../../common/enums/common.enum';
 import { ILike, Not } from 'typeorm';
+import { PaginationParam } from 'src/common/pagination.entity';
 
 @Injectable()
 export class ProductService {
@@ -89,12 +90,32 @@ export class ProductService {
 		return savedProduct;
 	}
 
-	async findAllProductsWithCategories() {
-		const savedProducts = await this.productRepository.findAllByActiveStatus();
+	//async findAllProductsWithCategories() {
+	//	const savedProducts = await this.productRepository.findAllByActiveStatus();
+	//	const savedCategories = await this.productCategoryRepository.find({
+	//		where: { status: Not(Status.DELETED) },
+	//	});
+	//	return this.getProductsWithCategories(savedProducts, savedCategories);
+	//}
+
+	async findAllProductsWithCategories(paginationParam: PaginationParam) {
+		const paginatedProducts = await this.productRepository.getPaginated(
+			paginationParam,
+			{ where: { status: Status.ACTIVE } }
+		);
+
 		const savedCategories = await this.productCategoryRepository.find({
-			where: { status: Not(Status.DELETED) },
+			where: { status: Status.ACTIVE },
 		});
-		return this.getProductsWithCategories(savedProducts, savedCategories);
+
+		const productsWithCategories = this.getProductsWithCategories(paginatedProducts.items, savedCategories);
+
+		return {
+			items: productsWithCategories,
+			currentPage: paginatedProducts.currentPage,
+			totalItems: paginatedProducts.totalItems,
+			totalPages: paginatedProducts.totalPages,
+		};
 	}
 
 	async findProductwithProductId(id: string): Promise<ProductEntity> {
