@@ -94,20 +94,6 @@ export class ProductMapper {
 		dto_res.image = saved_product.image;
 		dto_res.status = saved_product.status;
 
-		//const groupedCategories = product_categories.reduce((acc, category) => {
-		//	if (!acc[category.category_id]) {
-		//		acc[category.category_id] = {
-		//			category_id: category.category_id.toString(),
-		//			category_name: category.category_name,
-		//			sub_categories: [],
-		//		};
-		//	}
-		//	acc[category.category_id].sub_categories.push({
-		//		sub_category_id: category.sub_category_id.toString(),
-		//		sub_category_name: category.sub_category_name,
-		//	});
-		//	return acc;
-		//}, {});
 		const groupedCategories = this.groupByCategoryDto(product_categories)
 		dto_res.product_categories = Object.values(groupedCategories);
 		return dto_res;

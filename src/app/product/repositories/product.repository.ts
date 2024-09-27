@@ -7,6 +7,7 @@ import {PaginationParam} from "../../../common/pagination.entity";
 
 @CustomRepository(ProductEntity)
 export class ProductRepository extends BaseRepository<ProductEntity> {
+
     async getNextSeqNo(): Promise<number> {
         const qb = this.createQueryBuilder(this.metadata.givenTableName);
         const data = await qb.select('coalesce(max(seq_no)+1,1000)', 'next_seq_no').getRawOne();
@@ -29,7 +30,7 @@ export class ProductRepository extends BaseRepository<ProductEntity> {
         return await this.getRepository().findBy(
             {
                 name: ILike(`%${name}%`),
-                status: Not(Status.DELETED)
+                status: Status.ACTIVE
             }
         );
     }

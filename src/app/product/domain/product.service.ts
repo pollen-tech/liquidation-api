@@ -26,24 +26,23 @@ export class ProductService {
         }
         const existingProduct = await this.productRepository.findOneByName(name);
         const isTaken = !!existingProduct;
+
         if (isTaken) {
             return {
-                status_code: 400,
                 message: 'Product name is already taken',
-                data: null,
+                is_exist: isTaken
+            };
+        } else {
+            return {
+                message: 'Product name is available',
+                is_exist: isTaken
             };
         }
-
-        return {
-            status_code: 200,
-            message: 'Product name is available',
-            data: null,
-        };
     }
 
     async createProduct(reqDto: NewProductDto) {
-        const isNameTaken = await this.isProductNameTaken(reqDto.name);
-        if (isNameTaken.status_code === 400) {
+        const existing_product = await this.productRepository.findOneByName(reqDto.name);
+        if (existing_product) {
             throw new Error('Product name already exists');
         }
         const productEntity = await ProductMapper.toProductEntity(reqDto);
