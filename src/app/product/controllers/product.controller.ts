@@ -35,12 +35,12 @@ export class ProductController {
 	}
 
 	@Get(':id')
-	async findProductwithProductId(@Param('id') id: string) {
-		return this.createApiRes(await this.productService.findProductwithProductId(id), 'OK');
+	async findProductByProductId(@Param('id') id: string) {
+		return this.createApiRes(await this.productService.findProductByProductId(id), 'OK');
 	}
 
 	@Get(':id/product_category')
-	async findProductCategorywithBrandId(@Param('id') id: string) {
+	async findProductCategoryById(@Param('id') id: string) {
 		return this.createApiRes(await this.productService.findProductCategoryByProductId(id), 'OK');
 	}
 

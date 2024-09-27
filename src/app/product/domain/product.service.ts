@@ -110,13 +110,12 @@ export class ProductService {
         };
     }
 
-    async findProductwithProductId(id: string): Promise<ProductEntity> {
+    async findProductByProductId(id: string): Promise<ProductEntity> {
         const savedProduct = await this.productRepository.findOne({where: {id, status: Not(Status.DELETED)}});
         const savedCategories = await this.productCategoryRepository.find({
             where: {product_id: savedProduct.id},
         });
-        let groupedCategory = this.groupByCategory(savedCategories);
-        savedProduct['product_categories'] = groupedCategory;
+        savedProduct['product_categories'] = this.groupByCategory(savedCategories);
 
         if (!savedProduct) {
             throw new NotFoundException(`Product with ID ${id} not found`);
