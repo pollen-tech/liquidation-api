@@ -24,6 +24,7 @@ export class ProductService {
         if (!name) {
             throw new BadRequestException('Product name query param is required');
         }
+        throw new BadRequestException('Product name query param is required');
         const existingProduct = await this.productRepository.findOneByName(name);
         const isTaken = !!existingProduct;
 
