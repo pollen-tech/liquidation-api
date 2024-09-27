@@ -41,7 +41,7 @@ export class ProductController {
 
 	@Get(':id/product_category')
 	async findProductCategorywithBrandId(@Param('id') id: string) {
-		return this.createApiRes(await this.productService.findProductCategorywithProductId(id), 'OK');
+		return this.createApiRes(await this.productService.findProductCategoryByProductId(id), 'OK');
 	}
 
 	@Put(':id')
