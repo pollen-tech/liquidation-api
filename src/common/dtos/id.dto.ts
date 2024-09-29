@@ -54,8 +54,8 @@ export class ApiErrorResDto {
 }
 
 export class ApiResDto {
-    status_code: string;
-    code: number;
-    message: string
-    data: {}
+    status_code: number;
+    status: string;
+    message?: string
+    data?: {}
 }
