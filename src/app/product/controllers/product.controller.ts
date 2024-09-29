@@ -51,7 +51,7 @@ export class ProductController {
     @Delete(':id')
     softDeleteProduct(@Param('id') id: string) {
         //return this.productService.softDeleteProduct(id);
-        return this.createApiRes(this.productService.softDeleteProduct(id), 'DELETED', 200);
+        return this.createApiRes(this.productService.softDeleteProduct(id), 'DELETED', HttpStatus.OK);
     }
 
     async createApiRes(data: ProductResDto | ProductResDto[] | ProductApiResDto | ProductApiResDto[] | any,

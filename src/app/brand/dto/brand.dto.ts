@@ -4,6 +4,8 @@ import { Status } from '../../../common/enums/common.enum';
 import { BrandEntity } from '../repositories/brand.entity';
 import { Type } from 'class-transformer';
 import { BrandCategoryEntity } from '../repositories/brand.category.entity';
+import {ApiResDto} from "../../../common/dtos/id.dto";
+import {NewProductDto} from "../../product/dto/product.dto";
 
 export class NewBrandDto {
 	@IsString()
@@ -51,9 +53,7 @@ class SubCategoryDto {
 	sub_category_name: string;
 }
 
-export class BrandApiRes {
-	status_code: string;
-	message?: string;
+export class BrandApiResDto extends ApiResDto {
 	data?: BrandDtoRes | BrandDtoRes[];
 }
 
