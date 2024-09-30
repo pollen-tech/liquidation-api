@@ -7,6 +7,7 @@ import { BrandCategoryEntity } from '../repositories/brand.category.entity';
 import { NewBrandDto, BrandMapper, CategoryDto, BrandDtoRes, BrandIdAndNameOnlyDto } from '../dto/brand.dto';
 import { Status } from '../../../common/enums/common.enum';
 import { ILike, Not } from 'typeorm';
+import { PaginationParam } from 'src/common/pagination.entity';
 
 @Injectable()
 export class BrandService {
@@ -61,17 +62,30 @@ export class BrandService {
 		return BrandMapper.toBrandResDto(savedBrand, saved_categories);
 	}
 
-	async findAllBrands() {
-		const saved_brands = await this.brandRepository.findAllByActiveStatus();
-		return BrandMapper.toOnlyBrandResDtosWithoutCategory(saved_brands);
-	}
+	//async findAllBrands() {
+	//	const saved_brands = await this.brandRepository.findAllByActiveStatus();
+	//	return BrandMapper.toOnlyBrandResDtosWithoutCategory(saved_brands);
+	//}
 
-	async findAllBrandsWithCategories() {
-		const savedBrands = await this.brandRepository.findAllByActiveStatus();
+	async findAllBrandsWithCategories(paginationParam: PaginationParam) {
+		//const savedBrands = await this.brandRepository.findAllByActiveStatus();
+		const paginatedBrands = await this.brandRepository
+			.getPaginatedBrandsByActiveStatus(paginationParam);
+
 		const savedCategories = await this.brandCategoryRepository.find({
-			where: { status: Not(Status.DELETED) },
+			where: { status: Status.ACTIVE },
 		});
-		return this.getBrandsWithCategories(savedBrands, savedCategories);
+
+		console.log('savedCategories: ', savedCategories);
+
+		const brandsWithCategories = this.getBrandsWithCategories(paginatedBrands.items, savedCategories);
+
+		return {
+			items: brandsWithCategories,
+			currentPage: paginatedBrands.currentPage,
+			totalItems: paginatedBrands.totalItems,
+			totalPages: paginatedBrands.totalPages,
+		};
 	}
 
 	async findAllBrandsWithIdAndNameOnly(): Promise<BrandIdAndNameOnlyDto[]> {

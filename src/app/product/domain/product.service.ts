@@ -9,6 +9,7 @@ import { UserProductEntity } from '../repositories/user.product.entity';
 import { NewProductDto, ProductApiResDto, ProductMapper } from '../dto/product.dto';
 import { Status } from '../../../common/enums/common.enum';
 import { ILike, Not } from 'typeorm';
+import { PaginationParam } from 'src/common/pagination.entity';
 
 @Injectable()
 export class ProductService {
@@ -16,34 +17,32 @@ export class ProductService {
 		private readonly productRepository: ProductRepository,
 		private readonly productCategoryRepository: ProductCategoryRepository,
 		private readonly userProductRepository: UserProductRepository
-	) { }
+	) {
+	}
 
 	async isProductNameTaken(name: string) {
 		if (!name) {
 			throw new BadRequestException('Product name query param is required');
 		}
-		const existingProduct = await this.productRepository.findOne({
-			where: { name },
-		});
+		const existingProduct = await this.productRepository.findOneByName(name);
 		const isTaken = !!existingProduct;
+
 		if (isTaken) {
 			return {
-				status_code: 400,
 				message: 'Product name is already taken',
-				data: null,
+				is_exist: isTaken
+			};
+		} else {
+			return {
+				message: 'Product name is available',
+				is_exist: isTaken
 			};
 		}
-
-		return {
-			status_code: 200,
-			message: 'Product name is available',
-			data: null,
-		};
 	}
 
 	async createProduct(reqDto: NewProductDto) {
-		const isNameTaken = await this.isProductNameTaken(reqDto.name);
-		if (isNameTaken.status_code === 400) {
+		const existing_product = await this.productRepository.findOneByName(reqDto.name);
+		if (existing_product) {
 			throw new Error('Product name already exists');
 		}
 		const productEntity = await ProductMapper.toProductEntity(reqDto);
@@ -84,26 +83,38 @@ export class ProductService {
 		return ProductMapper.toProductResDto(savedProduct, saved_categories);
 	}
 
-	async findAllProducts() {
-		const savedProduct = await this.productRepository.find({ where: { status: Not(Status.DELETED) } });
-		return savedProduct;
-	}
+	//async findAllProductsWithCategories() {
+	//	const savedProducts = await this.productRepository.findAllByActiveStatus();
+	//	const savedCategories = await this.productCategoryRepository.find({
+	//		where: { status: Not(Status.DELETED) },
+	//	});
+	//	return this.getProductsWithCategories(savedProducts, savedCategories);
+	//}
 
-	async findAllProductsWithCategories() {
-		const savedProducts = await this.productRepository.findAllByActiveStatus();
+	async findAllProductsWithCategories(paginationParam: PaginationParam) {
+		const paginatedProducts = await this.productRepository
+			.getPaginatedProductsByActiveStatus(paginationParam);
+
 		const savedCategories = await this.productCategoryRepository.find({
-			where: { status: Not(Status.DELETED) },
+			where: { status: Status.ACTIVE },
 		});
-		return this.getProductsWithCategories(savedProducts, savedCategories);
+
+		const productsWithCategories = this.getProductsWithCategories(paginatedProducts.items, savedCategories);
+
+		return {
+			items: productsWithCategories,
+			currentPage: paginatedProducts.currentPage,
+			totalItems: paginatedProducts.totalItems,
+			totalPages: paginatedProducts.totalPages,
+		};
 	}
 
-	async findProductwithProductId(id: string): Promise<ProductEntity> {
+	async findProductByProductId(id: string): Promise<ProductEntity> {
 		const savedProduct = await this.productRepository.findOne({ where: { id, status: Not(Status.DELETED) } });
 		const savedCategories = await this.productCategoryRepository.find({
 			where: { product_id: savedProduct.id },
 		});
-		let groupedCategory = this.groupByCategory(savedCategories);
-		savedProduct['product_categories'] = groupedCategory;
+		savedProduct['product_categories'] = this.groupByCategory(savedCategories);
 
 		if (!savedProduct) {
 			throw new NotFoundException(`Product with ID ${id} not found`);
@@ -112,14 +123,14 @@ export class ProductService {
 	}
 
 	async findAllProductsByName(name: string) {
-		const savedProducts = await this.productRepository.find({ where: { name: ILike(`%${name}%`), status: Not(Status.DELETED) } });
+		const savedProducts = await this.productRepository.findAllProductByName(name);
 		const savedCategories = await this.productCategoryRepository.find({
 			where: { status: Not(Status.DELETED) },
 		});
 		return this.getProductsWithCategories(savedProducts, savedCategories);
 	}
 
-	async findProductCategorywithProductId(id: string) {
+	async findProductCategoryByProductId(id: string) {
 		const savedProduct = await this.productRepository.findOne({ where: { id, status: Not(Status.DELETED) } });
 		const savedCategories = await this.productCategoryRepository.find({
 			where: { product_id: savedProduct.id },
@@ -204,6 +215,7 @@ export class ProductService {
 		}, {});
 		return Object.values(groupedCategories);
 	}
+
 	getProductsWithCategories(savedProducts: ProductEntity[], savedCategories: ProductCategoryEntity[]) {
 		const categoriesByProduct = savedCategories.reduce((acc, category) => {
 			if (!acc[category.product_id]) {
