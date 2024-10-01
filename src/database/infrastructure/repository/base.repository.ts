@@ -47,7 +47,15 @@ export default class BaseRepository<T> extends Repository<T> {
         return RequestContext.getContext().transaction ? RequestContext.getContext().transaction.getRepository(this.target) : this;
     }
     async getPaginated(paginationParam: PaginationParam, opts: FindManyOptions<T> = {}): Promise<Paginated<T>> {
-        const { page, size } = paginationParam;
+        let { page, size } = paginationParam;
+        page = Number(page) || 1; 
+        size = Number(size) || 25;
+        if (page < 1) {
+            page = 1;
+        }
+        if (size < 1) {
+            size = 25;
+        }
         opts.skip = (page - 1) * size;
         opts.take = size;
         const [items, totalItems] = await this.findAndCount(opts);
