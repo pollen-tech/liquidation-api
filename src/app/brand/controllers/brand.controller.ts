@@ -3,7 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'nest-keycloak-connect';
 import { BrandService } from '../domain/brand.service';
 import { BrandApiResDto, BrandDtoRes, NewBrandDto } from '../dto/brand.dto';
-import { PaginationParam } from 'src/common/pagination.entity';
+import {PaginationParam} from "../../../common/pagination.entity";
 
 @ApiTags('Brand')
 @Controller('brand')

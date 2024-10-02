@@ -1,9 +1,9 @@
 import {ProductEntity} from './product.entity';
 import {CustomRepository} from '../../../database/decorators/custom-repository.decorator';
 import BaseRepository from '../../../database/infrastructure/repository/base.repository';
-import {Status} from 'src/common/enums/common.enum';
-import {getRepository, ILike, Not} from "typeorm";
+import { ILike, Not} from "typeorm";
 import {PaginationParam} from "../../../common/pagination.entity";
+import {Status} from "../../../common/enums/common.enum";
 
 @CustomRepository(ProductEntity)
 export class ProductRepository extends BaseRepository<ProductEntity> {

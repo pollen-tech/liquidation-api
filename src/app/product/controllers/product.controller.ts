@@ -3,7 +3,7 @@ import {ApiTags} from '@nestjs/swagger';
 import {Public} from 'nest-keycloak-connect';
 import {NewProductDto, ProductApiResDto, ProductResDto} from '../dto/product.dto';
 import {ProductService} from '../domain/product.service';
-import {PaginationParam} from 'src/common/pagination.entity';
+import {PaginationParam} from "../../../common/pagination.entity";
 
 @ApiTags('Product')
 @Controller('product')
