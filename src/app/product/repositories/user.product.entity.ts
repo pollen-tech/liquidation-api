@@ -3,6 +3,7 @@ import { Status } from '../../../common/enums/common.enum';
 
 @Entity('user_product')
 export class UserProductEntity {
+
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
