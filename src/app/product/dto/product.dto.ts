@@ -88,6 +88,7 @@ export class ProductMapper {
         const dto_res = new ProductResDto();
         dto_res.name = saved_product.name;
         dto_res.id = saved_product.id;
+        dto_res.brand_id = saved_product.brand_id;
         dto_res.pollen_sku = saved_product.pollen_sku;
         dto_res.sku = saved_product.sku;
         dto_res.image = saved_product.image;
