@@ -142,11 +142,19 @@ export class ProductService {
         return groupedCategory;
     }
 
-    async updateProduct(id: string, updateProductDto: UpdateProductDto): Promise<ProductEntity> {
+    async updateMultipleProduct(updateDtoList: UpdateProductDto[]) {
+        const promiseList = updateDtoList.map(dto => {
+            return this.updateProduct(dto)
+        })
+        return await Promise.all(promiseList);
+    }
+
+    async updateProduct(updateProductDto: UpdateProductDto): Promise<ProductEntity> {
         console.log('update: ', updateProductDto);
-        const product = await this.productRepository.findOne({where: {id}});
+        const productId = updateProductDto.id;
+        const product = await this.productRepository.findOne({where: {id: productId}});
         if (!product) {
-            throw new Error(`Product with ID ${id} not found`);
+            throw new Error(`Product with ID ${productId} not found`);
         }
         const updatedProduct = this.productRepository.merge(product, updateProductDto);
         const savedProduct = await this.productRepository.save(updatedProduct);

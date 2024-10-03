@@ -1,7 +1,13 @@
-import {Body, Controller, Delete, Get, HttpStatus, Logger, Param, Post, Put, Query} from '@nestjs/common';
+import {Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query} from '@nestjs/common';
 import {ApiTags} from '@nestjs/swagger';
 import {Public} from 'nest-keycloak-connect';
-import {NewProductDto, ProductApiResDto, ProductResDto, UpdateProductDto} from '../dto/product.dto';
+import {
+    NewProductDto,
+    ProductApiResDto,
+    ProductResDto,
+    UpdateMultiProductDto,
+    UpdateProductDto
+} from '../dto/product.dto';
 import {ProductService} from '../domain/product.service';
 import {PaginationParam} from "../../../common/pagination.entity";
 
@@ -10,10 +16,8 @@ import {PaginationParam} from "../../../common/pagination.entity";
 @Public()
 export class ProductController {
 
-    private logger: Logger;
-
-    constructor(loggerName: string, private readonly productService: ProductService) {
-        this.logger = new Logger(loggerName);
+    constructor(private readonly productService: ProductService) {
+        // this.logger = new Logger(loggerName);
     }
 
     @Get('validate-name')
@@ -26,10 +30,10 @@ export class ProductController {
         return this.createApiRes(await this.productService.createProduct(reqDto), 'CREATED', HttpStatus.CREATED);
     }
 
-    // @Put()
-    // async updateMultipleProduct(  @Body() reqDto: NewProductDto) {
-    //     return this.createApiRes(await this.productService.createProduct(reqDto), 'CREATED', HttpStatus.CREATED);
-    // }
+    @Put("/multiple")
+    async updateMultipleProducts(@Body() multiProducts: UpdateMultiProductDto) {
+        return this.createApiRes(await this.productService.updateMultipleProduct(multiProducts.products), 'UPDATED', HttpStatus.OK);
+    }
 
     @Get()
     async findAllProducts(@Query() paginationParam: PaginationParam) {
@@ -54,7 +58,8 @@ export class ProductController {
 
     @Put(':id')
     async updateProductById(@Param('id') id: string, @Body() reqDto: UpdateProductDto) {
-        return this.createApiRes(await this.productService.updateProduct(id, reqDto), 'UPDATED', HttpStatus.OK);
+        reqDto.id = id;
+        return this.createApiRes(await this.productService.updateProduct(reqDto), 'UPDATED', HttpStatus.OK);
     }
 
     @Delete(':id')

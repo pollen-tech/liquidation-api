@@ -52,7 +52,7 @@ describe('Controller: Product API Test', () => {
     });
 
 
-    it('PUT, Edit Product - /product', async () => {
+    it('PUT, Edit Product - /product/{id}', async () => {
         /* Get the brand id */
         const saved_brand_id = brand_entity.id;
 
@@ -64,12 +64,39 @@ describe('Controller: Product API Test', () => {
         /* send the request */
         let saved_product = await product_service.createProduct(req_dto)
 
-        let edit_req_dto = {...req_dto,id:saved_product.id}
+        let edit_req_dto = {...req_dto, id: saved_product.id}
 
         /* send the request */
-        edit_req_dto.name= 'Updated Product '+Date.now();
-        let response = await apiRequestTest(httpServer).put('/api/product/'+saved_product.id)
+        edit_req_dto.name = 'Updated Product ' + Date.now();
+        let response = await apiRequestTest(httpServer).put('/api/product/' + saved_product.id)
             .send(edit_req_dto).set('Accept', 'application/json').expect(200);
+
+        console.log('Response : ', JSON.stringify(response));
+    });
+
+
+    it('PUT, Update Multiple Product - /product', async () => {
+        /* Get the brand id */
+        const saved_brand_id = brand_entity.id;
+
+        /* prepare json request data */
+        const reqDto = create_product_req_data;
+        reqDto.name = "Product " + Date.now()
+        reqDto.brand_id = saved_brand_id;
+
+        /* send the request */
+        let savedProduct = await product_service.createProduct(reqDto)
+
+        let editReqDtoList = [];
+        editReqDtoList.push({
+            ...reqDto,
+            id: savedProduct.id,
+            name: 'Updated Product ' + Date.now()
+        });
+
+        /* send the request */
+        let response = await apiRequestTest(httpServer).put('/api/product')
+            .send(editReqDtoList).set('Accept', 'application/json').expect(200);
 
         console.log('Response : ', JSON.stringify(response));
     });
