@@ -1,19 +1,21 @@
-import { Test } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import { TestDatabaseModule } from '../../../config/test.database.module';
-import { CustomConfigModule } from '../../../../src/config/config.module';
+import {Test} from '@nestjs/testing';
+import {INestApplication} from '@nestjs/common';
+import {TestDatabaseModule} from '../../../config/test.database.module';
+import {CustomConfigModule} from '../../../../src/config/config.module';
 import apiRequestTest from 'supertest';
-import { ProductModule } from '../../../../src/app/product/product.module';
-import { BrandRepository } from '../../../../src/app/brand/repositories/brand.repository';
-import { DataRepository } from '../../../config/db/data.repository';
-import { BrandEntity } from '../../../../src/app/brand/repositories/brand.entity';
-import { BrandModule } from '../../../../src/app/brand/brand.module';
-import { create_product_req_data } from '../../../data/json/create_product';
+import {ProductModule} from '../../../../src/app/product/product.module';
+import {BrandRepository} from '../../../../src/app/brand/repositories/brand.repository';
+import {DataRepository} from '../../../config/db/data.repository';
+import {BrandEntity} from '../../../../src/app/brand/repositories/brand.entity';
+import {BrandModule} from '../../../../src/app/brand/brand.module';
+import {create_product_req_data} from '../../../data/json/create_product';
+import {ProductService} from "../../../../src/app/product/domain/product.service";
 
 describe('Controller: Product API Test', () => {
     let app: INestApplication;
     let httpServer: any;
     let brand_repository: BrandRepository;
+    let product_service: ProductService;
     let brand_entity: BrandEntity;
 
     beforeAll(async () => {
@@ -29,6 +31,7 @@ describe('Controller: Product API Test', () => {
         httpServer = app.getHttpServer();
 
         brand_repository = testingModule.get<BrandRepository>(BrandRepository);
+        product_service = testingModule.get<ProductService>(ProductService);
 
         //* create test data * /
         brand_entity = await DataRepository.createBrand(brand_repository);
@@ -47,4 +50,28 @@ describe('Controller: Product API Test', () => {
 
         console.log('Response : ', JSON.stringify(response.body));
     });
+
+
+    it('PUT, Edit Product - /product', async () => {
+        /* Get the brand id */
+        const saved_brand_id = brand_entity.id;
+
+        /* prepare json request data */
+        const req_dto = create_product_req_data;
+        req_dto.name = "Product " + Date.now()
+        req_dto.brand_id = saved_brand_id;
+
+        /* send the request */
+        let saved_product = await product_service.createProduct(req_dto)
+
+        let edit_req_dto = {...req_dto,id:saved_product.id}
+
+        /* send the request */
+        edit_req_dto.name= 'Updated Product '+Date.now();
+        let response = await apiRequestTest(httpServer).put('/api/product/'+saved_product.id)
+            .send(edit_req_dto).set('Accept', 'application/json').expect(200);
+
+        console.log('Response : ', JSON.stringify(response));
+    });
+
 });

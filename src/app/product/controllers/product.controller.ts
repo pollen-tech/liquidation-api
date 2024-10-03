@@ -1,7 +1,7 @@
-import {Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query} from '@nestjs/common';
+import {Body, Controller, Delete, Get, HttpStatus, Logger, Param, Post, Put, Query} from '@nestjs/common';
 import {ApiTags} from '@nestjs/swagger';
 import {Public} from 'nest-keycloak-connect';
-import {NewProductDto, ProductApiResDto, ProductResDto} from '../dto/product.dto';
+import {NewProductDto, ProductApiResDto, ProductResDto, UpdateProductDto} from '../dto/product.dto';
 import {ProductService} from '../domain/product.service';
 import {PaginationParam} from "../../../common/pagination.entity";
 
@@ -9,18 +9,27 @@ import {PaginationParam} from "../../../common/pagination.entity";
 @Controller('product')
 @Public()
 export class ProductController {
-    constructor(private readonly productService: ProductService) {
+
+    private logger: Logger;
+
+    constructor(loggerName: string, private readonly productService: ProductService) {
+        this.logger = new Logger(loggerName);
     }
 
     @Get('validate-name')
     async validateProductName(@Query('name') name: string) {
-        return this.createApiRes(await this.productService.isProductNameTaken(name), 'OK',  HttpStatus.OK);
+        return this.createApiRes(await this.productService.isProductNameTaken(name), 'OK', HttpStatus.OK);
     }
 
     @Post()
     async createProduct(@Body() reqDto: NewProductDto) {
-        return this.createApiRes(await this.productService.createProduct(reqDto), 'CREATED',  HttpStatus.CREATED);
+        return this.createApiRes(await this.productService.createProduct(reqDto), 'CREATED', HttpStatus.CREATED);
     }
+
+    // @Put()
+    // async updateMultipleProduct(  @Body() reqDto: NewProductDto) {
+    //     return this.createApiRes(await this.productService.createProduct(reqDto), 'CREATED', HttpStatus.CREATED);
+    // }
 
     @Get()
     async findAllProducts(@Query() paginationParam: PaginationParam) {
@@ -30,27 +39,26 @@ export class ProductController {
 
     @Get('search/by-name')
     async findAllProductsByName(@Query('name') name: string) {
-        return this.createApiRes(await this.productService.findAllProductsByName(name), 'OK',  HttpStatus.OK);
+        return this.createApiRes(await this.productService.findAllProductsByName(name), 'OK', HttpStatus.OK);
     }
 
     @Get(':id')
     async findProductByProductId(@Param('id') id: string) {
-        return this.createApiRes(await this.productService.findProductByProductId(id), 'OK',  HttpStatus.OK);
+        return this.createApiRes(await this.productService.findProductByProductId(id), 'OK', HttpStatus.OK);
     }
 
     @Get(':id/product_category')
     async findProductCategoryById(@Param('id') id: string) {
-        return this.createApiRes(await this.productService.findProductCategoryByProductId(id), 'OK',  HttpStatus.OK);
+        return this.createApiRes(await this.productService.findProductCategoryByProductId(id), 'OK', HttpStatus.OK);
     }
 
     @Put(':id')
-    async updateProduct(@Param('id') id: string, @Body() reqDto: NewProductDto) {
-        return this.createApiRes(await this.productService.updateProduct(id, reqDto), 'UPDATED',  HttpStatus.OK);
+    async updateProductById(@Param('id') id: string, @Body() reqDto: UpdateProductDto) {
+        return this.createApiRes(await this.productService.updateProduct(id, reqDto), 'UPDATED', HttpStatus.OK);
     }
 
     @Delete(':id')
     softDeleteProduct(@Param('id') id: string) {
-        //return this.productService.softDeleteProduct(id);
         return this.createApiRes(this.productService.softDeleteProduct(id), 'DELETED', HttpStatus.OK);
     }
 

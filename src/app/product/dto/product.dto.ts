@@ -35,6 +35,11 @@ export class NewProductDto {
     product_categories: CategoryDto[];
 }
 
+export class UpdateProductDto extends NewProductDto{
+    @IsString()
+    id: string;
+}
+
 class CategoryDto {
     @IsString()
     category_id: string;
