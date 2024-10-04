@@ -10,7 +10,6 @@ import {
 } from '../dto/product.dto';
 import {ProductService} from '../domain/product.service';
 import {PaginationParam} from "../../../common/pagination.entity";
-import {required} from "joi";
 
 @ApiTags('Product')
 @Controller('product')
@@ -39,7 +38,7 @@ export class ProductController {
 
     @Get()
     async findAllProducts(
-        @Query('company_id') companyId: string,
+
         @Query() paginationParam: PaginationParam) {
         const paginatedProducts = await this.productService.findAllProductsWithCategories(paginationParam);
         return this.createApiRes(paginatedProducts, 'OK', HttpStatus.OK);
