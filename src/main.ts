@@ -5,8 +5,12 @@ import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { CustomConfigModule } from './config/config.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import {initializeTransactionalContext} from "typeorm-transactional";
 
 async function bootstrap() {
+
+    // initializeTransactionalContext();
+
     const app = await NestFactory.create(AppModule);
 
     const config = new DocumentBuilder()

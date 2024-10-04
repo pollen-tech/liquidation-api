@@ -1,11 +1,15 @@
 import { configure as serverlessExpress } from '@codegenie/serverless-express';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../app.module';
+import {initializeTransactionalContext} from "typeorm-transactional";
 
 let cachedServer;
 
 export const handler = async (event, context) => {
     if (!cachedServer) {
+
+        initializeTransactionalContext();
+
         const nestApp = await NestFactory.create(AppModule, { cors: true });
 
         nestApp.enableCors({

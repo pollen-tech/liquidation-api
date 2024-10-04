@@ -10,6 +10,7 @@ import {
 } from '../dto/product.dto';
 import {ProductService} from '../domain/product.service';
 import {PaginationParam} from "../../../common/pagination.entity";
+import {required} from "joi";
 
 @ApiTags('Product')
 @Controller('product')
@@ -17,11 +18,12 @@ import {PaginationParam} from "../../../common/pagination.entity";
 export class ProductController {
 
     constructor(private readonly productService: ProductService) {
-        // this.logger = new Logger(loggerName);
     }
 
     @Get('validate-name')
-    async validateProductName(@Query('name') name: string) {
+    async validateProductName(
+        @Query('company_id') companyId: string,
+        @Query('name') name: string) {
         return this.createApiRes(await this.productService.isProductNameTaken(name), 'OK', HttpStatus.OK);
     }
 
@@ -36,7 +38,9 @@ export class ProductController {
     }
 
     @Get()
-    async findAllProducts(@Query() paginationParam: PaginationParam) {
+    async findAllProducts(
+        @Query('company_id') companyId: string,
+        @Query() paginationParam: PaginationParam) {
         const paginatedProducts = await this.productService.findAllProductsWithCategories(paginationParam);
         return this.createApiRes(paginatedProducts, 'OK', HttpStatus.OK);
     }
