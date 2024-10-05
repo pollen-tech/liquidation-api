@@ -152,13 +152,17 @@ export class ProductService {
     }
 
     async updateMultipleProduct(updateDtoList: UpdateProductDto[]) {
+
+      console.log("Update data list ",updateDtoList);
+
         const promiseList = updateDtoList.map(dto => {
             return this.updateProduct(dto)
         })
         return await Promise.all(promiseList);
     }
 
-    async updateProduct(updateProductDto: UpdateProductDto): Promise<ProductEntity> {
+    @Transactional()
+    async updateProduct(updateProductDto: UpdateProductDto): Promise<ProductResDto> {
         console.log('update: ', updateProductDto);
         const productId = updateProductDto.id;
         const product = await this.productRepository.findOne({where: {id: productId}});
@@ -190,16 +194,45 @@ export class ProductService {
                     return categoryEntity;
                 });
             });
-        let groupedCategory = this.groupByCategory(categories);
+
+        // let groupedCategory = this.groupByCategory(categories);
+
         await this.productCategoryRepository.delete({product_id: savedProduct.id});
-        await this.productCategoryRepository.save(categories);
 
-        let res: any;
-        res = savedProduct;
-        res.product_categories = groupedCategory;
-        console.log(res);
+        const saved_categories = await this.productCategoryRepository.save(categories);
 
-        return res;
+        /* save product images */
+        await this.productImageService.createByProductIdAndImage(savedProduct.id, updateProductDto.image);
+
+        const productResDto = ProductMapper.toProductResDto(savedProduct, saved_categories);
+        /* brand_id is saved, brand name optional. Just get from reqDto and send back */
+        productResDto.brand_name = updateProductDto.brand_name;
+        return productResDto;
+
+        // let res: any;
+        // res = savedProduct;
+        // res.product_categories = groupedCategory;
+        // console.log(res);
+        //
+        // return res;
+
+
+        //////////////
+
+        // const saved_categories = await this.productCategoryRepository.save(categories);
+        // const userProductEntity = new UserProductEntity();
+        // userProductEntity.user_id = reqDto.user_id;
+        // userProductEntity.product_id = savedProduct.id;
+        // await this.userProductRepository.save(userProductEntity);
+        //
+        // /* save product images */
+        // await this.productImageService.createByProductIdAndImage(savedProduct.id, reqDto.image);
+        //
+        // const productResDto = ProductMapper.toProductResDto(savedProduct, saved_categories);
+        // /* brand_id is saved, brand name optional. Just get from reqDto and send back */
+        // productResDto.brand_name = reqDto.brand_name;
+        // return productResDto;
+        /////////////
     }
 
     async softDeleteProduct(id: string): Promise<void> {

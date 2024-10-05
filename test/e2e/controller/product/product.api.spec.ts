@@ -11,6 +11,7 @@ import {BrandModule} from '../../../../src/app/brand/brand.module';
 import {create_product_req_data} from '../../../data/json/create_product';
 import {ProductService} from "../../../../src/app/product/domain/product.service";
 import {addTransactionalDataSource, initializeTransactionalContext} from "typeorm-transactional";
+import {UpdateMultiProductDto} from "../../../../src/app/product/dto/product.dto";
 
 describe('Controller: Product API Test', () => {
     let app: INestApplication;
@@ -100,11 +101,16 @@ describe('Controller: Product API Test', () => {
             name: 'Updated Product ' + Date.now()
         });
 
-        /* send the request */
-        let response = await apiRequestTest(httpServer).put('/api/product')
-            .send(editReqDtoList).set('Accept', 'application/json').expect(200);
+        // create update request
+        let req: UpdateMultiProductDto = {
+            products: editReqDtoList
+        };
 
-        console.log('Response : ', JSON.stringify(response));
+        /* send the request */
+        let response = await apiRequestTest(httpServer).put('/api/product/multiple')
+            .send(req).set('Accept', 'application/json').expect(200);
+
+        console.log('Response : ', JSON.stringify(response.body));
     });
 
 });
