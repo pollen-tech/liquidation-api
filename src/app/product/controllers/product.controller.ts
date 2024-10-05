@@ -10,13 +10,17 @@ import {
 } from '../dto/product.dto';
 import {ProductService} from '../domain/product.service';
 import {PaginationParam} from "../../../common/pagination.entity";
+import {ProductImageDto, ProductImageResDto} from "../dto/product.image.dto";
+import {ProductImageService} from "../domain/product.image.service";
 
 @ApiTags('Product')
 @Controller('product')
 @Public()
 export class ProductController {
 
-    constructor(private readonly productService: ProductService) {
+    constructor(private readonly productService: ProductService,
+                private readonly productImageService: ProductImageService
+    ) {
     }
 
     @Get('validate-name')
@@ -62,6 +66,12 @@ export class ProductController {
     async updateProductById(@Param('id') id: string, @Body() reqDto: UpdateProductDto) {
         reqDto.id = id;
         return this.createApiRes(await this.productService.updateProduct(reqDto), 'UPDATED', HttpStatus.OK);
+    }
+
+    @Get(':id/image')
+    async getProductImage(@Param('id') id: string,
+                          @Query('product_name') productName: string) {
+        return this.createApiRes(await this.productImageService.findByProductId(id, productName), 'OK', HttpStatus.OK);
     }
 
     @Delete(':id')

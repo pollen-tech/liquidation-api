@@ -1,15 +1,14 @@
-import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { NestFactory, Reflector } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { HttpExceptionFilter } from './common/filters/http-exception.filter';
-import { CustomConfigModule } from './config/config.module';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import {ClassSerializerInterceptor, ValidationPipe} from '@nestjs/common';
+import {ConfigService} from '@nestjs/config';
+import {NestFactory, Reflector} from '@nestjs/core';
+import {AppModule} from './app.module';
+import {HttpExceptionFilter} from './common/filters/http-exception.filter';
+import {CustomConfigModule} from './config/config.module';
+import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';
 import {initializeTransactionalContext} from "typeorm-transactional";
 
 async function bootstrap() {
 
-    // initializeTransactionalContext();
 
     const app = await NestFactory.create(AppModule);
 
@@ -36,4 +35,6 @@ async function bootstrap() {
     const port = configService.get('API_PORT', 3001);
     await app.listen(port);
 }
+
+initializeTransactionalContext();
 bootstrap();
