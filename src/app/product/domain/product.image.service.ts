@@ -16,8 +16,15 @@ import {ProductImageRepository} from "../repositories/product.image.repository";
 @Injectable()
 export class ProductImageService {
     constructor(
-        private readonly productImageRepository: ProductImageRepository,
+        private readonly productImageRepository: ProductImageRepository
     ) {
+    }
+
+    public async createByProductIdAndImage(productId: string, image: string) {
+        const imageDto = new ProductImageDto();
+        imageDto.product_id = productId
+        imageDto.image = image;
+        return this.create(imageDto);
     }
 
     public async create(imageDto: ProductImageDto) {

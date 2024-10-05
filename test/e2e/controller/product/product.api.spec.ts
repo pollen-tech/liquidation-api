@@ -10,6 +10,7 @@ import {BrandEntity} from '../../../../src/app/brand/repositories/brand.entity';
 import {BrandModule} from '../../../../src/app/brand/brand.module';
 import {create_product_req_data} from '../../../data/json/create_product';
 import {ProductService} from "../../../../src/app/product/domain/product.service";
+import {addTransactionalDataSource, initializeTransactionalContext} from "typeorm-transactional";
 
 describe('Controller: Product API Test', () => {
     let app: INestApplication;
@@ -18,6 +19,8 @@ describe('Controller: Product API Test', () => {
     let product_service: ProductService;
     let brand_entity: BrandEntity;
 
+    initializeTransactionalContext();
+
     beforeAll(async () => {
         const testingModule = await Test.createTestingModule({
             imports: [CustomConfigModule, TestDatabaseModule.forRoot(), BrandModule, ProductModule],
@@ -25,9 +28,12 @@ describe('Controller: Product API Test', () => {
             providers: [],
         }).compile();
 
+
         app = testingModule.createNestApplication();
         app.setGlobalPrefix('/api');
+
         await app.init();
+
         httpServer = app.getHttpServer();
 
         brand_repository = testingModule.get<BrandRepository>(BrandRepository);
@@ -64,7 +70,6 @@ describe('Controller: Product API Test', () => {
 
         /* send the request */
         let saved_product = await product_service.createProduct(req_dto)
-
         let edit_req_dto = {...req_dto, id: saved_product.id}
 
         /* send the request */

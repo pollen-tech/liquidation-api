@@ -10,6 +10,7 @@ export class ProductApiResDto extends ApiResDto {
 }
 
 export class NewProductDto {
+
     @IsString()
     name: string;
 
@@ -18,6 +19,9 @@ export class NewProductDto {
 
     @IsString()
     brand_id: string;
+
+    @IsString()
+    brand_name?: string;
 
     @IsString()
     lms_company_id: string;
@@ -76,6 +80,7 @@ export class ProductResDto {
     pollen_sku: string;
     sku: string;
     brand_id: string;
+    brand_name?: string;
     image?: string;
     status: Status;
     product_categories?: CategoryDto[];
@@ -85,7 +90,6 @@ export class ProductMapper {
     static async toProductEntity(req: NewProductDto): Promise<ProductEntity> {
         const productEntity = new ProductEntity();
         productEntity.name = req.name;
-        productEntity.image = req.image;
         productEntity.brand_id = req.brand_id;
         productEntity.lms_company_id = req.lms_company_id;
         productEntity.pollen_sku = 'TMP00001';
@@ -99,7 +103,6 @@ export class ProductMapper {
         dto_res.id = saved_product.id;
         dto_res.pollen_sku = saved_product.pollen_sku;
         dto_res.sku = saved_product.sku;
-        dto_res.image = saved_product.image;
         dto_res.status = saved_product.status;
 
         const groupedCategories = this.groupByCategoryDto(product_categories)

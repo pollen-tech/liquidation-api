@@ -1,17 +1,15 @@
 import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
-import {InjectRepository} from '@nestjs/typeorm';
 import {ProductRepository} from '../repositories/product.repository';
 import {ProductEntity} from '../repositories/product.entity';
 import {ProductCategoryRepository} from '../repositories/product.category.repository';
 import {ProductCategoryEntity} from '../repositories/product.category.entity';
 import {UserProductRepository} from '../repositories/user.product.repository';
 import {UserProductEntity} from '../repositories/user.product.entity';
-import {NewProductDto, ProductApiResDto, ProductMapper, UpdateProductDto} from '../dto/product.dto';
+import {NewProductDto, ProductApiResDto, ProductMapper, ProductResDto, UpdateProductDto} from '../dto/product.dto';
 import {Status} from '../../../common/enums/common.enum';
-import {ILike, Not} from 'typeorm';
+import {Not} from 'typeorm';
 import {PaginationParam} from 'src/common/pagination.entity';
 import {ProductImageService} from "./product.image.service";
-import {ProductImageDto} from "../dto/product.image.dto";
 import {Transactional} from "typeorm-transactional";
 
 @Injectable()
@@ -45,7 +43,7 @@ export class ProductService {
     }
 
     @Transactional()
-    async createProduct(reqDto: NewProductDto) {
+    async createProduct(reqDto: NewProductDto): Promise<ProductResDto> {
         const existing_product = await this.productRepository.findOneByName(reqDto.name);
         if (existing_product) {
             throw new Error('Product name already exists');
@@ -85,14 +83,13 @@ export class ProductService {
         userProductEntity.product_id = savedProduct.id;
         await this.userProductRepository.save(userProductEntity);
 
+        /* save product images */
+        await this.productImageService.createByProductIdAndImage(savedProduct.id, reqDto.image);
 
-        const imageDto = new ProductImageDto();
-        imageDto.product_id= savedProduct.id
-        imageDto.image= reqDto.image
-        await this.productImageService.create(imageDto);
-
-        //let categories_dto = ProductMapper.groupByCategoryDto(saved_categories);
-        return ProductMapper.toProductResDto(savedProduct, saved_categories);
+        const productResDto = ProductMapper.toProductResDto(savedProduct, saved_categories);
+        /* brand_id is saved, brand name optional. Just get from reqDto and send back */
+        productResDto.brand_name = reqDto.brand_name;
+        return productResDto;
     }
 
     //async findAllProductsWithCategories() {

@@ -12,8 +12,7 @@ export class ProductImageRepository extends BaseRepository<ProductImageEntity> {
             .update({product_id: productId},
                 {
                     status: Status.DELETED,
-                    // updated_at: currentDate,
-                    updated_at:  Date.now(),
+                    updated_at: currentDate,
                     updated_on: Date.now()
                 });
     }
