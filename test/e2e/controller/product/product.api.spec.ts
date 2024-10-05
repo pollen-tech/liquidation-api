@@ -44,6 +44,7 @@ describe('Controller: Product API Test', () => {
         /* prepare json request data */
         const req_dto = create_product_req_data;
         req_dto.brand_id = saved_brand_id;
+        req_dto.name = "Product " + Date.now()
 
         /* send the request */
         let response = await apiRequestTest(httpServer).post('/api/product').send(req_dto).set('Accept', 'application/json').expect(201);

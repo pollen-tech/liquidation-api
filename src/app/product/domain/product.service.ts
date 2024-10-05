@@ -10,13 +10,17 @@ import {NewProductDto, ProductApiResDto, ProductMapper, UpdateProductDto} from '
 import {Status} from '../../../common/enums/common.enum';
 import {ILike, Not} from 'typeorm';
 import {PaginationParam} from 'src/common/pagination.entity';
+import {ProductImageService} from "./product.image.service";
+import {ProductImageDto} from "../dto/product.image.dto";
+import {Transactional} from "typeorm-transactional";
 
 @Injectable()
 export class ProductService {
     constructor(
         private readonly productRepository: ProductRepository,
         private readonly productCategoryRepository: ProductCategoryRepository,
-        private readonly userProductRepository: UserProductRepository
+        private readonly userProductRepository: UserProductRepository,
+        private readonly productImageService: ProductImageService,
     ) {
     }
 
@@ -40,6 +44,7 @@ export class ProductService {
         }
     }
 
+    @Transactional()
     async createProduct(reqDto: NewProductDto) {
         const existing_product = await this.productRepository.findOneByName(reqDto.name);
         if (existing_product) {
@@ -49,6 +54,7 @@ export class ProductService {
         const next_seq_no = await this.productRepository.getNextSeqNo();
         productEntity.seq_no = next_seq_no;
         const savedProduct = await this.productRepository.save(productEntity);
+
 
         const categories = reqDto.product_categories.flatMap((category) => {
             if (!category.sub_categories || category.sub_categories.length === 0) {
@@ -78,6 +84,12 @@ export class ProductService {
         userProductEntity.user_id = reqDto.user_id;
         userProductEntity.product_id = savedProduct.id;
         await this.userProductRepository.save(userProductEntity);
+
+
+        const imageDto = new ProductImageDto();
+        imageDto.product_id= savedProduct.id
+        imageDto.image= reqDto.image
+        await this.productImageService.create(imageDto);
 
         //let categories_dto = ProductMapper.groupByCategoryDto(saved_categories);
         return ProductMapper.toProductResDto(savedProduct, saved_categories);

@@ -8,6 +8,7 @@ import {BrandCategoryEntity} from '../../src/app/brand/repositories/brand.catego
 import {ProductCategoryEntity} from '../../src/app/product/repositories/product.category.entity';
 import {ProductEntity} from '../../src/app/product/repositories/product.entity';
 import {UserProductEntity} from "../../src/app/product/repositories/user.product.entity";
+import {ProductImageEntity} from "../../src/app/product/repositories/product.image.entity";
 
 const DB_HOST: string = 'localhost';
 const DB_PORT: number = 5460;
@@ -16,7 +17,10 @@ const DB_USERNAME = 'devuser';
 const DB_PASSWORD = 'password334';
 
 const entitiesList = [BrandEntity, BrandCategoryEntity, ProductCategoryEntity, ProductEntity,
-UserProductEntity];
+UserProductEntity, ProductImageEntity];
+
+
+process.env.NODE_ENV = 'test'
 
 /**
  * Handle Database connection.
