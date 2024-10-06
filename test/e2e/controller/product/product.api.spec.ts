@@ -23,6 +23,7 @@ describe('Controller: Product API Test', () => {
     initializeTransactionalContext();
 
     beforeAll(async () => {
+
         const testingModule = await Test.createTestingModule({
             imports: [CustomConfigModule, TestDatabaseModule.forRoot(), BrandModule, ProductModule],
             controllers: [],

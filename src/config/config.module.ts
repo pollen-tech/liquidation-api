@@ -8,11 +8,16 @@ import {DataSource} from "typeorm";
 
 const configGetters = [PostgresConfigGetter, KeycloakConfigGetter];
 
+const APPLICATION_ENV = process.env.APP_ENV || 'sandbox';
+const ENV_FILE_PATH = 'build/env/.env.' + APPLICATION_ENV.toLowerCase() || 'build/env/.env';
+
+console.log('Application Running Env : ' + APPLICATION_ENV);
+
 @Global()
 @Module({
     imports: [
         ConfigModule.forRoot({
-            envFilePath: ['build/env/.env'],
+            envFilePath: [ENV_FILE_PATH],
             isGlobal: true,
             validationSchema: Joi.object({
                 API_PORT: Joi.number().default(3001),

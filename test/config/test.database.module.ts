@@ -19,9 +19,6 @@ const DB_PASSWORD = 'password334';
 const entitiesList = [BrandEntity, BrandCategoryEntity, ProductCategoryEntity, ProductEntity,
 UserProductEntity, ProductImageEntity];
 
-
-process.env.NODE_ENV = 'test'
-
 /**
  * Handle Database connection.
  */
