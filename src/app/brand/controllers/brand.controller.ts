@@ -1,15 +1,17 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { Public } from 'nest-keycloak-connect';
-import { BrandService } from '../domain/brand.service';
-import { BrandApiResDto, BrandDtoRes, NewBrandDto } from '../dto/brand.dto';
+import {Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query} from '@nestjs/common';
+import {ApiTags} from '@nestjs/swagger';
+import {Public} from 'nest-keycloak-connect';
+import {BrandService} from '../domain/brand.service';
+import {BrandApiResDto, BrandDtoRes, NewBrandDto} from '../dto/brand.dto';
 import {PaginationParam} from "../../../common/pagination.entity";
+import {BrandCompactService} from "../domain/BrandCompactService";
 
 @ApiTags('Brand')
 @Controller('brand')
 @Public()
 export class BrandController {
-    constructor(private readonly brandService: BrandService) {
+    constructor(private readonly brandService: BrandService,
+                private readonly brandCompactService: BrandCompactService) {
     }
 
     @Get('validate-name')
@@ -28,6 +30,12 @@ export class BrandController {
         return this.createApiRes(paginatedBrands, 'OK', HttpStatus.OK);
     }
 
+    @Get("/compact")
+    async findAllActiveBrandsAsCompact() {
+        const data = await this.brandCompactService.findAllActive();
+        return this.createApiRes(data, 'OK', HttpStatus.OK);
+    }
+
     @Get('search/by-name')
     async findAllBrandsByName(@Query('name') name: string) {
         return this.createApiRes(await this.brandService.findAllBrandsByName(name), 'OK', HttpStatus.OK);
@@ -35,7 +43,7 @@ export class BrandController {
 
     @Get("/id_and_name_only")
     async findAllActiveWithIdAndNameOnly
-        () {
+    () {
         return this.createApiRes(await this.brandService.findAllBrandsWithIdAndNameOnly(), 'OK', HttpStatus.OK);
     }
 
