@@ -4,6 +4,7 @@ import {ProductEntity} from '../repositories/product.entity';
 import {Type} from 'class-transformer';
 import {ProductCategoryEntity} from '../repositories/product.category.entity';
 import {ApiResDto} from "../../../common/dtos/id.dto";
+import {FilterParam, PaginationParam} from "../../../common/pagination.entity";
 
 export class ProductApiResDto extends ApiResDto {
     data?: any | NewProductDto | NewProductDto[];
@@ -84,6 +85,14 @@ export class ProductResDto {
     image?: string;
     status: Status;
     product_categories?: CategoryDto[];
+}
+
+
+export class ProductPaginationParam extends PaginationParam {
+
+    @IsString()
+    companyId: string;
+
 }
 
 export class ProductMapper {

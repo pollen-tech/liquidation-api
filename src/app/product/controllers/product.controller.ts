@@ -3,7 +3,7 @@ import {ApiTags} from '@nestjs/swagger';
 import {Public} from 'nest-keycloak-connect';
 import {
     NewProductDto,
-    ProductApiResDto,
+    ProductApiResDto, ProductPaginationParam,
     ProductResDto,
     UpdateMultiProductDto,
     UpdateProductDto
@@ -42,8 +42,7 @@ export class ProductController {
 
     @Get()
     async findAllProducts(
-        @Query('company_id') companyId: string,
-        @Query() paginationParam: PaginationParam) {
+        @Query() paginationParam: ProductPaginationParam) {
         const paginatedProducts = await this.productService.findAllProductsWithCategories(paginationParam);
         return this.createApiRes(paginatedProducts, 'OK', HttpStatus.OK);
     }
