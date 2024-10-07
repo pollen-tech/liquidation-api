@@ -14,20 +14,20 @@ export class CompactProductService {
     ) {
     }
 
-    async findAll() {
-        return this.compactProductRepository.findBy({status: Status.ACTIVE})
-    }
 
     async findAllByPageAndActiveStatus(paginationParam: ProductPaginationParam): Promise<ProductResPage> {
+
+        /* Get the products by page */
         const paginatedProducts = await this.compactProductRepository.getPaginatedProductsByActiveStatus(paginationParam);
 
-        console.log("paginatedProducts", paginatedProducts);
-
+        /* extract all product ids */
         const productIds = paginatedProducts.items.map(item => item.id);
-        const productCategories = await this.productCategoryRepository.findAllByProductIds(productIds);
-        const productsWithCategories = this.getProductsWithCategories(paginatedProducts.items, productCategories);
 
-        console.log("productsWithCategories*********", productsWithCategories);
+        /* find the product categories based on product ids */
+        const productCategories = await this.productCategoryRepository.findAllByProductIds(productIds);
+
+        /* group categories into product res dto */
+        const productsWithCategories = this.getProductsWithCategories(paginatedProducts.items, productCategories);
 
         return {
             items: productsWithCategories,
@@ -37,28 +37,21 @@ export class CompactProductService {
         };
     }
 
-
-
     getProductsWithCategories(savedProducts: CompactProductEntity[], productCategories: ProductCategoryEntity[]) {
         const categoriesByProduct =
             productCategories.reduce((acc, category) => {
-            if (!acc[category.product_id]) {
-                acc[category.product_id] = [];
-            }
-            acc[category.product_id].push(category);
-            return acc;
-        }, {} as { [product_id: number]: ProductCategoryEntity[] });
+                if (!acc[category.product_id]) {
+                    acc[category.product_id] = [];
+                }
+                acc[category.product_id].push(category);
+                return acc;
+            }, {} as { [product_id: number]: ProductCategoryEntity[] });
 
-        console.log("savedProducts", savedProducts);
-        console.log("categoriesByProduct", categoriesByProduct);
-
-        const productsWithCategories = savedProducts.map((product) => {
+        const productResDtos = savedProducts.map((product) => {
             const productCategories = categoriesByProduct[product.id] || [];
-
-            console.log("productCategories", ProductMapper.toCompactProductResDto(product, productCategories));
             return ProductMapper.toCompactProductResDto(product, productCategories);
         });
-        return productsWithCategories;
+        return productResDtos;
     }
 
 }

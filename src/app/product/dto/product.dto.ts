@@ -92,7 +92,7 @@ export class ProductResDto {
 
 export class ProductPaginationParam extends PaginationParam {
     @IsString()
-    companyId: string;
+    company_id: string;
 }
 
 export class ProductResPage {
