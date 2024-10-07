@@ -15,15 +15,22 @@ import {DatabaseModule} from '../../database/database.module';
 import {ProductImageRepository} from "./repositories/product.image.repository";
 import {ProductImageEntity} from "./repositories/product.image.entity";
 import {ProductImageService} from "./domain/product.image.service";
+import {CompactProductController} from "./controllers/compact.product.controller";
+import {CompactProductService} from "./domain/compact.product.service";
+import {CompactProductEntity} from "./repositories/compact.product.entity";
+import {CompactProductRepository} from "./repositories/compact.product.repository";
 
 let repositories: any[] = [ProductRepository, ProductCategoryRepository,
     UserProductRepository,
-    ProductImageRepository];
+    ProductImageRepository,
+    CompactProductRepository
+];
 
 @Module({
-    imports: [TypeOrmModule.forFeature([ProductEntity, ProductCategoryEntity, UserProductEntity,ProductImageEntity]), DatabaseModule.forCustomRepository(repositories)],
-    providers: [ProductService,ProductImageService],
-    controllers: [ProductController],
+    imports: [TypeOrmModule.forFeature([ProductEntity, ProductCategoryEntity, UserProductEntity,
+        ProductImageEntity, CompactProductEntity]), DatabaseModule.forCustomRepository(repositories)],
+    providers: [ProductService,ProductImageService,CompactProductService],
+    controllers: [ProductController, CompactProductController],
     exports: [TypeOrmModule, ProductService],
 })
 export class ProductModule {

@@ -5,6 +5,7 @@ import {Type} from 'class-transformer';
 import {ProductCategoryEntity} from '../repositories/product.category.entity';
 import {ApiResDto} from "../../../common/dtos/id.dto";
 import {PaginationParam} from "../../../common/pagination.entity";
+import {CompactProductEntity} from "../repositories/compact.product.entity";
 
 export class ProductApiResDto extends ApiResDto {
     data?: any | NewProductDto | NewProductDto[];
@@ -90,13 +91,19 @@ export class ProductResDto {
 
 
 export class ProductPaginationParam extends PaginationParam {
-
     @IsString()
     companyId: string;
+}
 
+export class ProductResPage {
+    items: ProductResDto[];
+    current_page: number
+    total_items: number
+    total_pages: number
 }
 
 export class ProductMapper {
+
     static async toProductEntity(req: NewProductDto): Promise<ProductEntity> {
         const productEntity = new ProductEntity();
         productEntity.name = req.name;
@@ -105,6 +112,24 @@ export class ProductMapper {
         productEntity.pollen_sku = 'TMP00001';
         productEntity.sku = req.sku;
         return productEntity;
+    }
+
+
+    static toCompactProductResDto(compact_product: CompactProductEntity, product_categories?: ProductCategoryEntity[]): ProductResDto {
+        const dto_res = new ProductResDto();
+        dto_res.name = compact_product.name;
+        dto_res.id = compact_product.id;
+        dto_res.pollen_sku = compact_product.pollen_sku;
+        dto_res.sku = compact_product.sku;
+        dto_res.status = compact_product.status;
+        dto_res.status = compact_product.status;
+        dto_res.brand_id = compact_product.brand_id;
+        dto_res.brand_name = compact_product.brand_name;
+        dto_res.image = compact_product.image;
+
+        const groupedCategories = this.groupByCompactCategoryDto(product_categories)
+        dto_res.product_categories = Object.values(groupedCategories);
+        return dto_res;
     }
 
     static toProductResDto(saved_product: ProductEntity, product_categories?: ProductCategoryEntity[]): ProductResDto {
@@ -120,7 +145,7 @@ export class ProductMapper {
         return dto_res;
     }
 
-    static groupByCategoryDto(categories: ProductCategoryEntity[]): CategoryDto[] {
+    private static groupByCategoryDto(categories: ProductCategoryEntity[]): CategoryDto[] {
         const groupedCategories = categories.reduce((acc, category) => {
             if (!acc[category.category_id]) {
                 acc[category.category_id] = {
@@ -134,6 +159,25 @@ export class ProductMapper {
                 sub_category_id: category.sub_category_id || null,
                 sub_category_name: category.sub_category_name,
                 sub_category_description: category.sub_category_description,
+            });
+            return acc;
+        }, {});
+        return Object.values(groupedCategories);
+    }
+
+
+    private static groupByCompactCategoryDto(categories: ProductCategoryEntity[]): CategoryDto[] {
+        const groupedCategories = categories.reduce((acc, category) => {
+            if (!acc[category.category_id]) {
+                acc[category.category_id] = {
+                    category_id: category.category_id.toString(),
+                    category_name: category.category_name,
+                    sub_categories: [],
+                };
+            }
+            acc[category.category_id].sub_categories.push({
+                sub_category_id: category.sub_category_id || null,
+                sub_category_name: category.sub_category_name,
             });
             return acc;
         }, {});
