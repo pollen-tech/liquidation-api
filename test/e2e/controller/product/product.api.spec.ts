@@ -107,6 +107,8 @@ describe('Controller: Product API Test', () => {
             products: editReqDtoList
         };
 
+        console.log("Req :" + JSON.stringify(req));
+
         /* send the request */
         let response = await apiRequestTest(httpServer).put('/api/product/multiple')
             .send(req).set('Accept', 'application/json').expect(200);

@@ -9,6 +9,8 @@ provider:
   name: aws
   runtime: nodejs20.x
   stage: dev
+  environment:
+    APP_ENV: sandbox
   region: ap-southeast-1 # or whatever your region is
   # update required memory for lambda upto 10GB
   memorySize: 1024

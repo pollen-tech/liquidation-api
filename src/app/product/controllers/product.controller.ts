@@ -42,6 +42,7 @@ export class ProductController {
 
     @Get()
     async findAllProducts(
+        @Query('company_id') companyId: string,
         @Query() paginationParam: PaginationParam) {
         const paginatedProducts = await this.productService.findAllProductsWithCategories(paginationParam);
         return this.createApiRes(paginatedProducts, 'OK', HttpStatus.OK);
