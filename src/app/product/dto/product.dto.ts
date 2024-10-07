@@ -1,10 +1,10 @@
-import {IsOptional, IsEnum, IsString, IsArray, ValidateNested} from 'class-validator';
+import {IsArray, IsOptional, IsString, ValidateNested} from 'class-validator';
 import {Status} from '../../../common/enums/common.enum';
 import {ProductEntity} from '../repositories/product.entity';
 import {Type} from 'class-transformer';
 import {ProductCategoryEntity} from '../repositories/product.category.entity';
 import {ApiResDto} from "../../../common/dtos/id.dto";
-import {FilterParam, PaginationParam} from "../../../common/pagination.entity";
+import {PaginationParam} from "../../../common/pagination.entity";
 
 export class ProductApiResDto extends ApiResDto {
     data?: any | NewProductDto | NewProductDto[];
@@ -46,6 +46,7 @@ export class UpdateProductDto extends NewProductDto {
 }
 
 export class UpdateMultiProductDto {
+    @IsArray()
     products: UpdateProductDto[]
 }
 

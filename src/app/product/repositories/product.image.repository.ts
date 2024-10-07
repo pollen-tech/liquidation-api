@@ -2,6 +2,7 @@ import BaseRepository from '../../../database/infrastructure/repository/base.rep
 import {CustomRepository} from '../../../database/decorators/custom-repository.decorator';
 import {ProductImageEntity} from "./product.image.entity";
 import {Status} from "../../../common/enums/common.enum";
+import {In} from "typeorm";
 
 @CustomRepository(ProductImageEntity)
 export class ProductImageRepository extends BaseRepository<ProductImageEntity> {
@@ -15,5 +16,9 @@ export class ProductImageRepository extends BaseRepository<ProductImageEntity> {
                     updated_at: currentDate,
                     updated_on: Date.now()
                 });
+    }
+
+    async findAllByProductId(productIds: string[]) {
+        return await this.getRepository().findBy({product_id: In(productIds), status: Status.ACTIVE});
     }
 }

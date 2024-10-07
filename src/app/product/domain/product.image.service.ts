@@ -10,6 +10,17 @@ export class ProductImageService {
     ) {
     }
 
+
+    public async findAllByProductId(productIds: string[]) {
+        const values = await this.productImageRepository.findAllByProductId(productIds);
+        const result = values
+            .map(item => {
+                return {product_id: item.product_id, product_image: item.image}
+            });
+        return result;
+    }
+
+
     public async createByProductIdAndImage(productId: string, image: string) {
         const imageDto = new ProductImageDto();
         imageDto.product_id = productId

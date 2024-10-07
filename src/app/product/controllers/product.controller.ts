@@ -3,14 +3,13 @@ import {ApiTags} from '@nestjs/swagger';
 import {Public} from 'nest-keycloak-connect';
 import {
     NewProductDto,
-    ProductApiResDto, ProductPaginationParam,
+    ProductApiResDto,
+    ProductPaginationParam,
     ProductResDto,
     UpdateMultiProductDto,
     UpdateProductDto
 } from '../dto/product.dto';
 import {ProductService} from '../domain/product.service';
-import {PaginationParam} from "../../../common/pagination.entity";
-import {ProductImageDto, ProductImageResDto} from "../dto/product.image.dto";
 import {ProductImageService} from "../domain/product.image.service";
 
 @ApiTags('Product')
