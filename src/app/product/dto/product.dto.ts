@@ -129,6 +129,7 @@ export class ProductMapper {
 
         const groupedCategories = this.groupByCompactCategoryDto(product_categories)
         dto_res.product_categories = Object.values(groupedCategories);
+        console.log(dto_res.product_categories);
         return dto_res;
     }
 
@@ -171,7 +172,7 @@ export class ProductMapper {
         const groupedCategories = categories.reduce((acc, category) => {
             if (!acc[category.category_id]) {
                 acc[category.category_id] = {
-                    category_id: category.category_id.toString(),
+                    category_id: category.category_id,
                     category_name: category.category_name,
                     sub_categories: [],
                 };
