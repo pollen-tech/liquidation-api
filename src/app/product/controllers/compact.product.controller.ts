@@ -5,7 +5,7 @@ import {ProductApiResDto, ProductPaginationParam, ProductResPage} from '../dto/p
 import {CompactProductService} from "../domain/compact.product.service";
 
 @ApiTags('Products in Compact size')
-@Controller('products/compact')
+@Controller('/compact/products')
 @Public()
 export class CompactProductController {
 

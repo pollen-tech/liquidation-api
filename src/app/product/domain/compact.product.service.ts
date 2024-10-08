@@ -14,7 +14,6 @@ export class CompactProductService {
     ) {
     }
 
-
     async findAllByPageAndActiveStatus(paginationParam: ProductPaginationParam): Promise<ProductResPage> {
 
         /* Get the products by page */

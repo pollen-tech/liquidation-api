@@ -12,8 +12,8 @@ import {
 import {ProductService} from '../domain/product.service';
 import {ProductImageService} from "../domain/product.image.service";
 
-@ApiTags('Product')
-@Controller('product')
+@ApiTags('Products')
+@Controller('products')
 @Public()
 export class ProductController {
 
