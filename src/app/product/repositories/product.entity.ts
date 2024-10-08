@@ -11,6 +11,7 @@ import {
 	BeforeUpdate,
 } from 'typeorm';
 import { Status } from '../../../common/enums/common.enum';
+import { IsOptional, IsString } from 'class-validator';
 
 @Entity('product')
 export class ProductEntity {
@@ -35,6 +36,9 @@ export class ProductEntity {
 
 	@Column()
 	name: string;
+
+	@Column({ nullable: true })
+	image: string;
 
 	@CreateDateColumn({ type: 'timestamptz' })
 	created_at: Date;
