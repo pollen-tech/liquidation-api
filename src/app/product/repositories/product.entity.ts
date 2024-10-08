@@ -37,9 +37,6 @@ export class ProductEntity {
 	@Column()
 	name: string;
 
-	@Column({ nullable: true })
-	image: string;
-
 	@CreateDateColumn({ type: 'timestamptz' })
 	created_at: Date;
 

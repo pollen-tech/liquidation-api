@@ -152,9 +152,6 @@ export class ProductService {
     }
 
     async updateMultipleProduct(updateDtoList: UpdateProductDto[]) {
-
-        console.log("Update data list ", updateDtoList);
-
         const promiseList = updateDtoList.map(dto => {
             return this.updateProduct(dto)
         })

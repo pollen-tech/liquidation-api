@@ -140,7 +140,6 @@ export class ProductMapper {
         dto_res.sku = saved_product.sku;
         dto_res.status = saved_product.status;
         dto_res.brand_id = saved_product.brand_id;
-        dto_res.image = saved_product.image;
 
         const groupedCategories = this.groupByCategoryDto(product_categories)
         dto_res.product_categories = Object.values(groupedCategories);
