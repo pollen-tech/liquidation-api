@@ -1,4 +1,4 @@
-import {IsArray, IsOptional, IsString, ValidateNested} from 'class-validator';
+import {IsArray, IsNumber, IsOptional, IsString, ValidateNested} from 'class-validator';
 import {Status} from '../../../common/enums/common.enum';
 import {ProductEntity} from '../repositories/product.entity';
 import {Type} from 'class-transformer';
@@ -52,8 +52,8 @@ export class UpdateMultiProductDto {
 }
 
 class CategoryDto {
-    @IsString()
-    category_id: string;
+    @IsNumber()
+    category_id: number;
 
     @IsString()
     category_name: string;
@@ -66,8 +66,8 @@ class CategoryDto {
 }
 
 class SubCategoryDto {
-    @IsString()
-    sub_category_id: string;
+    @IsNumber()
+    sub_category_id: number;
 
     @IsString()
     sub_category_name: string;
@@ -157,10 +157,10 @@ export class ProductMapper {
                 };
             }
             acc[category.category_id].sub_categories.push({
-                category_id: category.category_id.toString(),
+                // category_id: category.category_id.toString(),
                 sub_category_id: category.sub_category_id || null,
                 sub_category_name: category.sub_category_name,
-                sub_category_description: category.sub_category_description,
+                //sub_category_description: category.sub_category_description,
             });
             return acc;
         }, {});

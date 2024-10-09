@@ -23,6 +23,7 @@ export class CreateCompactProductVw1728028989499 implements MigrationInterface {
                          (SELECT image
                           FROM   product_image pi
                           WHERE  pi.product_id = p.id
+                          and pi.status = 'ACTIVE' 
                           LIMIT  1) AS image
                   FROM   product p
                          INNER JOIN brand b

@@ -160,7 +160,6 @@ export class ProductService {
 
     @Transactional()
     async updateProduct(updateProductDto: UpdateProductDto): Promise<ProductResDto> {
-        console.log('update: ', updateProductDto);
         const productId = updateProductDto.id;
         const product = await this.productRepository.findOne({where: {id: productId}});
         if (!product) {
@@ -169,30 +168,7 @@ export class ProductService {
         const updatedProduct = this.productRepository.merge(product, updateProductDto);
         const savedProduct = await this.productRepository.save(updatedProduct);
 
-        const categories = updateProductDto.product_categories
-            .flatMap((category) => {
-                const sub_categories = category.sub_categories;
-                const categoryEntity = new ProductCategoryEntity();
-                categoryEntity.product_id = savedProduct.id;
-                categoryEntity.category_id = category.category_id;
-                categoryEntity.category_name = category.category_name;
-                if (!sub_categories || sub_categories.length === 0) {
-                    /* when sub-categories empty */
-                    categoryEntity.sub_category_id = null;
-                    categoryEntity.sub_category_name = '';
-                    categoryEntity.sub_category_description = '';
-                    return [categoryEntity];
-                }
-                /* when sub-categories is not empty */
-                return (sub_categories).map((subCategory) => {
-                    categoryEntity.sub_category_id = subCategory.sub_category_id;
-                    categoryEntity.sub_category_name = subCategory.sub_category_name;
-                    categoryEntity.sub_category_description = subCategory.sub_category_description;
-                    return categoryEntity;
-                });
-            });
-
-        // let groupedCategory = this.groupByCategory(categories);
+        const categories = this.createProductCategoryEntitiesFromRequest(updateProductDto, productId)
 
         await this.productCategoryRepository.delete({product_id: savedProduct.id});
 
@@ -205,31 +181,6 @@ export class ProductService {
         /* brand_id is saved, brand name optional. Just get from reqDto and send back */
         productResDto.brand_name = updateProductDto.brand_name;
         return productResDto;
-
-        // let res: any;
-        // res = savedProduct;
-        // res.product_categories = groupedCategory;
-        // console.log(res);
-        //
-        // return res;
-
-
-        //////////////
-
-        // const saved_categories = await this.productCategoryRepository.save(categories);
-        // const userProductEntity = new UserProductEntity();
-        // userProductEntity.user_id = reqDto.user_id;
-        // userProductEntity.product_id = savedProduct.id;
-        // await this.userProductRepository.save(userProductEntity);
-        //
-        // /* save product images */
-        // await this.productImageService.createByProductIdAndImage(savedProduct.id, reqDto.image);
-        //
-        // const productResDto = ProductMapper.toProductResDto(savedProduct, saved_categories);
-        // /* brand_id is saved, brand name optional. Just get from reqDto and send back */
-        // productResDto.brand_name = reqDto.brand_name;
-        // return productResDto;
-        /////////////
     }
 
     async softDeleteProduct(id: string): Promise<void> {
@@ -276,4 +227,36 @@ export class ProductService {
         });
         return productsWithCategories;
     }
+
+    private createProductCategoryEntitiesFromRequest(updateRequestDto: UpdateProductDto, _product_id: string) {
+        return updateRequestDto
+            .product_categories
+            .flatMap((category) => {
+                const sub_categories = category.sub_categories;
+                if (!sub_categories || sub_categories.length === 0) {
+                    /* when sub-categories empty , create only one Product Category Entity */
+                    const categoryEntity = new ProductCategoryEntity();
+                    categoryEntity.product_id = _product_id;
+                    categoryEntity.category_id = category.category_id;
+                    categoryEntity.category_name = category.category_name;
+                    categoryEntity.sub_category_id = 0;
+                    categoryEntity.sub_category_name = 'NA';
+                    categoryEntity.sub_category_description = 'NA';
+                    return [categoryEntity];
+                }
+                /* when sub-categories is not empty, create Product Category entity as length of Subcategories */
+                return (sub_categories).map((subCategory) => {
+                    const categoryEntity = new ProductCategoryEntity();
+                    categoryEntity.product_id = _product_id;
+                    categoryEntity.category_id = category.category_id;
+                    categoryEntity.category_name = category.category_name;
+                    categoryEntity.sub_category_id = subCategory.sub_category_id;
+                    categoryEntity.sub_category_name = subCategory.sub_category_name;
+                    categoryEntity.sub_category_description = subCategory.sub_category_description;
+                    return categoryEntity;
+                });
+            });
+
+    }
+
 }
