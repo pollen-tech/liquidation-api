@@ -1,11 +1,9 @@
-import {IsOptional, IsEnum, IsNotEmpty, IsString, IsArray, ValidateNested} from 'class-validator';
-import {Optional} from '@nestjs/common';
+import {IsArray, IsOptional, IsString, ValidateNested} from 'class-validator';
 import {Status} from '../../../common/enums/common.enum';
 import {BrandEntity} from '../repositories/brand.entity';
 import {Type} from 'class-transformer';
 import {BrandCategoryEntity} from '../repositories/brand.category.entity';
 import {ApiResDto} from "../../../common/dtos/id.dto";
-import {NewProductDto} from "../../product/dto/product.dto";
 
 export class NewBrandDto {
     @IsString()
@@ -29,12 +27,34 @@ export class BrandIdAndNameOnlyDto {
         this.id = id;
         this.name = name;
     }
+}
 
+export class UpdateBrandDto extends NewBrandDto {
+    @IsString()
+    id: string;
+
+    @IsString()
+    name: string;
+
+    @IsOptional()
+    @IsString()
+    image?: string;
+
+    @IsArray()
+    @ValidateNested({each: true})
+    @Type(() => CategoryDto)
+    brand_categories: CategoryDto[];
+}
+
+export class UpdateMultipleBrandDto {
+    @Type(() => UpdateBrandDto)
+    @IsArray()
+    brands: UpdateBrandDto[];
 }
 
 export class CategoryDto {
     @IsString()
-    category_id: string;
+    category_id: number;
 
     @IsString()
     category_name: string;
@@ -47,7 +67,7 @@ export class CategoryDto {
 
 class SubCategoryDto {
     @IsString()
-    sub_category_id: string;
+    sub_category_id: number;
 
     @IsString()
     sub_category_name: string;
@@ -70,7 +90,7 @@ export class BrandCompactDto {
     brand_id: string;
     brand_name: string;
 
-    constructor(id:string, name:string) {
+    constructor(id: string, name: string) {
         this.brand_id = id;
         this.brand_name = name;
     }

@@ -36,7 +36,7 @@ export class ProductController {
 
     @Put("/multiple")
     async updateMultipleProducts(@Body() multiProducts: UpdateMultiProductDto) {
-        return this.createApiRes(await this.productService.updateMultipleProduct(multiProducts.products), 'UPDATED', HttpStatus.OK);
+        return this.createApiRes(await this.productService.updateMultipleProducts(multiProducts.products), 'UPDATED', HttpStatus.OK);
     }
 
     @Get()

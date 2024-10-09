@@ -4,10 +4,18 @@ import {BrandRepository} from '../repositories/brand.repository';
 import {BrandEntity} from '../repositories/brand.entity';
 import {BrandCategoryRepository} from '../repositories/brand.category.repository';
 import {BrandCategoryEntity} from '../repositories/brand.category.entity';
-import {NewBrandDto, BrandMapper, CategoryDto, BrandDtoRes, BrandIdAndNameOnlyDto} from '../dto/brand.dto';
+import {
+    NewBrandDto,
+    BrandMapper,
+    CategoryDto,
+    BrandDtoRes,
+    BrandIdAndNameOnlyDto,
+    UpdateBrandDto, UpdateMultipleBrandDto
+} from '../dto/brand.dto';
 import {Status} from '../../../common/enums/common.enum';
 import {ILike, Not} from 'typeorm';
 import {PaginationParam} from 'src/common/pagination.entity';
+import {Transactional} from "typeorm-transactional";
 
 @Injectable()
 export class BrandService {
@@ -40,6 +48,7 @@ export class BrandService {
         };
     }
 
+    @Transactional()
     async createBrand(reqDto: NewBrandDto) {
         const isNameTaken = await this.isBrandNameTaken(reqDto.name);
         if (isNameTaken.status_code === 400) {
@@ -129,11 +138,19 @@ export class BrandService {
         return groupedCategory;
     }
 
-    async updateBrand(id: string, updateBrandDto: NewBrandDto) {
+    async updateMultipleBrands(brandDtos: UpdateBrandDto[]) {
+        /* create all promises */
+        const update_promises = brandDtos.map(updateDto => this.updateBrand(updateDto));
+        /* call all promises */
+        return await Promise.all(update_promises);
+    }
+
+    @Transactional()
+    async updateBrand(updateBrandDto: UpdateBrandDto) {
         console.log('update: ', updateBrandDto);
-        const brand = await this.brandRepository.findOne({where: {id}});
+        const brand = await this.brandRepository.findOne({where: {id: updateBrandDto.id}});
         if (!brand) {
-            throw new Error(`Brand with ID ${id} not found`);
+            throw new Error(`Brand with ID ${updateBrandDto.id} not found`);
         }
 
         // Merge existing entity with updated data

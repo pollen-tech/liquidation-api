@@ -151,7 +151,7 @@ export class ProductService {
         return groupedCategory;
     }
 
-    async updateMultipleProduct(updateDtoList: UpdateProductDto[]) {
+    async updateMultipleProducts(updateDtoList: UpdateProductDto[]) {
         const promiseList = updateDtoList.map(dto => {
             return this.updateProduct(dto)
         })

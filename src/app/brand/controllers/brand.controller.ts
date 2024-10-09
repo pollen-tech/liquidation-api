@@ -2,12 +2,12 @@ import {Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query} from
 import {ApiTags} from '@nestjs/swagger';
 import {Public} from 'nest-keycloak-connect';
 import {BrandService} from '../domain/brand.service';
-import {BrandApiResDto, BrandDtoRes, NewBrandDto} from '../dto/brand.dto';
+import {BrandApiResDto, BrandDtoRes, NewBrandDto, UpdateMultipleBrandDto} from '../dto/brand.dto';
 import {PaginationParam} from "../../../common/pagination.entity";
 import {BrandCompactService} from "../domain/BrandCompactService";
 
-@ApiTags('Brand')
-@Controller('brand')
+@ApiTags('Brands')
+@Controller('brands')
 @Public()
 export class BrandController {
     constructor(private readonly brandService: BrandService,
@@ -57,9 +57,9 @@ export class BrandController {
         return this.createApiRes(await this.brandService.findBrandCategorywithBrandId(id), 'OK', HttpStatus.OK);
     }
 
-    @Put(':id')
-    async updateBrand(@Param('id') id: string, @Body() updateBrandDto: NewBrandDto) {
-        return this.createApiRes(await this.brandService.updateBrand(id, updateBrandDto), 'UPDATED', HttpStatus.OK);
+    @Put('multiple')
+    async updateMultipleBrands(@Body() multiBrandDto: UpdateMultipleBrandDto) {
+        return this.createApiRes(await this.brandService.updateMultipleBrands(multiBrandDto.brands), 'UPDATED', HttpStatus.OK);
     }
 
     @Delete(':id')
