@@ -1,7 +1,6 @@
-import {MigrationInterface, QueryRunner} from 'typeorm';
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class CreateCompactProductVw1728028989499 implements MigrationInterface {
-
     name = 'CreateCompactProductVw1728028989499';
 
     public async up(queryRunner: QueryRunner): Promise<void> {
@@ -35,5 +34,4 @@ export class CreateCompactProductVw1728028989499 implements MigrationInterface {
     public async down(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`DROP view IF EXISTS compact_product_vw;`);
     }
-
 }

@@ -48,7 +48,7 @@ export default class BaseRepository<T> extends Repository<T> {
     }
     async getPaginated(paginationParam: PaginationParam, opts: FindManyOptions<T> = {}): Promise<Paginated<T>> {
         let { page, size } = paginationParam;
-        page = Number(page) || 1; 
+        page = Number(page) || 1;
         size = Number(size) || 25;
         if (page < 1) {
             page = 1;

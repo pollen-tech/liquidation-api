@@ -1,4 +1,4 @@
-import {NewProductDto} from "../../../src/app/product/dto/product.dto";
+import { NewProductDto } from '../../../src/app/product/dto/product.dto';
 
 export const create_product_req_data: NewProductDto = {
     name: 'Loreal facewash',

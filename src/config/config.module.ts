@@ -3,8 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { PostgresConfigGetter } from './getters/postgres-config.getter';
 import { KeycloakConfigGetter } from './getters/keycloak-config.getter';
-import {addTransactionalDataSource} from "typeorm-transactional";
-import {DataSource} from "typeorm";
+import { addTransactionalDataSource } from 'typeorm-transactional';
+import { DataSource } from 'typeorm';
 
 const configGetters = [PostgresConfigGetter, KeycloakConfigGetter];
 

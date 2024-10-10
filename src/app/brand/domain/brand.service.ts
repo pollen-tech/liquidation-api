@@ -1,36 +1,28 @@
-import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
-import {InjectRepository} from '@nestjs/typeorm';
-import {BrandRepository} from '../repositories/brand.repository';
-import {BrandEntity} from '../repositories/brand.entity';
-import {BrandCategoryRepository} from '../repositories/brand.category.repository';
-import {BrandCategoryEntity} from '../repositories/brand.category.entity';
-import {
-    NewBrandDto,
-    BrandMapper,
-    CategoryDto,
-    BrandDtoRes,
-    BrandIdAndNameOnlyDto,
-    UpdateBrandDto, UpdateMultipleBrandDto
-} from '../dto/brand.dto';
-import {Status} from '../../../common/enums/common.enum';
-import {ILike, Not} from 'typeorm';
-import {PaginationParam} from 'src/common/pagination.entity';
-import {Transactional} from "typeorm-transactional";
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { BrandRepository } from '../repositories/brand.repository';
+import { BrandEntity } from '../repositories/brand.entity';
+import { BrandCategoryRepository } from '../repositories/brand.category.repository';
+import { BrandCategoryEntity } from '../repositories/brand.category.entity';
+import { NewBrandDto, BrandMapper, CategoryDto, BrandDtoRes, BrandIdAndNameOnlyDto, UpdateBrandDto, UpdateMultipleBrandDto } from '../dto/brand.dto';
+import { Status } from '../../../common/enums/common.enum';
+import { ILike, Not } from 'typeorm';
+import { PaginationParam } from 'src/common/pagination.entity';
+import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
 export class BrandService {
     constructor(
         private readonly brandRepository: BrandRepository,
         private readonly brandCategoryRepository: BrandCategoryRepository,
-    ) {
-    }
+    ) {}
 
     async isBrandNameTaken(name: string) {
         if (!name) {
             throw new BadRequestException('Brand name query param is required');
         }
         const existingBrand = await this.brandRepository.findOne({
-            where: {name},
+            where: { name },
         });
         const isTaken = !!existingBrand;
         if (isTaken) {
@@ -78,11 +70,10 @@ export class BrandService {
 
     async findAllBrandsWithCategories(paginationParam: PaginationParam) {
         //const savedBrands = await this.brandRepository.findAllByActiveStatus();
-        const paginatedBrands = await this.brandRepository
-            .getPaginatedBrandsByActiveStatus(paginationParam);
+        const paginatedBrands = await this.brandRepository.getPaginatedBrandsByActiveStatus(paginationParam);
 
         const savedCategories = await this.brandCategoryRepository.find({
-            where: {status: Status.ACTIVE},
+            where: { status: Status.ACTIVE },
         });
 
         console.log('savedCategories: ', savedCategories);
@@ -105,9 +96,9 @@ export class BrandService {
     }
 
     async findByBrandId(id: string) {
-        const savedBrand = await this.brandRepository.findOne({where: {id, status: Not(Status.DELETED)}});
+        const savedBrand = await this.brandRepository.findOne({ where: { id, status: Not(Status.DELETED) } });
         const savedCategories = await this.brandCategoryRepository.find({
-            where: {brand_id: savedBrand.id, status: Not(Status.DELETED)},
+            where: { brand_id: savedBrand.id, status: Not(Status.DELETED) },
         });
         return BrandMapper.toBrandResDto(savedBrand, savedCategories);
     }
@@ -116,19 +107,19 @@ export class BrandService {
         const savedBrands = await this.brandRepository.find({
             where: {
                 name: ILike(`%${name}%`),
-                status: Not(Status.DELETED)
-            }
+                status: Not(Status.DELETED),
+            },
         });
         const savedCategories = await this.brandCategoryRepository.find({
-            where: {status: Not(Status.DELETED)},
+            where: { status: Not(Status.DELETED) },
         });
         return this.getBrandsWithCategories(savedBrands, savedCategories);
     }
 
     async findBrandCategorywithBrandId(id: string): Promise<BrandCategoryEntity[]> {
-        const savedBrand = await this.brandRepository.findOne({where: {id, status: Not(Status.DELETED)}});
+        const savedBrand = await this.brandRepository.findOne({ where: { id, status: Not(Status.DELETED) } });
         const savedCategories = await this.brandCategoryRepository.find({
-            where: {brand_id: savedBrand.id, status: Not(Status.DELETED)},
+            where: { brand_id: savedBrand.id, status: Not(Status.DELETED) },
         });
         let groupedCategory = this.groupByCategory(savedCategories);
 
@@ -140,7 +131,7 @@ export class BrandService {
 
     async updateMultipleBrands(brandDtos: UpdateBrandDto[]) {
         /* create all promises */
-        const update_promises = brandDtos.map(updateDto => this.updateBrand(updateDto));
+        const update_promises = brandDtos.map((updateDto) => this.updateBrand(updateDto));
         /* call all promises */
         return await Promise.all(update_promises);
     }
@@ -148,7 +139,7 @@ export class BrandService {
     @Transactional()
     async updateBrand(updateBrandDto: UpdateBrandDto) {
         console.log('update: ', updateBrandDto);
-        const brand = await this.brandRepository.findOne({where: {id: updateBrandDto.id}});
+        const brand = await this.brandRepository.findOne({ where: { id: updateBrandDto.id } });
         if (!brand) {
             throw new Error(`Brand with ID ${updateBrandDto.id} not found`);
         }
@@ -170,13 +161,13 @@ export class BrandService {
             }),
         );
         let groupedCategory = this.groupByCategory(categories);
-        await this.brandCategoryRepository.delete({brand_id: savedBrand.id});
+        await this.brandCategoryRepository.delete({ brand_id: savedBrand.id });
         const savedCategories = await this.brandCategoryRepository.save(categories);
         return BrandMapper.toBrandResDto(savedBrand, savedCategories);
     }
 
     async softDeleteBrand(id: string): Promise<void> {
-        const brand = await this.brandRepository.findOneBy({id});
+        const brand = await this.brandRepository.findOneBy({ id });
         if (!brand) {
             throw new NotFoundException(`Brand with ID ${id} not found`);
         }
@@ -203,13 +194,16 @@ export class BrandService {
     }
 
     getBrandsWithCategories(savedBrands: BrandEntity[], savedCategories: BrandCategoryEntity[]) {
-        const categoriesByBrand = savedCategories.reduce((acc, category) => {
-            if (!acc[category.brand_id]) {
-                acc[category.brand_id] = [];
-            }
-            acc[category.brand_id].push(category);
-            return acc;
-        }, {} as { [brand_id: number]: BrandCategoryEntity[] });
+        const categoriesByBrand = savedCategories.reduce(
+            (acc, category) => {
+                if (!acc[category.brand_id]) {
+                    acc[category.brand_id] = [];
+                }
+                acc[category.brand_id].push(category);
+                return acc;
+            },
+            {} as { [brand_id: number]: BrandCategoryEntity[] },
+        );
 
         const brandsWithCategories = savedBrands.map((brand) => {
             const brandCategories = categoriesByBrand[brand.id] || [];

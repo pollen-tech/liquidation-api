@@ -51,7 +51,7 @@ export class BrandEntity {
         this.updated_on = Date.now();
     }
 
-    updateAsDeleted(){
+    updateAsDeleted() {
         this.status = Status.DELETED;
     }
 }

@@ -1,29 +1,23 @@
-import {Injectable} from '@nestjs/common';
-import {Status} from '../../../common/enums/common.enum';
-import {ProductImageDto, ProductImageMapper, ProductImageResDto} from "../dto/product.image.dto";
-import {ProductImageRepository} from "../repositories/product.image.repository";
+import { Injectable } from '@nestjs/common';
+import { Status } from '../../../common/enums/common.enum';
+import { ProductImageDto, ProductImageMapper, ProductImageResDto } from '../dto/product.image.dto';
+import { ProductImageRepository } from '../repositories/product.image.repository';
 
 @Injectable()
 export class ProductImageService {
-    constructor(
-        private readonly productImageRepository: ProductImageRepository
-    ) {
-    }
-
+    constructor(private readonly productImageRepository: ProductImageRepository) {}
 
     public async findAllByProductId(productIds: string[]) {
         const values = await this.productImageRepository.findAllByProductId(productIds);
-        const result = values
-            .map(item => {
-                return {product_id: item.product_id, product_image: item.image}
-            });
+        const result = values.map((item) => {
+            return { product_id: item.product_id, product_image: item.image };
+        });
         return result;
     }
 
-
     public async createByProductIdAndImage(productId: string, image: string) {
         const imageDto = new ProductImageDto();
-        imageDto.product_id = productId
+        imageDto.product_id = productId;
         imageDto.image = image;
         return this.create(imageDto);
     }
@@ -35,19 +29,20 @@ export class ProductImageService {
         const entity = ProductImageMapper.toEntity(imageDto);
         /* Save the image */
         const savedEntity = await this.productImageRepository.save(entity);
-        imageDto.id = savedEntity.id
+        imageDto.id = savedEntity.id;
         return imageDto;
     }
 
     public async findByProductId(productId: string, productName: string) {
-        return await this.productImageRepository.findBy({product_id: productId, status: Status.ACTIVE})
-            .then(images => ProductImageMapper.toDtos(images))
-            .then(imageDtos => {
+        return await this.productImageRepository
+            .findBy({ product_id: productId, status: Status.ACTIVE })
+            .then((images) => ProductImageMapper.toDtos(images))
+            .then((imageDtos) => {
                 const dto: ProductImageResDto = {
                     product_name: productName,
                     product_id: productId,
-                    images: imageDtos
-                }
+                    images: imageDtos,
+                };
                 return dto;
             });
     }

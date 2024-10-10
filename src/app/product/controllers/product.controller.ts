@@ -1,31 +1,21 @@
-import {Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query} from '@nestjs/common';
-import {ApiTags} from '@nestjs/swagger';
-import {Public} from 'nest-keycloak-connect';
-import {
-    NewProductDto,
-    ProductApiResDto,
-    ProductPaginationParam,
-    ProductResDto,
-    UpdateMultiProductDto,
-    UpdateProductDto
-} from '../dto/product.dto';
-import {ProductService} from '../domain/product.service';
-import {ProductImageService} from "../domain/product.image.service";
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { Public } from 'nest-keycloak-connect';
+import { NewProductDto, ProductApiResDto, ProductPaginationParam, ProductResDto, UpdateMultiProductDto, UpdateProductDto } from '../dto/product.dto';
+import { ProductService } from '../domain/product.service';
+import { ProductImageService } from '../domain/product.image.service';
 
 @ApiTags('Products')
 @Controller('products')
 @Public()
 export class ProductController {
-
-    constructor(private readonly productService: ProductService,
-                private readonly productImageService: ProductImageService
-    ) {
-    }
+    constructor(
+        private readonly productService: ProductService,
+        private readonly productImageService: ProductImageService,
+    ) {}
 
     @Get('validate-name')
-    async validateProductName(
-        @Query('company_id') companyId: string,
-        @Query('name') name: string) {
+    async validateProductName(@Query('company_id') companyId: string, @Query('name') name: string) {
         return this.createApiRes(await this.productService.isProductNameTaken(name), 'OK', HttpStatus.OK);
     }
 
@@ -34,14 +24,13 @@ export class ProductController {
         return this.createApiRes(await this.productService.createProduct(reqDto), 'CREATED', HttpStatus.CREATED);
     }
 
-    @Put("/multiple")
+    @Put('/multiple')
     async updateMultipleProducts(@Body() multiProducts: UpdateMultiProductDto) {
         return this.createApiRes(await this.productService.updateMultipleProducts(multiProducts.products), 'UPDATED', HttpStatus.OK);
     }
 
     @Get()
-    async findAllProducts(
-        @Query() paginationParam: ProductPaginationParam) {
+    async findAllProducts(@Query() paginationParam: ProductPaginationParam) {
         const paginatedProducts = await this.productService.findAllProductsWithCategories(paginationParam);
         return this.createApiRes(paginatedProducts, 'OK', HttpStatus.OK);
     }
@@ -68,8 +57,7 @@ export class ProductController {
     }
 
     @Get(':id/image')
-    async getProductImage(@Param('id') id: string,
-                          @Query('product_name') productName: string) {
+    async getProductImage(@Param('id') id: string, @Query('product_name') productName: string) {
         return this.createApiRes(await this.productImageService.findByProductId(id, productName), 'OK', HttpStatus.OK);
     }
 
@@ -78,8 +66,7 @@ export class ProductController {
         return this.createApiRes(this.productService.softDeleteProduct(id), 'DELETED', HttpStatus.OK);
     }
 
-    async createApiRes(data: ProductResDto | ProductResDto[] | ProductApiResDto | ProductApiResDto[] | any,
-                       status: string, status_code: number) {
+    async createApiRes(data: ProductResDto | ProductResDto[] | ProductApiResDto | ProductApiResDto[] | any, status: string, status_code: number) {
         const res: ProductApiResDto = {
             status_code: status_code,
             status: status,

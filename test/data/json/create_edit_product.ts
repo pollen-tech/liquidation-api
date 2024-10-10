@@ -86,5 +86,5 @@ export const edit_product_req_data = [
                 ],
             },
         ],
-    }
+    },
 ];

@@ -1,18 +1,17 @@
-import {IsArray, IsNumber, IsOptional, IsString, ValidateNested} from 'class-validator';
-import {Status} from '../../../common/enums/common.enum';
-import {ProductEntity} from '../repositories/product.entity';
-import {Type} from 'class-transformer';
-import {ProductCategoryEntity} from '../repositories/product.category.entity';
-import {ApiResDto} from "../../../common/dtos/id.dto";
-import {PaginationParam} from "../../../common/pagination.entity";
-import {CompactProductEntity} from "../repositories/compact.product.entity";
+import { IsArray, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { Status } from '../../../common/enums/common.enum';
+import { ProductEntity } from '../repositories/product.entity';
+import { Type } from 'class-transformer';
+import { ProductCategoryEntity } from '../repositories/product.category.entity';
+import { ApiResDto } from '../../../common/dtos/id.dto';
+import { PaginationParam } from '../../../common/pagination.entity';
+import { CompactProductEntity } from '../repositories/compact.product.entity';
 
 export class ProductApiResDto extends ApiResDto {
     data?: any | NewProductDto | NewProductDto[];
 }
 
 export class NewProductDto {
-
     @IsString()
     name: string;
 
@@ -36,7 +35,7 @@ export class NewProductDto {
     image?: string;
 
     @IsArray()
-    @ValidateNested({each: true})
+    @ValidateNested({ each: true })
     @Type(() => CategoryDto)
     product_categories: CategoryDto[];
 }
@@ -48,7 +47,7 @@ export class UpdateProductDto extends NewProductDto {
 
 export class UpdateMultiProductDto {
     @IsArray()
-    products: UpdateProductDto[]
+    products: UpdateProductDto[];
 }
 
 class CategoryDto {
@@ -60,7 +59,7 @@ class CategoryDto {
 
     @IsArray()
     @IsOptional()
-    @ValidateNested({each: true})
+    @ValidateNested({ each: true })
     @Type(() => SubCategoryDto)
     sub_categories?: SubCategoryDto[] = [];
 }
@@ -89,7 +88,6 @@ export class ProductResDto {
     product_categories?: CategoryDto[];
 }
 
-
 export class ProductPaginationParam extends PaginationParam {
     @IsString()
     company_id: string;
@@ -97,13 +95,12 @@ export class ProductPaginationParam extends PaginationParam {
 
 export class ProductResPage {
     items: ProductResDto[];
-    current_page: number
-    total_items: number
-    total_pages: number
+    current_page: number;
+    total_items: number;
+    total_pages: number;
 }
 
 export class ProductMapper {
-
     static async toProductEntity(req: NewProductDto): Promise<ProductEntity> {
         const productEntity = new ProductEntity();
         productEntity.name = req.name;
@@ -113,7 +110,6 @@ export class ProductMapper {
         productEntity.sku = req.sku;
         return productEntity;
     }
-
 
     static toCompactProductResDto(compact_product: CompactProductEntity, product_categories?: ProductCategoryEntity[]): ProductResDto {
         const dto_res = new ProductResDto();
@@ -127,7 +123,7 @@ export class ProductMapper {
         dto_res.brand_name = compact_product.brand_name;
         dto_res.image = compact_product.image;
 
-        const groupedCategories = this.groupByCompactCategoryDto(product_categories)
+        const groupedCategories = this.groupByCompactCategoryDto(product_categories);
         dto_res.product_categories = Object.values(groupedCategories);
         console.log(dto_res.product_categories);
         return dto_res;
@@ -142,7 +138,7 @@ export class ProductMapper {
         dto_res.status = saved_product.status;
         dto_res.brand_id = saved_product.brand_id;
 
-        const groupedCategories = this.groupByCategoryDto(product_categories)
+        const groupedCategories = this.groupByCategoryDto(product_categories);
         dto_res.product_categories = Object.values(groupedCategories);
         return dto_res;
     }
@@ -166,7 +162,6 @@ export class ProductMapper {
         }, {});
         return Object.values(groupedCategories);
     }
-
 
     private static groupByCompactCategoryDto(categories: ProductCategoryEntity[]): CategoryDto[] {
         const groupedCategories = categories.reduce((acc, category) => {

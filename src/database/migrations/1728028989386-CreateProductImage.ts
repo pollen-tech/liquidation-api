@@ -1,7 +1,6 @@
-import {MigrationInterface, QueryRunner} from 'typeorm';
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class CreateProductImage1728028989386 implements MigrationInterface {
-
     name = 'CreateProductImage1728028989386';
 
     public async up(queryRunner: QueryRunner): Promise<void> {
@@ -27,5 +26,4 @@ export class CreateProductImage1728028989386 implements MigrationInterface {
     public async down(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`DROP TABLE product_image;`);
     }
-
 }

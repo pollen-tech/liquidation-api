@@ -1,4 +1,4 @@
-import {ProductImageEntity} from "../repositories/product.image.entity";
+import { ProductImageEntity } from '../repositories/product.image.entity';
 
 export class ProductImageDto {
     id?: string;
@@ -14,7 +14,6 @@ export class ProductImageResDto {
 }
 
 export class ProductImageMapper {
-
     static toEntity(dto: ProductImageDto) {
         const entity = new ProductImageEntity();
         entity.product_id = dto.product_id;
@@ -23,16 +22,15 @@ export class ProductImageMapper {
     }
 
     static toDtos(entities: ProductImageEntity[]) {
-        const dtos = entities.map(entity => {
+        const dtos = entities.map((entity) => {
             const dto: ProductImageDto = {
                 product_id: entity.product_id,
                 image: entity.image,
                 id: entity.id,
-                updated_at: entity.updated_at
+                updated_at: entity.updated_at,
             };
             return dto;
         });
         return dtos;
     }
-
 }

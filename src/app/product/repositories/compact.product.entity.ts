@@ -1,9 +1,8 @@
-import {Column, Entity, PrimaryColumn,} from 'typeorm';
-import {Status} from '../../../common/enums/common.enum';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Status } from '../../../common/enums/common.enum';
 
 @Entity('compact_product_vw')
 export class CompactProductEntity {
-
     @PrimaryColumn('uuid')
     id: string;
 
@@ -33,5 +32,4 @@ export class CompactProductEntity {
 
     @Column()
     status: Status;
-
 }

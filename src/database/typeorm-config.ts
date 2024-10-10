@@ -1,5 +1,5 @@
 import * as path from 'path';
-import {PostgresConfigGetter} from 'src/config/getters/postgres-config.getter';
+import { PostgresConfigGetter } from 'src/config/getters/postgres-config.getter';
 
 export const getTypeOrmConfig = (config?: PostgresConfigGetter) => {
     const app_env = process.env.APP_ENV;
@@ -18,12 +18,12 @@ export const getTypeOrmConfig = (config?: PostgresConfigGetter) => {
         logging: config?.logging || process.env.POSTGRES_LOGGING,
         logger: 'advanced-console',
         subscribers: [],
-        poolSize: 10
+        poolSize: 10,
     };
 
     if (['local', 'test'].indexOf(app_env.toLowerCase()) === -1) {
         orm_config.synchronize = false;
-        orm_config['ssl'] = {rejectUnauthorized: false};
+        orm_config['ssl'] = { rejectUnauthorized: false };
     }
     return orm_config;
 };

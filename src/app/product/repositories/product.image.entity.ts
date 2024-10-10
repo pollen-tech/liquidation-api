@@ -1,21 +1,12 @@
-import {
-    BeforeInsert,
-    BeforeUpdate,
-    Column,
-    CreateDateColumn,
-    Entity,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn
-} from 'typeorm';
-import {Status} from '../../../common/enums/common.enum';
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Status } from '../../../common/enums/common.enum';
 
 @Entity('product_image')
 export class ProductImageEntity {
-
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column({type: 'uuid'})
+    @Column({ type: 'uuid' })
     product_id: string;
 
     @Column()
@@ -30,7 +21,7 @@ export class ProductImageEntity {
     @Column()
     updated_on: number;
 
-    @Column({type: 'enum', enum: Status, default: Status.NA})
+    @Column({ type: 'enum', enum: Status, default: Status.NA })
     status: Status;
 
     @BeforeInsert()

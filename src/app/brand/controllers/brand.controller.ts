@@ -1,18 +1,19 @@
-import {Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query} from '@nestjs/common';
-import {ApiTags} from '@nestjs/swagger';
-import {Public} from 'nest-keycloak-connect';
-import {BrandService} from '../domain/brand.service';
-import {BrandApiResDto, BrandDtoRes, NewBrandDto, UpdateMultipleBrandDto} from '../dto/brand.dto';
-import {PaginationParam} from "../../../common/pagination.entity";
-import {BrandCompactService} from "../domain/BrandCompactService";
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { Public } from 'nest-keycloak-connect';
+import { BrandService } from '../domain/brand.service';
+import { BrandApiResDto, BrandDtoRes, NewBrandDto, UpdateMultipleBrandDto } from '../dto/brand.dto';
+import { PaginationParam } from '../../../common/pagination.entity';
+import { BrandCompactService } from '../domain/BrandCompactService';
 
 @ApiTags('Brands')
 @Controller('brands')
 @Public()
 export class BrandController {
-    constructor(private readonly brandService: BrandService,
-                private readonly brandCompactService: BrandCompactService) {
-    }
+    constructor(
+        private readonly brandService: BrandService,
+        private readonly brandCompactService: BrandCompactService,
+    ) {}
 
     @Get('validate-name')
     async validateBrandName(@Query('name') name: string) {
@@ -30,7 +31,7 @@ export class BrandController {
         return this.createApiRes(paginatedBrands, 'OK', HttpStatus.OK);
     }
 
-    @Get("/compact")
+    @Get('/compact')
     async findAllActiveBrandsAsCompact() {
         const data = await this.brandCompactService.findAllActive();
         return this.createApiRes(data, 'OK', HttpStatus.OK);
@@ -41,9 +42,8 @@ export class BrandController {
         return this.createApiRes(await this.brandService.findAllBrandsByName(name), 'OK', HttpStatus.OK);
     }
 
-    @Get("/id_and_name_only")
-    async findAllActiveWithIdAndNameOnly
-    () {
+    @Get('/id_and_name_only')
+    async findAllActiveWithIdAndNameOnly() {
         return this.createApiRes(await this.brandService.findAllBrandsWithIdAndNameOnly(), 'OK', HttpStatus.OK);
     }
 
