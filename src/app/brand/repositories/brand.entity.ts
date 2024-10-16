@@ -37,9 +37,6 @@ export class BrandEntity {
     @UpdateDateColumn({ type: 'timestamptz' })
     updated_at: Date;
 
-    @DeleteDateColumn({ type: 'timestamptz', nullable: true })
-    deleted_at: Date;
-
     @Column({ type: 'bigint', nullable: true })
     updated_on: number;
 
@@ -52,5 +49,9 @@ export class BrandEntity {
     @BeforeUpdate()
     beforeCreateOrUpdate() {
         this.updated_on = Date.now();
+    }
+
+    updateAsDeleted() {
+        this.status = Status.DELETED;
     }
 }

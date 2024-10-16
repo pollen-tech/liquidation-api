@@ -8,12 +8,13 @@ import { BrandRepository } from './repositories/brand.repository';
 import { DatabaseModule } from '../../database/database.module';
 import { BrandCategoryRepository } from './repositories/brand.category.repository';
 import { BrandCategoryEntity } from './repositories/brand.category.entity';
+import { BrandCompactService } from './domain/BrandCompactService';
 
 let repositories: any[] = [BrandRepository, BrandCategoryRepository];
 
 @Module({
     imports: [TypeOrmModule.forFeature([BrandEntity, BrandCategoryEntity]), DatabaseModule.forCustomRepository(repositories)],
-    providers: [BrandService],
+    providers: [BrandService, BrandCompactService],
     controllers: [BrandController],
     exports: [TypeOrmModule, BrandService],
 })

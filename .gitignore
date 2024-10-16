@@ -414,3 +414,5 @@ build/docker/tmp_db
 
 deploy_prod.sh
 deploy_sandbox.sh
+
+serverless.yaml

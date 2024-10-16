@@ -2,15 +2,18 @@ import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query } fr
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'nest-keycloak-connect';
 import { BrandService } from '../domain/brand.service';
-import { BrandApiResDto, BrandDtoRes, NewBrandDto } from '../dto/brand.dto';
-import { PaginationParam } from 'src/common/pagination.entity';
+import { BrandApiResDto, BrandDtoRes, NewBrandDto, UpdateMultipleBrandDto } from '../dto/brand.dto';
+import { PaginationParam } from '../../../common/pagination.entity';
+import { BrandCompactService } from '../domain/BrandCompactService';
 
-@ApiTags('Brand')
-@Controller('brand')
+@ApiTags('Brands')
+@Controller('brands')
 @Public()
 export class BrandController {
-    constructor(private readonly brandService: BrandService) {
-    }
+    constructor(
+        private readonly brandService: BrandService,
+        private readonly brandCompactService: BrandCompactService,
+    ) {}
 
     @Get('validate-name')
     async validateBrandName(@Query('name') name: string) {
@@ -28,14 +31,19 @@ export class BrandController {
         return this.createApiRes(paginatedBrands, 'OK', HttpStatus.OK);
     }
 
+    @Get('/compact')
+    async findAllActiveBrandsAsCompact() {
+        const data = await this.brandCompactService.findAllActive();
+        return this.createApiRes(data, 'OK', HttpStatus.OK);
+    }
+
     @Get('search/by-name')
     async findAllBrandsByName(@Query('name') name: string) {
         return this.createApiRes(await this.brandService.findAllBrandsByName(name), 'OK', HttpStatus.OK);
     }
 
-    @Get("/id_and_name_only")
-    async findAllActiveWithIdAndNameOnly
-        () {
+    @Get('/id_and_name_only')
+    async findAllActiveWithIdAndNameOnly() {
         return this.createApiRes(await this.brandService.findAllBrandsWithIdAndNameOnly(), 'OK', HttpStatus.OK);
     }
 
@@ -49,9 +57,9 @@ export class BrandController {
         return this.createApiRes(await this.brandService.findBrandCategorywithBrandId(id), 'OK', HttpStatus.OK);
     }
 
-    @Put(':id')
-    async updateBrand(@Param('id') id: string, @Body() updateBrandDto: NewBrandDto) {
-        return this.createApiRes(await this.brandService.updateBrand(id, updateBrandDto), 'UPDATED', HttpStatus.OK);
+    @Put('multiple')
+    async updateMultipleBrands(@Body() multiBrandDto: UpdateMultipleBrandDto) {
+        return this.createApiRes(await this.brandService.updateMultipleBrands(multiBrandDto.brands), 'UPDATED', HttpStatus.OK);
     }
 
     @Delete(':id')

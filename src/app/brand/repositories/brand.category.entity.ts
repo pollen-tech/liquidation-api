@@ -10,14 +10,14 @@ export class BrandCategoryEntity {
     @Column({ name: 'brand_id', type: 'uuid' })
     brand_id: string;
 
-    @Column({ type: 'varchar' })
-    category_id: string;
+    @Column()
+    category_id: number;
 
     @Column({ type: 'varchar', length: 100, default: 'NA' })
     category_name: string;
 
     @Column({ type: 'varchar' })
-    sub_category_id: string;
+    sub_category_id: number;
 
     @Column({ type: 'varchar', length: 100, default: 'NA' })
     sub_category_name: string;

@@ -11,6 +11,13 @@ export class BrandRepository extends BaseRepository<BrandEntity> {
         return await this.getRepository().findBy({ status: Status.ACTIVE });
     }
 
+    async findAllByActiveStatusOrderByName() {
+        return await this.getRepository().find({
+            where: { status: Status.ACTIVE },
+            order: { name: 'ASC' },
+        });
+    }
+
     async getPaginatedBrandsByActiveStatus(paginationParam: PaginationParam) {
         return await this.getPaginated(paginationParam, { where: { status: Status.ACTIVE } });
     }

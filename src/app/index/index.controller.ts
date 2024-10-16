@@ -1,4 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
+import { ApiBody } from '@nestjs/swagger';
 
 @Controller('index')
 export class IndexController {

@@ -1,4 +1,7 @@
 {
+  "setupFiles": [
+    "./test/jest.setup.ts"
+  ],
   "moduleFileExtensions": ["js", "json", "ts","ts$"],
   "rootDir": "../",
   "testEnvironment": "node",

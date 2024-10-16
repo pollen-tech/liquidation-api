@@ -7,6 +7,8 @@ import { BrandEntity } from '../../src/app/brand/repositories/brand.entity';
 import { BrandCategoryEntity } from '../../src/app/brand/repositories/brand.category.entity';
 import { ProductCategoryEntity } from '../../src/app/product/repositories/product.category.entity';
 import { ProductEntity } from '../../src/app/product/repositories/product.entity';
+import { UserProductEntity } from '../../src/app/product/repositories/user.product.entity';
+import { ProductImageEntity } from '../../src/app/product/repositories/product.image.entity';
 
 const DB_HOST: string = 'localhost';
 const DB_PORT: number = 5460;
@@ -14,7 +16,7 @@ const DB_NAME = 'liquid_db';
 const DB_USERNAME = 'devuser';
 const DB_PASSWORD = 'password334';
 
-const entitiesList = [BrandEntity, BrandCategoryEntity, ProductCategoryEntity, ProductEntity];
+const entitiesList = [BrandEntity, BrandCategoryEntity, ProductCategoryEntity, ProductEntity, UserProductEntity, ProductImageEntity];
 
 /**
  * Handle Database connection.
@@ -52,8 +54,8 @@ export class TestDatabaseModule {
             username: DB_USERNAME,
             password: DB_PASSWORD,
             entities: entitiesList,
-            synchronize: true, // for DEV/TEST only
-            dropSchema: true, // NOTE - Only for TEST (it drops schema for testing and creates again)
+            synchronize: false, // for DEV/TEST only
+            dropSchema: false, // NOTE - Only for TEST (it drops schema for testing and creates again)
             keepConnectionAlive: true,
             logging: true, // true when want print sql
         });
