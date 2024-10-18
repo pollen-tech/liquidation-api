@@ -1,0 +1,40 @@
+service: liquidation-api
+
+frameworkVersion: '3'
+
+plugins:
+  - serverless-jetpack
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: prod
+  environment:
+    APP_ENV: prod
+  region: ap-southeast-1 # or whatever your region is
+  # update required memory for lambda upto 10GB
+  memorySize: 1024
+  timeout: 30
+  # define your S3 bucket for serverless code to be store
+  deploymentBucket:
+    name: lambda.code.deploy
+
+functions:
+  api:
+    name:  liquidation-api
+    description: Liquidation Aws Lambda API
+    handler: dist/aws/lambda.handler
+    events:
+      - http:
+          method: any
+          path: /{proxy+}
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: true
