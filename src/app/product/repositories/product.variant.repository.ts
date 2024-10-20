@@ -29,6 +29,6 @@ export class ProductVariantRepository extends BaseRepository<ProductVariantEntit
                 updated_on: Date.now(),
             },
         );
-        return this.getRepository().findBy({product_id: In(ids)});
+        return this.getRepository().findBy({id: In(ids)});
     }
 }

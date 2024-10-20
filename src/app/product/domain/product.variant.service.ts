@@ -17,7 +17,7 @@ export class ProductVariantService {
 
     @Transactional()
     public async multiCreateOrUpdate(newMultiDto: NewMultiProductVariantDto): Promise<ProductVariantDto[]> {
-        const promises = newMultiDto.variants.map((dto) =>  this.createOrUpdate(dto));
+        const promises = newMultiDto.variants.map((dto) => this.createOrUpdate(dto));
         return await Promise.all(promises);
     }
 
@@ -43,15 +43,10 @@ export class ProductVariantService {
         return deleted_entities.map((entity) => ProductVariantMapper.toDeletedStatusDto(entity));
     }
 
-    private async create(newDto: NewProductVariantDto): Promise<ProductVariantDto> {
+    public async create(newDto: NewProductVariantDto): Promise<ProductVariantDto> {
         const new_entity = ProductVariantMapper.toEntity(newDto);
-          // new_entity.seq_no = await this.productVariantRepository.getNextSeqNo();
         return await this.productVariantRepository.save(new_entity)
-            .then((entity) => {
-                console.log('eentit',entity);
-                console.log('entity.variant_sku',entity.variant_sku);
-            return ProductVariantMapper.toDto(entity);
-        });
+            .then(entity => ProductVariantMapper.toDto(entity));
     }
 
     private async update(newDto: NewProductVariantDto) {

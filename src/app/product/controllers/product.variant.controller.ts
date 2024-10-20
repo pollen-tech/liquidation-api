@@ -6,6 +6,7 @@ import {
     DeleteMultiProductVariantDto,
     DeleteProductVariantStatusDto,
     NewMultiProductVariantDto,
+    NewProductVariantDto,
     NewProductVariantOptionDto,
     ProductVariantApiResDto,
     ProductVariantDto,
@@ -30,7 +31,7 @@ export class ProductVariantController {
     @Post('/:product_id/options')
     async createProductVariantOptions(@Param('product_id') productId: string, @Body() reqDto: NewProductVariantOptionDto) {
         reqDto.product_id = productId;
-        return this.createApiRes(await this.productVariantOptionService.createOrUpdate(reqDto), 'OK', HttpStatus.CREATED);
+        return this.createApiRes(await this.productVariantOptionService.createOrUpdate(reqDto), 'CREATED', HttpStatus.CREATED);
     }
 
     @Put('/:product_id/options')
@@ -45,8 +46,17 @@ export class ProductVariantController {
         description: 'In Variant json, "id" is required for Update Variant only',
     })
     @Post('/multiple')
-    async createProductVariant(@Body() reqDto: NewMultiProductVariantDto) {
-        return this.createApiRes(await this.productVariantService.multiCreateOrUpdate(reqDto), 'OK', HttpStatus.CREATED);
+    async createMultipleProductVariant(@Body() reqDto: NewMultiProductVariantDto) {
+        return this.createApiRes(await this.productVariantService.multiCreateOrUpdate(reqDto), 'CREATED', HttpStatus.CREATED);
+    }
+
+    @ApiOperation({
+        summary: 'Create or Update  a product variant',
+        description: 'In Variant json, "id" is required for Update Variant only',
+    })
+    @Post()
+    async createProductVariant(@Body() reqDto: NewProductVariantDto) {
+        return this.createApiRes(await this.productVariantService.createOrUpdate(reqDto), 'CREATED', HttpStatus.CREATED);
     }
 
     @Get()
@@ -60,11 +70,11 @@ export class ProductVariantController {
     }
 
     async createApiRes(
-        data: NewProductVariantOptionDto | ProductVariantDto[] | DeleteProductVariantStatusDto[],
+        data: DeleteProductVariantStatusDto[] | ProductVariantDto[] | NewProductVariantOptionDto | ProductVariantDto,
         status: string,
         status_code: number,
     ) {
-        if (data instanceof DeleteProductVariantStatusDto) {
+        if (data && Array.isArray(data) && data[0] instanceof DeleteProductVariantStatusDto) {
             const res: ProductVariantApiResDto = {
                 status_code: status_code,
                 status: status,

@@ -7,7 +7,7 @@ import {ApiBody} from "@nestjs/swagger";
 import {Type} from "class-transformer";
 
 export class ProductVariantApiResDto extends ApiResDto {
-    data?: ProductVariantDto[] | NewProductVariantOptionDto | DeleteProductVariantStatusDto[];
+    data?: ProductVariantDto[] | ProductVariantDto | NewProductVariantOptionDto | DeleteProductVariantStatusDto[];
 }
 
 export class NewMultiProductVariantDto {
@@ -32,6 +32,7 @@ export class DeleteMultiProductVariantDto {
 export class DeleteProductVariantStatusDto {
     id: string;
     product_id: string;
+    variant_sku: string;
     status: Status;
 }
 
@@ -165,6 +166,7 @@ export class ProductVariantMapper {
         const dto = new DeleteProductVariantStatusDto();
         dto.id = entity.id;
         dto.product_id = entity.product_id;
+        dto.variant_sku = entity.variant_sku;
         dto.status = entity.status;
         return dto;
     }
