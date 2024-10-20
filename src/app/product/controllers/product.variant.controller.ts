@@ -1,7 +1,7 @@
-import { Body, Controller, Delete, Get, HttpStatus, Post, Put, Query } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { Public } from 'nest-keycloak-connect';
-import { ProductVariantOptionService } from '../domain/product.variant.option.service';
+import {Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query} from '@nestjs/common';
+import {ApiOperation, ApiTags} from '@nestjs/swagger';
+import {Public} from 'nest-keycloak-connect';
+import {ProductVariantOptionService} from '../domain/product.variant.option.service';
 import {
     DeleteMultiProductVariantDto,
     DeleteProductVariantStatusDto,
@@ -10,7 +10,7 @@ import {
     ProductVariantApiResDto,
     ProductVariantDto,
 } from '../dto/product.variant.dto';
-import { ProductVariantService } from '../domain/product.variant.service';
+import {ProductVariantService} from '../domain/product.variant.service';
 
 @ApiTags('Products Variant & Options Controller')
 @Controller('product-variants')
@@ -19,23 +19,31 @@ export class ProductVariantController {
     constructor(
         private readonly productVariantOptionService: ProductVariantOptionService,
         private readonly productVariantService: ProductVariantService,
-    ) {}
+    ) {
+    }
 
     @Get('/:product_id/options')
-    async getProductVariantOptions(@Query('product_id') productId: string) {
+    async getProductVariantOptions(@Param('product_id') productId: string) {
         return this.createApiRes(await this.productVariantOptionService.findByProductId(productId), 'OK', HttpStatus.OK);
     }
 
     @Post('/:product_id/options')
-    async createProductVariantOptions(@Body() reqDto: NewProductVariantOptionDto) {
+    async createProductVariantOptions(@Param('product_id') productId: string, @Body() reqDto: NewProductVariantOptionDto) {
+        reqDto.product_id = productId;
         return this.createApiRes(await this.productVariantOptionService.createOrUpdate(reqDto), 'OK', HttpStatus.CREATED);
     }
 
     @Put('/:product_id/options')
-    async updateProductVariantOptions(@Body() reqDto: NewProductVariantOptionDto) {
+    async updateProductVariantOptions(@Param('product_id') productId: string,
+                                      @Body() reqDto: NewProductVariantOptionDto) {
+        reqDto.product_id = productId;
         return this.createApiRes(await this.productVariantOptionService.createOrUpdate(reqDto), 'OK', HttpStatus.OK);
     }
 
+    @ApiOperation({
+        summary: 'Create or Update 1 or many product variants',
+        description: 'In Variant json, "id" is required for Update Variant only',
+    })
     @Post('/multiple')
     async createProductVariant(@Body() reqDto: NewMultiProductVariantDto) {
         return this.createApiRes(await this.productVariantService.multiCreateOrUpdate(reqDto), 'OK', HttpStatus.CREATED);
@@ -65,11 +73,10 @@ export class ProductVariantController {
             };
             return res;
         }
-
         const res: ProductVariantApiResDto = {
             status_code: status_code,
             status: status,
-            message: 'Data found.',
+            message: (data == null ? 'No Data found' : 'Data found'),
             data: data,
         };
         return res;

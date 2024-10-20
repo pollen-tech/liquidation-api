@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import {MigrationInterface, QueryRunner} from 'typeorm';
 
 export class CreateProductVariantsTable1729058085343 implements MigrationInterface {
     name = 'CreateProductVariantsTable1729058085343';
@@ -8,13 +8,13 @@ export class CreateProductVariantsTable1729058085343 implements MigrationInterfa
             `
                 CREATE TABLE product_variant_option
                 (
-                    id             uuid                 DEFAULT uuid_generate_v4() primary key,
-                    product_id     uuid        not null,
-                    variant_option text,
-                    created_at     timestamp without time zone NOT NULL DEFAULT now(),
-                    updated_at     timestamp without time zone NOT NULL DEFAULT now(),
-                    updated_on     bigint,
-                    status         varchar(25) not null DEFAULT 'NA',
+                    id         uuid                 DEFAULT uuid_generate_v4() primary key,
+                    product_id uuid        not null,
+                    options    text,
+                    created_at timestamp without time zone NOT NULL DEFAULT now(),
+                    updated_at timestamp without time zone NOT NULL DEFAULT now(),
+                    updated_on bigint,
+                    status     varchar(25) not null DEFAULT 'NA',
                     CONSTRAINT fk_product_variant_option_product_id FOREIGN KEY (product_id) REFERENCES product (id)
                 );
                 CREATE INDEX IF NOT EXISTS idx_product_variant_option_updated_on ON product_variant_option(updated_on);

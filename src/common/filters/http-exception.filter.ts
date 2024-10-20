@@ -1,6 +1,6 @@
 import { ArgumentsHost, BadRequestException, Catch, ExceptionFilter, HttpException, Logger } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { EntityNotFoundError } from 'typeorm';
+import {EntityNotFoundError, QueryFailedError} from 'typeorm';
 import { ApiErrorResDto } from '../dtos/id.dto';
 
 @Catch()
@@ -17,7 +17,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
         const response = ctx.getResponse<Response>();
         const request = ctx.getRequest<Request>();
         const { status_code, status } = this.filterException(exception);
-        const responseData = exception.getResponse ? exception.getResponse() : exception.message;
+        let responseData = exception.getResponse ? exception.getResponse() : exception.message;
+
+        if(exception instanceof QueryFailedError){
+            responseData = 'Database Query Failed, Look into application logs & request data';
+        }
+
         console.log('responseData', responseData);
         let error_msg = 'Not defined';
         if (typeof responseData === 'string') {
@@ -48,6 +53,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
             status_code = 404;
             status = 'NO_DATA_FOUND';
         } else if (exception instanceof BadRequestException) {
+            status_code = 400;
+            status = 'BAD_REQUEST';
+        } else if (exception instanceof QueryFailedError) {
             status_code = 400;
             status = 'BAD_REQUEST';
         } else if (exception.getStatus) {

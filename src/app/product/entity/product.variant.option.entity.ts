@@ -10,7 +10,7 @@ export class ProductVariantOptionEntity {
     product_id: string;
 
     @Column()
-    option: string;
+    options: string;
 
     @CreateDateColumn({ type: 'timestamptz' })
     created_at: Date;

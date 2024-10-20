@@ -1,19 +1,31 @@
-import { ProductVariantOptionEntity } from '../entity/product.variant.option.entity';
-import { ApiResDto } from '../../../common/dtos/id.dto';
-import { ProductVariantEntity } from '../entity/product.variant.entity';
-import { Status } from '../../../common/enums/common.enum';
+import {ProductVariantOptionEntity} from '../entity/product.variant.option.entity';
+import {ApiResDto} from '../../../common/dtos/id.dto';
+import {ProductVariantEntity} from '../entity/product.variant.entity';
+import {Status} from '../../../common/enums/common.enum';
+import {IsArray, IsObject, IsOptional, IsString, IsUUID, ValidateNested} from "class-validator";
+import {ApiBody} from "@nestjs/swagger";
+import {Type} from "class-transformer";
 
 export class ProductVariantApiResDto extends ApiResDto {
     data?: ProductVariantDto[] | NewProductVariantOptionDto | DeleteProductVariantStatusDto[];
 }
 
 export class NewMultiProductVariantDto {
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => NewProductVariantDto)
     variants: NewProductVariantDto[];
 }
 
 export class DeleteMultiProductVariantDto {
+
+    @IsString()
     user_name: string;
+
+    @IsUUID()
     user_id: string;
+
+    @IsArray()
     product_variant_ids: string[];
 }
 
@@ -24,24 +36,55 @@ export class DeleteProductVariantStatusDto {
 }
 
 export class NewProductVariantDto {
+
+    @IsUUID()
+    @IsOptional()
     id?: string;
+
+    @IsUUID()
     product_id: string;
+
+    @IsString()
     image: string;
-    variant_sku: string;
-    sku: string;
+
+    @IsString()
+    @IsOptional()
+    variant_sku?: string;
+
+    @IsString()
+    @IsOptional()
+    sku?: string;
+
+    @IsString()
     type: string;
+
+    @IsString()
     color: string;
+
+    @IsString()
     size: string;
+
+    @IsUUID()
     user_id: string;
+
+    @IsString()
     user_name: string;
-    status: Status;
+
+    @IsString()
+    @IsOptional()
+    status?: Status;
 }
 
-export class ProductVariantDto extends NewProductVariantDto {}
+export class ProductVariantDto extends NewProductVariantDto {
+}
 
 export class NewProductVariantOptionDto {
-    product_id: string;
-    option: {
+    @IsOptional()
+    @IsUUID()
+    product_id?: string;
+
+    @IsObject()
+    options: {
         types: string[];
         colors: string[];
         sizes: string[];
@@ -53,14 +96,14 @@ export class ProductVariantOptionMapper {
         const entity = new ProductVariantOptionEntity();
         entity.id = dto.product_id;
         entity.product_id = dto.product_id;
-        entity.option = JSON.stringify(dto.option);
+        entity.options = JSON.stringify(dto.options);
         return entity;
     }
 
     static toDto(entity: ProductVariantOptionEntity) {
         const dto = new NewProductVariantOptionDto();
         dto.product_id = entity.product_id;
-        dto.option = JSON.parse(entity.option);
+        dto.options = JSON.parse(entity.options);
         return dto;
     }
 }
