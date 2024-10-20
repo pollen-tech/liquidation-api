@@ -3,7 +3,6 @@ import { ApiResDto } from '../../../common/dtos/id.dto';
 import { ProductVariantEntity } from '../entity/product.variant.entity';
 import { Status } from '../../../common/enums/common.enum';
 import { IsArray, IsObject, IsOptional, IsString, IsUUID, ValidateNested } from 'class-validator';
-import { ApiBody } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 
 export class ProductVariantApiResDto extends ApiResDto {
