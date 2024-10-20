@@ -1,25 +1,27 @@
 import BaseRepository from '../../../database/infrastructure/repository/base.repository';
-import {CustomRepository} from '../../../database/decorators/custom-repository.decorator';
-import {ProductVariantEntity} from "../entity/product.variant.entity";
-import {Status} from "../../../common/enums/common.enum";
-import {In, Not} from "typeorm";
+import { CustomRepository } from '../../../database/decorators/custom-repository.decorator';
+import { ProductVariantEntity } from '../entity/product.variant.entity';
+import { Status } from '../../../common/enums/common.enum';
+import { In, Not } from 'typeorm';
 
 @CustomRepository(ProductVariantEntity)
 export class ProductVariantRepository extends BaseRepository<ProductVariantEntity> {
     async findAllByProductId(productId: string): Promise<ProductVariantEntity[]> {
-        return await this.getRepository().findBy({product_id: productId, status: Not(Status.DELETED)})
+        return await this.getRepository().findBy({ product_id: productId, status: Not(Status.DELETED) });
     }
 
     async deleteAllByIds(ids: string[], user_id: string, user_name: string) {
         const currentDate: Date = new Date();
-        await this.getRepository().update({id: In(ids)},
+        await this.getRepository().update(
+            { id: In(ids) },
             {
                 user_id: user_id,
                 user_name: user_name,
                 status: Status.DELETED,
                 updated_at: currentDate,
-                updated_on: Date.now()
-            });
-        return this.getRepository().findBy({product_id: In(ids)});
+                updated_on: Date.now(),
+            },
+        );
+        return this.getRepository().findBy({ product_id: In(ids) });
     }
 }

@@ -1,13 +1,5 @@
-import {
-    BeforeInsert,
-    BeforeUpdate,
-    Column,
-    CreateDateColumn,
-    Entity,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn,
-} from 'typeorm';
-import {Status} from '../../../common/enums/common.enum';
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Status } from '../../../common/enums/common.enum';
 
 @Entity('product_variant_option')
 export class ProductVariantOptionEntity {
@@ -20,16 +12,16 @@ export class ProductVariantOptionEntity {
     @Column()
     option: string;
 
-    @CreateDateColumn({type: 'timestamptz'})
+    @CreateDateColumn({ type: 'timestamptz' })
     created_at: Date;
 
-    @UpdateDateColumn({type: 'timestamptz'})
+    @UpdateDateColumn({ type: 'timestamptz' })
     updated_at: Date;
 
-    @Column({type: 'bigint', nullable: true})
+    @Column({ type: 'bigint', nullable: true })
     updated_on: number;
 
-    @Column({type: 'enum', enum: Status, default: Status.NA})
+    @Column({ type: 'enum', enum: Status, default: Status.NA })
     status: Status;
 
     @BeforeInsert()

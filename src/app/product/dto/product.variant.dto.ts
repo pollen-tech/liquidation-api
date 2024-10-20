@@ -1,7 +1,7 @@
-import {ProductVariantOptionEntity} from "../entity/product.variant.option.entity";
-import {ApiResDto} from "../../../common/dtos/id.dto";
-import {ProductVariantEntity} from "../entity/product.variant.entity";
-import {Status} from "../../../common/enums/common.enum";
+import { ProductVariantOptionEntity } from '../entity/product.variant.option.entity';
+import { ApiResDto } from '../../../common/dtos/id.dto';
+import { ProductVariantEntity } from '../entity/product.variant.entity';
+import { Status } from '../../../common/enums/common.enum';
 
 export class ProductVariantApiResDto extends ApiResDto {
     data?: ProductVariantDto[] | NewProductVariantOptionDto | DeleteProductVariantStatusDto[];
@@ -20,7 +20,7 @@ export class DeleteMultiProductVariantDto {
 export class DeleteProductVariantStatusDto {
     id: string;
     product_id: string;
-    status: Status
+    status: Status;
 }
 
 export class NewProductVariantDto {
@@ -37,20 +37,18 @@ export class NewProductVariantDto {
     status: Status;
 }
 
-export class ProductVariantDto extends NewProductVariantDto {
-}
+export class ProductVariantDto extends NewProductVariantDto {}
 
 export class NewProductVariantOptionDto {
     product_id: string;
     option: {
-        types: string[],
-        colors: string[],
-        sizes: string[]
+        types: string[];
+        colors: string[];
+        sizes: string[];
     };
 }
 
 export class ProductVariantOptionMapper {
-
     static toEntity(dto: NewProductVariantOptionDto) {
         const entity = new ProductVariantOptionEntity();
         entity.id = dto.product_id;
@@ -68,7 +66,6 @@ export class ProductVariantOptionMapper {
 }
 
 export class ProductVariantMapper {
-
     static toEntity(dto: NewProductVariantDto) {
         const entity = new ProductVariantEntity();
         if (dto.id) {
@@ -127,5 +124,4 @@ export class ProductVariantMapper {
         dto.status = entity.status;
         return dto;
     }
-
 }
