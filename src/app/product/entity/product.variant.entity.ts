@@ -1,13 +1,5 @@
-import {
-    BeforeInsert,
-    BeforeUpdate,
-    Column,
-    CreateDateColumn,
-    Entity, Generated,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn
-} from 'typeorm';
-import {Status} from '../../../common/enums/common.enum';
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, Generated, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Status } from '../../../common/enums/common.enum';
 
 @Entity('product_variant')
 export class ProductVariantEntity {

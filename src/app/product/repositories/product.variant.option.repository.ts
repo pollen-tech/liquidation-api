@@ -6,7 +6,7 @@ import { Status } from '../../../common/enums/common.enum';
 @CustomRepository(ProductVariantOptionEntity)
 export class ProductVariantOptionRepository extends BaseRepository<ProductVariantOptionEntity> {
     public async findByProductId(productId: string): Promise<ProductVariantOptionEntity> {
-        console.log(productId)
+        console.log(productId);
         return await this.getRepository().findOneBy({ product_id: productId });
     }
 }

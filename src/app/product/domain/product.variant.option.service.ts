@@ -1,12 +1,11 @@
-import {Injectable} from '@nestjs/common';
-import {NewProductVariantOptionDto, ProductVariantOptionMapper} from '../dto/product.variant.dto';
-import {ProductVariantOptionRepository} from '../repositories/product.variant.option.repository';
-import {Status} from '../../../common/enums/common.enum';
+import { Injectable } from '@nestjs/common';
+import { NewProductVariantOptionDto, ProductVariantOptionMapper } from '../dto/product.variant.dto';
+import { ProductVariantOptionRepository } from '../repositories/product.variant.option.repository';
+import { Status } from '../../../common/enums/common.enum';
 
 @Injectable()
 export class ProductVariantOptionService {
-    constructor(private readonly variantOptionRepository: ProductVariantOptionRepository) {
-    }
+    constructor(private readonly variantOptionRepository: ProductVariantOptionRepository) {}
 
     public async createOrUpdate(newDto: NewProductVariantOptionDto) {
         const existing_entity = await this.variantOptionRepository.findByProductId(newDto.product_id);

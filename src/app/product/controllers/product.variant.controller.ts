@@ -1,7 +1,7 @@
-import {Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query} from '@nestjs/common';
-import {ApiOperation, ApiTags} from '@nestjs/swagger';
-import {Public} from 'nest-keycloak-connect';
-import {ProductVariantOptionService} from '../domain/product.variant.option.service';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Public } from 'nest-keycloak-connect';
+import { ProductVariantOptionService } from '../domain/product.variant.option.service';
 import {
     DeleteMultiProductVariantDto,
     DeleteProductVariantStatusDto,
@@ -11,7 +11,7 @@ import {
     ProductVariantApiResDto,
     ProductVariantDto,
 } from '../dto/product.variant.dto';
-import {ProductVariantService} from '../domain/product.variant.service';
+import { ProductVariantService } from '../domain/product.variant.service';
 
 @ApiTags('Products Variant & Options Controller')
 @Controller('product-variants')
@@ -20,8 +20,7 @@ export class ProductVariantController {
     constructor(
         private readonly productVariantOptionService: ProductVariantOptionService,
         private readonly productVariantService: ProductVariantService,
-    ) {
-    }
+    ) {}
 
     @Get('/:product_id/options')
     async getProductVariantOptions(@Param('product_id') productId: string) {
@@ -35,8 +34,7 @@ export class ProductVariantController {
     }
 
     @Put('/:product_id/options')
-    async updateProductVariantOptions(@Param('product_id') productId: string,
-                                      @Body() reqDto: NewProductVariantOptionDto) {
+    async updateProductVariantOptions(@Param('product_id') productId: string, @Body() reqDto: NewProductVariantOptionDto) {
         reqDto.product_id = productId;
         return this.createApiRes(await this.productVariantOptionService.createOrUpdate(reqDto), 'OK', HttpStatus.OK);
     }
@@ -86,7 +84,7 @@ export class ProductVariantController {
         const res: ProductVariantApiResDto = {
             status_code: status_code,
             status: status,
-            message: (data == null ? 'No Data found' : 'Data found'),
+            message: data == null ? 'No Data found' : 'Data found',
             data: data,
         };
         return res;

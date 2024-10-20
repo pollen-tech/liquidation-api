@@ -1,10 +1,10 @@
-import {ProductVariantOptionEntity} from '../entity/product.variant.option.entity';
-import {ApiResDto} from '../../../common/dtos/id.dto';
-import {ProductVariantEntity} from '../entity/product.variant.entity';
-import {Status} from '../../../common/enums/common.enum';
-import {IsArray, IsObject, IsOptional, IsString, IsUUID, ValidateNested} from "class-validator";
-import {ApiBody} from "@nestjs/swagger";
-import {Type} from "class-transformer";
+import { ProductVariantOptionEntity } from '../entity/product.variant.option.entity';
+import { ApiResDto } from '../../../common/dtos/id.dto';
+import { ProductVariantEntity } from '../entity/product.variant.entity';
+import { Status } from '../../../common/enums/common.enum';
+import { IsArray, IsObject, IsOptional, IsString, IsUUID, ValidateNested } from 'class-validator';
+import { ApiBody } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 
 export class ProductVariantApiResDto extends ApiResDto {
     data?: ProductVariantDto[] | ProductVariantDto | NewProductVariantOptionDto | DeleteProductVariantStatusDto[];
@@ -12,13 +12,12 @@ export class ProductVariantApiResDto extends ApiResDto {
 
 export class NewMultiProductVariantDto {
     @IsArray()
-    @ValidateNested({each: true})
+    @ValidateNested({ each: true })
     @Type(() => NewProductVariantDto)
     variants: NewProductVariantDto[];
 }
 
 export class DeleteMultiProductVariantDto {
-
     @IsString()
     user_name: string;
 
@@ -37,7 +36,6 @@ export class DeleteProductVariantStatusDto {
 }
 
 export class NewProductVariantDto {
-
     @IsUUID()
     @IsOptional()
     id?: string;
@@ -76,8 +74,7 @@ export class NewProductVariantDto {
     status?: Status;
 }
 
-export class ProductVariantDto extends NewProductVariantDto {
-}
+export class ProductVariantDto extends NewProductVariantDto {}
 
 export class NewProductVariantOptionDto {
     @IsOptional()

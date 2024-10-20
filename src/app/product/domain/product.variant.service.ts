@@ -1,5 +1,5 @@
-import {Injectable} from '@nestjs/common';
-import {ProductVariantRepository} from '../repositories/product.variant.repository';
+import { Injectable } from '@nestjs/common';
+import { ProductVariantRepository } from '../repositories/product.variant.repository';
 import {
     DeleteMultiProductVariantDto,
     DeleteProductVariantStatusDto,
@@ -8,12 +8,11 @@ import {
     ProductVariantDto,
     ProductVariantMapper,
 } from '../dto/product.variant.dto';
-import {Transactional} from 'typeorm-transactional';
+import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
 export class ProductVariantService {
-    constructor(private readonly productVariantRepository: ProductVariantRepository) {
-    }
+    constructor(private readonly productVariantRepository: ProductVariantRepository) {}
 
     @Transactional()
     public async multiCreateOrUpdate(newMultiDto: NewMultiProductVariantDto): Promise<ProductVariantDto[]> {
@@ -45,12 +44,11 @@ export class ProductVariantService {
 
     public async create(newDto: NewProductVariantDto): Promise<ProductVariantDto> {
         const new_entity = ProductVariantMapper.toEntity(newDto);
-        return await this.productVariantRepository.save(new_entity)
-            .then(entity => ProductVariantMapper.toDto(entity));
+        return await this.productVariantRepository.save(new_entity).then((entity) => ProductVariantMapper.toDto(entity));
     }
 
     private async update(newDto: NewProductVariantDto) {
-        const existing_entity = await this.productVariantRepository.findOneBy({id: newDto.id});
+        const existing_entity = await this.productVariantRepository.findOneBy({ id: newDto.id });
         const updated_entity = ProductVariantMapper.toUpdateEntity(existing_entity, newDto);
         return await this.productVariantRepository.save(updated_entity).then((entity) => {
             newDto.id = entity.id;

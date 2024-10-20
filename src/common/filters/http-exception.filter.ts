@@ -1,6 +1,6 @@
 import { ArgumentsHost, BadRequestException, Catch, ExceptionFilter, HttpException, Logger } from '@nestjs/common';
 import { Request, Response } from 'express';
-import {EntityNotFoundError, QueryFailedError} from 'typeorm';
+import { EntityNotFoundError, QueryFailedError } from 'typeorm';
 import { ApiErrorResDto } from '../dtos/id.dto';
 
 @Catch()
@@ -19,7 +19,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         const { status_code, status } = this.filterException(exception);
         let responseData = exception.getResponse ? exception.getResponse() : exception.message;
 
-        if(exception instanceof QueryFailedError){
+        if (exception instanceof QueryFailedError) {
             responseData = 'Database Query Failed, Look into application logs & request data';
         }
 
