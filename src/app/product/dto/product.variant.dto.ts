@@ -12,7 +12,7 @@ export class ProductVariantApiResDto extends ApiResDto {
 
 export class NewMultiProductVariantDto {
     @IsArray()
-    @ValidateNested({ each: true })
+    @ValidateNested({each: true})
     @Type(() => NewProductVariantDto)
     variants: NewProductVariantDto[];
 }
@@ -112,10 +112,11 @@ export class ProductVariantMapper {
     static toEntity(dto: NewProductVariantDto) {
         const entity = new ProductVariantEntity();
         if (dto.id) {
+            // if id available means, its for update and assign existing variant sku
             entity.id = dto.id;
+            entity.variant_sku = dto.variant_sku;
         }
         entity.product_id = dto.product_id;
-        entity.variant_sku = dto.variant_sku;
         entity.sku = dto.sku;
         entity.image = dto.image;
         entity.type = dto.type;

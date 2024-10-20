@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { ProductVariantRepository } from '../repositories/product.variant.repository';
+import {Injectable} from '@nestjs/common';
+import {ProductVariantRepository} from '../repositories/product.variant.repository';
 import {
     DeleteMultiProductVariantDto,
     DeleteProductVariantStatusDto,
@@ -8,15 +8,16 @@ import {
     ProductVariantDto,
     ProductVariantMapper,
 } from '../dto/product.variant.dto';
-import { Transactional } from 'typeorm-transactional';
+import {Transactional} from 'typeorm-transactional';
 
 @Injectable()
 export class ProductVariantService {
-    constructor(private readonly productVariantRepository: ProductVariantRepository) {}
+    constructor(private readonly productVariantRepository: ProductVariantRepository) {
+    }
 
     @Transactional()
     public async multiCreateOrUpdate(newMultiDto: NewMultiProductVariantDto): Promise<ProductVariantDto[]> {
-        const promises = newMultiDto.variants.map((dto) => this.createOrUpdate(dto));
+        const promises = newMultiDto.variants.map((dto) =>  this.createOrUpdate(dto));
         return await Promise.all(promises);
     }
 
@@ -44,14 +45,17 @@ export class ProductVariantService {
 
     private async create(newDto: NewProductVariantDto): Promise<ProductVariantDto> {
         const new_entity = ProductVariantMapper.toEntity(newDto);
-        return await this.productVariantRepository.save(new_entity).then((entity) => {
-            newDto.id = entity.id;
-            return newDto;
+          // new_entity.seq_no = await this.productVariantRepository.getNextSeqNo();
+        return await this.productVariantRepository.save(new_entity)
+            .then((entity) => {
+                console.log('eentit',entity);
+                console.log('entity.variant_sku',entity.variant_sku);
+            return ProductVariantMapper.toDto(entity);
         });
     }
 
     private async update(newDto: NewProductVariantDto) {
-        const existing_entity = await this.productVariantRepository.findOneBy({ id: newDto.id });
+        const existing_entity = await this.productVariantRepository.findOneBy({id: newDto.id});
         const updated_entity = ProductVariantMapper.toUpdateEntity(existing_entity, newDto);
         return await this.productVariantRepository.save(updated_entity).then((entity) => {
             newDto.id = entity.id;

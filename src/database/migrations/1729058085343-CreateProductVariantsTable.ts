@@ -24,13 +24,25 @@ export class CreateProductVariantsTable1729058085343 implements MigrationInterfa
 
         await queryRunner.query(
             `
+                  DROP SEQUENCE IF EXISTS product_variant_sku_seq_no  ;
+                  CREATE SEQUENCE product_variant_sku_seq_no
+                  INCREMENT BY 1
+                  START WITH 1000
+                  MINVALUE 1000
+                  NO MAXVALUE
+                  CACHE 1
+                  CYCLE; 
+                  `,
+        );
+
+        await queryRunner.query(
+            `
                 CREATE TABLE product_variant
                 (
                     id          uuid                 DEFAULT uuid_generate_v4() primary key,
-                    seq_no      integer     not null DEFAULT 0,
-                    variant_sku varchar(25) not null,
+                    variant_sku varchar(25)          DEFAULT 'V' || nextval('product_variant_sku_seq_no'),
                     product_id  uuid        not null,
-                    sku         varchar(25) not null,
+                    sku         varchar(25) not null DEFAULT 'NA',
                     image       varchar(150),
                     type        varchar(100),
                     color       varchar(100),
