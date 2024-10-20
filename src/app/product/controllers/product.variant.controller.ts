@@ -69,7 +69,7 @@ export class ProductVariantController {
         return this.createApiRes(await this.productVariantService.multiDelete(deleteReqDto), 'OK', HttpStatus.OK);
     }
 
-    async createApiRes(
+    private async createApiRes(
         data: DeleteProductVariantStatusDto[] | ProductVariantDto[] | NewProductVariantOptionDto | ProductVariantDto,
         status: string,
         status_code: number,
