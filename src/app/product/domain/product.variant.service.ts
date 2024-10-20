@@ -29,7 +29,7 @@ export class ProductVariantService {
     }
 
     public async findAllByProductId(productId: string): Promise<ProductVariantDto[]> {
-        const entities = await this.productVariantRepository.findAllByProductId(productId);
+        const entities = await this.productVariantRepository.findAllByProductIdExcludeDeleted(productId);
         return entities.map((entity) => ProductVariantMapper.toDto(entity));
     }
 

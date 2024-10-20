@@ -6,8 +6,16 @@ import { In, Not } from 'typeorm';
 
 @CustomRepository(ProductVariantEntity)
 export class ProductVariantRepository extends BaseRepository<ProductVariantEntity> {
-    async findAllByProductId(productId: string): Promise<ProductVariantEntity[]> {
-        return await this.getRepository().findBy({ product_id: productId, status: Not(Status.DELETED) });
+    async findAllByProductIdExcludeDeleted(productId: string): Promise<ProductVariantEntity[]> {
+        return await this.getRepository().find({
+            where: {
+                product_id: productId,
+                status: Not(Status.DELETED),
+            },
+            order: {
+                variant_sku: 'ASC',
+            },
+        });
     }
 
     async getNextSeqNo(): Promise<number> {
