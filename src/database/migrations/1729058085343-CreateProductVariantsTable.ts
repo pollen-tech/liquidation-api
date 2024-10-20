@@ -28,20 +28,25 @@ export class CreateProductVariantsTable1729058085343 implements MigrationInterfa
                 CREATE TABLE product_variant
                 (
                     id          uuid                 DEFAULT uuid_generate_v4() primary key,
+                    seq_no      integer     not null DEFAULT 0,
+                    variant_sku varchar(25) not null,
                     product_id  uuid        not null,
-                    variant_sku varchar(20) not null,
+                    sku         varchar(25) not null,
                     image       varchar(150),
                     type        varchar(100),
                     color       varchar(100),
                     size        varchar(100),
+                    user_id     uuid,
+                    user_name   varchar(100),
                     created_at  timestamp without time zone NOT NULL DEFAULT now(),
                     updated_at  timestamp without time zone NOT NULL DEFAULT now(),
                     updated_on  bigint,
                     status      varchar(25) not null DEFAULT 'NA',
                     CONSTRAINT fk_product_variant_product_id FOREIGN KEY (product_id) REFERENCES product (id)
                 );
-                CREATE INDEX IF NOT EXISTS idx_product_image_updated_on ON product_image(updated_on);
-                CREATE UNIQUE INDEX IF NOT EXISTS idx_uq_product_image_product_id ON product_image(product_id);
+                CREATE INDEX IF NOT EXISTS idx_product_variant_product_id ON product_variant(product_id);
+                CREATE UNIQUE INDEX IF NOT EXISTS idx_uq_product_variant_variant_sku ON product_variant(variant_sku);
+                CREATE INDEX IF NOT EXISTS idx_product_variant_updated_on ON product_variant(updated_on);
             `,
         );
     }
