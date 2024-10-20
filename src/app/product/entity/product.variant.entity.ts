@@ -20,6 +20,27 @@ export class ProductVariantEntity {
     @Column()
     variant_sku: string;
 
+    @Column()
+    sku: string;
+
+    @Column()
+    type: string;
+
+    @Column()
+    color: string;
+
+    @Column()
+    size: string;
+
+    @Column()
+    image: string;
+
+    @Column()
+    user_id: string;
+
+    @Column()
+    user_name: string;
+
     @CreateDateColumn()
     created_at: Date;
 
