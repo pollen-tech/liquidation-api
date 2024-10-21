@@ -1,4 +1,4 @@
-import { IsArray, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { IsArray, IsNumber, IsOptional, IsString, IsUUID, ValidateNested } from 'class-validator';
 import { Status } from '../../../common/enums/common.enum';
 import { ProductEntity } from '../entity/product.entity';
 import { Type } from 'class-transformer';
@@ -18,17 +18,20 @@ export class NewProductDto {
     @IsString()
     sku: string;
 
-    @IsString()
+    @IsUUID()
     brand_id: string;
 
     @IsString()
     brand_name?: string;
 
-    @IsString()
+    @IsUUID()
     lms_company_id: string;
 
-    @IsString()
+    @IsUUID()
     user_id: string;
+
+    @IsString()
+    user_name: string;
 
     @IsOptional()
     @IsString()

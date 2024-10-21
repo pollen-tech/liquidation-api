@@ -22,6 +22,7 @@
     "typeorm": "cross-env DOTENV_CONFIG_PATH=./build/docker/.env node -r tsconfig-paths/register -r ts-node/register -r dotenv/config ./node_modules/typeorm/cli",
     "migration:run": "APP_ENV=SANDBOX ts-node -r tsconfig-paths/register src/bin/app migration:run",
     "migration:revert": "ts-node -r tsconfig-paths/register src/bin/app migration:revert",
+    "migration:run:test": "APP_ENV=TEST ts-node -r tsconfig-paths/register src/bin/app migration:run",
     "migration:run:prod": "APP_ENV=PROD ts-node -r tsconfig-paths/register src/bin/app migration:run",
     "migration:generate": "yarn typeorm migration:generate -d ./src/database/migration.ts ./src/database/migrations/",
     "migration:show": "yarn typeorm migration:show -d ./src/database/migration.ts",

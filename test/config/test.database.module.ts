@@ -5,7 +5,7 @@ import { CustomConfigModule } from '../../src/config/config.module';
 import { TerminusModule } from '@nestjs/terminus';
 import { BrandEntity } from '../../src/app/brand/repositories/brand.entity';
 import { BrandCategoryEntity } from '../../src/app/brand/repositories/brand.category.entity';
-import { ProductCategoryEntity } from '../../src/app/product/repositories/product.category.entity';
+import { ProductCategoryEntity } from '../../src/app/product/entity/product.category.entity';
 import { ProductEntity } from '../../src/app/product/entity/product.entity';
 import { UserProductEntity } from '../../src/app/product/repositories/user.product.entity';
 import { ProductImageEntity } from '../../src/app/product/entity/product.image.entity';

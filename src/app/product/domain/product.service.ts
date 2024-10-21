@@ -78,6 +78,7 @@ export class ProductService {
         const saved_categories = await this.productCategoryRepository.save(categories);
         const userProductEntity = new UserProductEntity();
         userProductEntity.user_id = reqDto.user_id;
+        userProductEntity.user_name = reqDto.user_name;
         userProductEntity.product_id = savedProduct.id;
         await this.userProductRepository.save(userProductEntity);
 

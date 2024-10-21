@@ -9,6 +9,9 @@ export class UserProductEntity {
     @Column({ type: 'uuid' })
     user_id: string;
 
+    @Column()
+    user_name: string;
+
     @Column({ type: 'uuid' })
     product_id: string;
 

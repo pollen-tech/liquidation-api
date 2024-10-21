@@ -1,17 +1,17 @@
-import { Test } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import { TestDatabaseModule } from '../../../config/test.database.module';
-import { CustomConfigModule } from '../../../../src/config/config.module';
+import {Test} from '@nestjs/testing';
+import {INestApplication} from '@nestjs/common';
+import {TestDatabaseModule} from '../../../config/test.database.module';
+import {CustomConfigModule} from '../../../../src/config/config.module';
 import apiRequestTest from 'supertest';
-import { ProductModule } from '../../../../src/app/product/product.module';
-import { BrandRepository } from '../../../../src/app/brand/repositories/brand.repository';
-import { DataRepository } from '../../../config/db/data.repository';
-import { BrandEntity } from '../../../../src/app/brand/repositories/brand.entity';
-import { BrandModule } from '../../../../src/app/brand/brand.module';
-import { create_product_req_data } from '../../../data/json/create_product';
-import { ProductService } from '../../../../src/app/product/domain/product.service';
-import { addTransactionalDataSource, initializeTransactionalContext } from 'typeorm-transactional';
-import { UpdateMultiProductDto } from '../../../../src/app/product/dto/product.dto';
+import {ProductModule} from '../../../../src/app/product/product.module';
+import {BrandRepository} from '../../../../src/app/brand/repositories/brand.repository';
+import {DataRepository} from '../../../config/db/data.repository';
+import {BrandEntity} from '../../../../src/app/brand/repositories/brand.entity';
+import {BrandModule} from '../../../../src/app/brand/brand.module';
+import {create_product_req_data} from '../../../data/json/create_product';
+import {ProductService} from '../../../../src/app/product/domain/product.service';
+import {initializeTransactionalContext} from 'typeorm-transactional';
+import {UpdateMultiProductDto} from '../../../../src/app/product/dto/product.dto';
 
 describe('Controller: Product API Test', () => {
     let app: INestApplication;
@@ -53,7 +53,7 @@ describe('Controller: Product API Test', () => {
         req_dto.name = 'Product ' + Date.now();
 
         /* send the request */
-        let response = await apiRequestTest(httpServer).post('/api/product').send(req_dto).set('Accept', 'application/json').expect(201);
+        let response = await apiRequestTest(httpServer).post('/api/products').send(req_dto).set('Accept', 'application/json').expect(201);
 
         console.log('Response : ', JSON.stringify(response.body));
     });
@@ -69,12 +69,12 @@ describe('Controller: Product API Test', () => {
 
         /* send the request */
         let saved_product = await product_service.createProduct(req_dto);
-        let edit_req_dto = { ...req_dto, id: saved_product.id };
+        let edit_req_dto = {...req_dto, id: saved_product.id};
 
         /* send the request */
         edit_req_dto.name = 'Updated Product ' + Date.now();
         let response = await apiRequestTest(httpServer)
-            .put('/api/product/' + saved_product.id)
+            .put('/api/products/' + saved_product.id)
             .send(edit_req_dto)
             .set('Accept', 'application/json')
             .expect(200);
@@ -109,7 +109,7 @@ describe('Controller: Product API Test', () => {
         console.log('Req :' + JSON.stringify(req));
 
         /* send the request */
-        let response = await apiRequestTest(httpServer).put('/api/product/multiple').send(req).set('Accept', 'application/json').expect(200);
+        let response = await apiRequestTest(httpServer).put('/api/products/multiple').send(req).set('Accept', 'application/json').expect(200);
 
         console.log('Response : ', JSON.stringify(response.body));
     });
