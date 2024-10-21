@@ -3,8 +3,8 @@ import { Status } from '../../../common/enums/common.enum';
 import { CompactProductRepository } from '../repositories/compact.product.repository';
 import { ProductMapper, ProductPaginationParam, ProductResPage } from '../dto/product.dto';
 import { ProductCategoryRepository } from '../repositories/product.category.repository';
-import { ProductCategoryEntity } from '../repositories/product.category.entity';
-import { CompactProductEntity } from '../repositories/compact.product.entity';
+import { ProductCategoryEntity } from '../entity/product.category.entity';
+import { CompactProductEntity } from '../entity/compact.product.entity';
 
 @Injectable()
 export class CompactProductService {

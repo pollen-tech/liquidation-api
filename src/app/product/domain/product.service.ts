@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { ProductRepository } from '../repositories/product.repository';
-import { ProductEntity } from '../repositories/product.entity';
+import { ProductEntity } from '../entity/product.entity';
 import { ProductCategoryRepository } from '../repositories/product.category.repository';
-import { ProductCategoryEntity } from '../repositories/product.category.entity';
+import { ProductCategoryEntity } from '../entity/product.category.entity';
 import { UserProductRepository } from '../repositories/user.product.repository';
 import { UserProductEntity } from '../repositories/user.product.entity';
 import { NewProductDto, ProductApiResDto, ProductMapper, ProductResDto, UpdateProductDto } from '../dto/product.dto';

@@ -1,4 +1,4 @@
-import { ProductImageEntity } from '../repositories/product.image.entity';
+import { ProductImageEntity } from '../entity/product.image.entity';
 
 export class ProductImageDto {
     id?: string;

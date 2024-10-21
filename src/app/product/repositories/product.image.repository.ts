@@ -1,6 +1,6 @@
 import BaseRepository from '../../../database/infrastructure/repository/base.repository';
 import { CustomRepository } from '../../../database/decorators/custom-repository.decorator';
-import { ProductImageEntity } from './product.image.entity';
+import { ProductImageEntity } from '../entity/product.image.entity';
 import { Status } from '../../../common/enums/common.enum';
 import { In } from 'typeorm';
 

@@ -1,4 +1,4 @@
-import { ProductEntity } from './product.entity';
+import { ProductEntity } from '../entity/product.entity';
 import { CustomRepository } from '../../../database/decorators/custom-repository.decorator';
 import BaseRepository from '../../../database/infrastructure/repository/base.repository';
 import { ILike, Not } from 'typeorm';

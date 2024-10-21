@@ -1,8 +1,8 @@
 import { CustomRepository } from '../../../database/decorators/custom-repository.decorator';
 import BaseRepository from '../../../database/infrastructure/repository/base.repository';
-import { CompactProductEntity } from './compact.product.entity';
 import { Status } from '../../../common/enums/common.enum';
 import { ProductPaginationParam } from '../dto/product.dto';
+import {CompactProductEntity} from "../entity/compact.product.entity";
 
 @CustomRepository(CompactProductEntity)
 export class CompactProductRepository extends BaseRepository<CompactProductEntity> {

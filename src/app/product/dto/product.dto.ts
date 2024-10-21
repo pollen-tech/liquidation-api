@@ -1,11 +1,11 @@
 import { IsArray, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { Status } from '../../../common/enums/common.enum';
-import { ProductEntity } from '../repositories/product.entity';
+import { ProductEntity } from '../entity/product.entity';
 import { Type } from 'class-transformer';
-import { ProductCategoryEntity } from '../repositories/product.category.entity';
+import { ProductCategoryEntity } from '../entity/product.category.entity';
 import { ApiResDto } from '../../../common/dtos/id.dto';
 import { PaginationParam } from '../../../common/pagination.entity';
-import { CompactProductEntity } from '../repositories/compact.product.entity';
+import { CompactProductEntity } from '../entity/compact.product.entity';
 
 export class ProductApiResDto extends ApiResDto {
     data?: any | NewProductDto | NewProductDto[];
