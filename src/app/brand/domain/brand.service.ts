@@ -4,7 +4,7 @@ import { BrandRepository } from '../repositories/brand.repository';
 import { BrandEntity } from '../repositories/brand.entity';
 import { BrandCategoryRepository } from '../repositories/brand.category.repository';
 import { BrandCategoryEntity } from '../repositories/brand.category.entity';
-import { NewBrandDto, BrandMapper, CategoryDto, BrandDtoRes, BrandIdAndNameOnlyDto, UpdateBrandDto, UpdateMultipleBrandDto } from '../dto/brand.dto';
+import { NewBrandDto, BrandMapper, CategoryDto, BrandDtoRes, BrandIdAndNameOnlyDto, UpdateBrandDto, BrandPaginationParam, UpdateMultipleBrandDto } from '../dto/brand.dto';
 import { Status } from '../../../common/enums/common.enum';
 import { ILike, Not } from 'typeorm';
 import { PaginationParam } from 'src/common/pagination.entity';
@@ -42,6 +42,7 @@ export class BrandService {
 
     @Transactional()
     async createBrand(reqDto: NewBrandDto) {
+        console.log('reqDto - ', reqDto);
         const isNameTaken = await this.isBrandNameTaken(reqDto.name);
         if (isNameTaken.status_code === 400) {
             throw new Error('Brand name already exists');
@@ -68,7 +69,7 @@ export class BrandService {
     //	return BrandMapper.toOnlyBrandResDtosWithoutCategory(saved_brands);
     //}
 
-    async findAllBrandsWithCategories(paginationParam: PaginationParam) {
+    async findAllBrandsWithCategories(paginationParam: BrandPaginationParam) {
         //const savedBrands = await this.brandRepository.findAllByActiveStatus();
         const paginatedBrands = await this.brandRepository.getPaginatedBrandsByActiveStatus(paginationParam);
 

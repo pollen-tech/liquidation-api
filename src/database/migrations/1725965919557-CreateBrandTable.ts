@@ -12,6 +12,7 @@ export class CreateBrandTable1725965919557 implements MigrationInterface {
                     seq_no     integer               default 1,
                     name       varchar(100) NOT NULL,
                     image      varchar(100), 
+                    lms_company_id uuid        NOT NULL,
                     created_at timestamp without time zone NOT NULL DEFAULT now(),
                     updated_at timestamp without time zone NOT NULL DEFAULT now(),
                     deleted_at timestamp without time zone,
@@ -24,6 +25,7 @@ export class CreateBrandTable1725965919557 implements MigrationInterface {
                     INCREMENT BY 1;
 
                 ALTER TABLE brand ALTER COLUMN seq_no SET DEFAULT nextval('brand_seq_no');
+                CREATE INDEX IF NOT EXISTS idx_brand_name ON brand(name);
             `,
         );
 

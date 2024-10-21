@@ -4,6 +4,7 @@ import { BrandEntity } from '../repositories/brand.entity';
 import { Type } from 'class-transformer';
 import { BrandCategoryEntity } from '../repositories/brand.category.entity';
 import { ApiResDto } from '../../../common/dtos/id.dto';
+import { PaginationParam } from '../../../common/pagination.entity';
 
 export class NewBrandDto {
     @IsString()
@@ -12,6 +13,9 @@ export class NewBrandDto {
     @IsOptional()
     @IsString()
     image?: string;
+
+    @IsString()
+    lms_company_id: string;
 
     @IsArray()
     @ValidateNested({ each: true })
@@ -80,6 +84,7 @@ export class BrandApiResDto extends ApiResDto {
 export class BrandDtoRes {
     id: string;
     name: string;
+    lms_company_id: string;
     image?: string;
     status: Status;
     seq_no: number;
@@ -96,11 +101,21 @@ export class BrandCompactDto {
     }
 }
 
+export class BrandPaginationParam extends PaginationParam {
+    @IsString()
+    company_id: string;
+
+    @IsOptional()
+    @IsString()
+    search: string;
+}
+
 export class BrandMapper {
     static async toBrandEntity(req: NewBrandDto): Promise<BrandEntity> {
         const brandEntity = new BrandEntity();
         brandEntity.name = req.name;
         brandEntity.image = req.image;
+        brandEntity.lms_company_id = req.lms_company_id;
         return brandEntity;
     }
 
@@ -108,6 +123,7 @@ export class BrandMapper {
         const dto_res = new BrandDtoRes();
         dto_res.name = saved_brand.name;
         dto_res.image = saved_brand.image;
+        dto_res.lms_company_id = saved_brand.lms_company_id;
         dto_res.status = saved_brand.status;
         dto_res.seq_no = saved_brand.seq_no;
         dto_res.id = saved_brand.id;

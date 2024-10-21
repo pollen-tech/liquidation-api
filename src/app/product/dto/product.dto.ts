@@ -91,6 +91,10 @@ export class ProductResDto {
 export class ProductPaginationParam extends PaginationParam {
     @IsString()
     company_id: string;
+
+    @IsOptional()
+    @IsString()
+    search: string;
 }
 
 export class ProductResPage {

@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query } fr
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'nest-keycloak-connect';
 import { BrandService } from '../domain/brand.service';
-import { BrandApiResDto, BrandDtoRes, NewBrandDto, UpdateMultipleBrandDto } from '../dto/brand.dto';
+import { BrandApiResDto, BrandDtoRes, NewBrandDto, UpdateMultipleBrandDto, BrandPaginationParam } from '../dto/brand.dto';
 import { PaginationParam } from '../../../common/pagination.entity';
 import { BrandCompactService } from '../domain/BrandCompactService';
 
@@ -26,14 +26,14 @@ export class BrandController {
     }
 
     @Get()
-    async findAllActiveBrands(@Query() paginationParam: PaginationParam) {
+    async findAllActiveBrands(@Query() paginationParam: BrandPaginationParam) {
         const paginatedBrands = await this.brandService.findAllBrandsWithCategories(paginationParam);
         return this.createApiRes(paginatedBrands, 'OK', HttpStatus.OK);
     }
 
     @Get('/compact')
-    async findAllActiveBrandsAsCompact() {
-        const data = await this.brandCompactService.findAllActive();
+    async findAllActiveBrandsAsCompact(@Query() paginationParam: BrandPaginationParam) {
+        const data = await this.brandCompactService.findAllActive(paginationParam);
         return this.createApiRes(data, 'OK', HttpStatus.OK);
     }
 

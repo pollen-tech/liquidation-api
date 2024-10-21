@@ -2,6 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { BrandRepository } from '../repositories/brand.repository';
 import { BrandCategoryRepository } from '../repositories/brand.category.repository';
 import { BrandCompactDto } from '../dto/brand.dto';
+import { BrandPaginationParam } from '../dto/brand.dto';
+
 
 @Injectable()
 export class BrandCompactService {
@@ -10,8 +12,8 @@ export class BrandCompactService {
         private readonly brandCategoryRepository: BrandCategoryRepository,
     ) {}
 
-    async findAllActive() {
-        const entities = await this.brandRepository.findAllByActiveStatusOrderByName();
+    async findAllActive(paginationParam: BrandPaginationParam) {
+        const entities = await this.brandRepository.findAllByActiveStatusOrderByName(paginationParam);
         if (entities == null || entities.length === 0) {
             throw new NotFoundException('Brands not found');
         }

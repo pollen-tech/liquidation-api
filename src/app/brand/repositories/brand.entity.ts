@@ -28,6 +28,9 @@ export class BrandEntity {
     @Column({ nullable: true })
     image: string;
 
+    @Column({ type: 'uuid' })
+    lms_company_id: string;
+
     @Column({ type: 'enum', enum: Status, default: Status.NA })
     status: Status;
 
